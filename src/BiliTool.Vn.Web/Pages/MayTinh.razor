@@ -127,9 +127,8 @@
                                        @bind="model.TuoiTheoGio" />
                                 <span class="unit-badge">@T["Hours"]</span>
                             </div>
-                            <small class="form-hint" style="color: #6b7280; margin-top: 4px;">
-                                <i class="fas fa-info-circle"></i>
-                                Tối đa 672 giờ (28 ngày) — theo phạm vi NICE CG98
+                            <small class="form-text text-muted">
+                                @T["MaxAgeNiceWarning"]
                             </small>
                         </div>
                     }
@@ -151,8 +150,8 @@
                         <div class="form-group w-auto">
                             <label>@T["Unit"]</label>
                             <select class="form-control" @bind="donViDoStr">
-                                <option value="MgDl">mg/dL (Mỹ)</option>
-                                <option value="UmolL">μmol/L (Quốc tế)</option>
+                                <option value="MgDl">@T["Unit_MgDl"]</option>
+                                <option value="UmolL">@T["Unit_UmolL"]</option>
                             </select>
                         </div>
                     </div>
@@ -177,7 +176,7 @@
                         </select>
                         <small class="form-hint">
                             <i class="fas fa-info-circle"></i>
-                            AAP 2022 & NICE CG98: áp dụng cho trẻ ≥ 35 tuần tuổi thai
+                            @T["GestAgeGuidelineText"]
                         </small>
                     </div>
                 </div>
@@ -190,7 +189,7 @@
                         <span class="optional-badge">@T["Optional"]</span>
                     </h2>
 
-                    <h5 style="font-size: 0.9rem; color: #555; margin-bottom: 8px;"><i class="fas fa-brain"></i> Nguy cơ thần kinh (AAP 2022)</h5>
+                    <h5 style="font-size: 0.9rem; color: #555; margin-bottom: 8px;"><i class="fas fa-brain"></i> @T["NeuroRisk_Aap"]</h5>
                     <div class="nguyen-co-grid mb-3">
                         <label class="checkbox-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.BenhTanHuyetMienDichHoacThieuG6PD" />
@@ -214,37 +213,37 @@
                         </label>
                     </div>
 
-                    <h5 style="font-size: 0.9rem; color: #555; margin-bottom: 8px;"><i class="fas fa-notes-medical"></i> Nguy cơ lâm sàng (NICE CG98)</h5>
-                    <div class="nguyen-co-grid mb-3">
-                        <label class="checkbox-vn">
+                    <h5 style="font-size: 0.9rem; color: #555; margin-bottom: 8px;"><i class="fas fa-notes-medical"></i> @T["ClinRisk_Nice"]</h5>
+                    <div class="checkbox-grid mt-2">
+                        <label class="checkbox-container-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.AnhChiBiVangDaCanChieuDen" />
-                            <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Anh/chị ruột từng chiếu đèn</span>
+                            <span class="checkmark-vn"></span>
+                            <span class="checkbox-label">@T["ClinRisk_Sibling"]</span>
                         </label>
-                        <label class="checkbox-vn">
+                        <label class="checkbox-container-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.MeBuMeHoanToan" />
-                            <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Mẹ dự định bú mẹ hoàn toàn</span>
+                            <span class="checkmark-vn"></span>
+                            <span class="checkbox-label">@T["ClinRisk_ExclusiveBreastfeeding"]</span>
                         </label>
-                        <label class="checkbox-vn">
+                        <label class="checkbox-container-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.VangDaTrong24hDau" />
-                            <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Vàng da xuất hiện trong 24h đầu</span>
+                            <span class="checkmark-vn"></span>
+                            <span class="checkbox-label">@T["ClinRisk_Jaundice24h"]</span>
                         </label>
-                        <label class="checkbox-vn">
+                        <label class="checkbox-container-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.BenhTanHuyetRh" />
-                            <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Bệnh tan huyết Rh</span>
+                            <span class="checkmark-vn"></span>
+                            <span class="checkbox-label">@T["ClinRisk_Rh"]</span>
                         </label>
-                        <label class="checkbox-vn">
+                        <label class="checkbox-container-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.BenhTanHuyetABO" />
-                            <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Bệnh tan huyết ABO</span>
+                            <span class="checkmark-vn"></span>
+                            <span class="checkbox-label">@T["ClinRisk_Abo"]</span>
                         </label>
-                        <label class="checkbox-vn" style="grid-column: 1 / -1;">
+                        <label class="checkbox-container-vn">
                             <input type="checkbox" @bind="model.YeuToNguyCo.DauHieuBenhNaoBilirubinCap" />
-                            <span class="checkbox-box"></span>
-                            <span class="checkbox-label text-danger fw-bold">Dấu hiệu bệnh não bilirubin cấp tính</span>
+                            <span class="checkmark-vn"></span>
+                            <span class="checkbox-label text-danger fw-bold">@T["ClinRisk_Encephalopathy"]</span>
                         </label>
                     </div>
 
@@ -271,14 +270,14 @@
                 <div class="form-section">
                     <h3 class="section-label">
                         <span class="section-badge">5</span>
-                        Trạng thái chiếu đèn
+                        @T["TreatmentState"]
                     </h3>
                     <div class="form-group mb-0">
                         <select class="form-control" @bind="model.TrangThaiChieuDen">
-                            <option value="@TrangThaiChieuDen.KhongChieuDen">Không chiếu đèn</option>
-                            <option value="@TrangThaiChieuDen.DangChieuDen">Đang chiếu đèn tiêu chuẩn</option>
-                            <option value="@TrangThaiChieuDen.DangChieuDenTichCuc">Đang chiếu đèn tích cực</option>
-                            <option value="@TrangThaiChieuDen.DaDungChieuDen">Đã dừng chiếu đèn (kiểm tra rebound)</option>
+                            <option value="@TrangThaiChieuDen.KhongChieuDen">@T["TreatState_None"]</option>
+                            <option value="@TrangThaiChieuDen.DangChieuDen">@T["TreatState_Standard"]</option>
+                            <option value="@TrangThaiChieuDen.DangChieuDenTichCuc">@T["TreatState_Intensive"]</option>
+                            <option value="@TrangThaiChieuDen.DaDungChieuDen">@T["TreatState_Stopped"]</option>
                         </select>
                     </div>
                 </div>
@@ -325,8 +324,8 @@
                     <i class="fas fa-user-plus"></i>
                 </div>
                 <div>
-                    <h3>Tạo hồ sơ trẻ sơ sinh</h3>
-                    <p>Hệ thống tự động sử dụng kết quả vừa tính toán</p>
+                    <h3>@T["Modal_Title"]</h3>
+                    <p>@T["Modal_Subtitle"]</p>
                 </div>
                 <button class="modal-close" @onclick="DongModalTaoBe"><i class="fas fa-times"></i></button>
             </div>
@@ -334,25 +333,25 @@
                 <div class="form-group-vn">
                     <label class="label-vn">
                         <i class="fas fa-user text-primary" style="font-size:0.8rem;"></i>
-                        Họ và tên bé <span class="text-danger">*</span>
+                        @T["Modal_Name"] <span class="text-danger">*</span>
                     </label>
-                    <input type="text" class="input-vn" @bind="formTao.HoTenBenhNhan" placeholder="Ví dụ: Nguyễn Văn A" autofocus />
+                    <input type="text" class="input-vn" @bind="formTao.HoTenBenhNhan" placeholder="@T["Modal_NamePlaceholder"]" autofocus />
                 </div>
 
                 <div class="form-group-vn" style="margin-top:16px;">
                     <label class="label-vn">
                         <i class="fas fa-id-card text-primary" style="font-size:0.8rem;"></i>
-                        Mã Bệnh Nhi (tùy chọn)
+                        @T["Modal_Id"]
                     </label>
-                    <input type="text" class="input-vn" @bind="formTao.MaBenhNhan" placeholder="Bỏ trống để tự động tạo" />
+                    <input type="text" class="input-vn" @bind="formTao.MaBenhNhan" placeholder="@T["Modal_IdPlaceholder"]" />
                 </div>
 
                 <div class="form-group-vn" style="margin-top:16px; background:#f8f9fa; padding:12px; border-radius:8px;">
-                    <label class="label-vn"><i class="fas fa-info-circle text-primary"></i> Thông tin được trích xuất tự động</label>
+                    <label class="label-vn"><i class="fas fa-info-circle text-primary"></i> @T["Modal_ExtractedInfo"]</label>
                     <div style="font-size:0.9rem; margin-top:8px;">
-                        <div><strong>Ngày giờ sinh:</strong> @ngayGioSinhModal.ToString("HH:mm dd/MM/yyyy")</div>
-                        <div><strong>Tuổi thai:</strong> @model.TuoiThaiTuan tuần</div>
-                        <div><strong>Mức Bilirubin:</strong> @model.TongBilirubin @(donViDoStr == "UmolL" ? "μmol/L" : "mg/dL")</div>
+                        <div><strong>@T["Modal_BirthTime"]</strong> @ngayGioSinhModal.ToString("HH:mm dd/MM/yyyy")</div>
+                        <div><strong>@T["Modal_GestAge"]</strong> @model.TuoiThaiTuan @T["Weeks_Short"]</div>
+                        <div><strong>@T["Modal_BiliLevel"]</strong> @model.TongBilirubin @(donViDoStr == "UmolL" ? "μmol/L" : "mg/dL")</div>
                     </div>
                 </div>
 
@@ -365,16 +364,16 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary-vn" @onclick="DongModalTaoBe">
-                    <i class="fas fa-times"></i> Hủy
+                    <i class="fas fa-times"></i> @T["Modal_Cancel"]
                 </button>
                 <button class="btn-primary-vn" @onclick="TaoHoSoTre" disabled="@dangLuuHoSo">
                     @if (dangLuuHoSo)
                     {
-                        <i class="fas fa-spinner fa-spin"></i><span> Đang lưu...</span>
+                        <i class="fas fa-spinner fa-spin"></i><span> @T["Modal_Saving"]</span>
                     }
                     else
                     {
-                        <i class="fas fa-save"></i><span> Xác nhận lưu</span>
+                        <i class="fas fa-save"></i><span> @T["Modal_Save"]</span>
                     }
                 </button>
             </div>

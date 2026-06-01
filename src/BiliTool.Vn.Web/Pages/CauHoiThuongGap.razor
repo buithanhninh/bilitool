@@ -1,127 +1,384 @@
 @page "/cau-hoi-thuong-gap"
 
-<PageTitle>Câu Hỏi Thường Gặp Về Vàng Da Sơ Sinh & BiliTool.Vn (FAQ)</PageTitle>
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 
-<HeadContent>
-    <meta name="description" content="Giải đáp các thắc mắc phổ biến: BiliTool.Vn dùng dữ liệu AAP 2022, áp dụng cho trẻ ≥35 tuần thai, nhập Bilirubin toàn phần (TSB) không trừ trực tiếp, tích hợp được vào bệnh án điện tử (HIS/EMR)." />
-    <meta name="keywords" content="câu hỏi thường gặp vàng da sơ sinh, bilirubin toàn phần TSB, AAP 2022, trẻ 35 tuần thai, tích hợp HIS EMR bilitool" />
-    <link rel="canonical" href="https://bilitool.vn/cau-hoi-thuong-gap" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="FAQ — Câu Hỏi Thường Gặp Về Vàng Da Sơ Sinh | BiliTool.Vn" />
-    <meta property="og:description" content="Giải đáp thắc mắc về thuật toán tính bilirubin sơ sinh, phác đồ AAP 2022 và tích hợp EMR." />
-    <meta property="og:url" content="https://bilitool.vn/cau-hoi-thuong-gap" />
-    <meta property="og:site_name" content="BiliTool.Vn" />
-    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="FAQ — Vàng Da Sơ Sinh & BiliTool.Vn" />
-    <meta name="twitter:description" content="Giải đáp các câu hỏi phổ biến về tính bilirubin sơ sinh và phác đồ AAP 2022." />
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@@type": "Question",
-                "name": "BiliTool.Vn sử dụng dữ liệu tham chiếu từ đâu?",
-                "acceptedAnswer": {
-                    "@@type": "Answer",
-                    "text": "BiliTool.Vn được xây dựng dựa trên Hướng dẫn thực hành lâm sàng của Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) cập nhật năm 2022 kết hợp NICE CG98, sử dụng thuật toán nội suy phương trình bậc 3."
-                }
-            },
-            {
-                "@@type": "Question",
-                "name": "Những bệnh nhi nào có thể đánh giá từ nền tảng này?",
-                "acceptedAnswer": {
-                    "@@type": "Answer",
-                    "text": "Khuyến cáo áp dụng cho trẻ sơ sinh có tuổi thai từ 35 tuần trở lên (≥ 35 weeks gestation). Trẻ sinh non dưới 35 tuần cần sử dụng phác đồ riêng biệt."
-                }
-            },
-            {
-                "@@type": "Question",
-                "name": "Giá trị xét nghiệm nhập vào là Bilirubin trực tiếp hay toàn phần?",
-                "acceptedAnswer": {
-                    "@@type": "Answer",
-                    "text": "AAP 2022 khuyến cáo sử dụng Bilirubin toàn phần (Total Serum Bilirubin - TSB). KHÔNG trừ giá trị Bilirubin trực tiếp ra khỏi tổng số trước khi nhập vào phần mềm."
-                }
-            },
-            {
-                "@@type": "Question",
-                "name": "Tôi có thể tích hợp công cụ này vào Bệnh án điện tử không?",
-                "acceptedAnswer": {
-                    "@@type": "Answer",
-                    "text": "Có. BiliTool.Vn hỗ trợ tích hợp vào HIS/EMR qua hai phương pháp: Deep Link (tham số URL) và RESTful API (JSON). Chi tiết tại mục Tích hợp HIS trên website."
-                }
-            }
-        ]
-    }
-    </script>
-</HeadContent>
+@if (lang == "en")
+{
+    <PageTitle>FAQ about Neonatal Jaundice & BiliTool.Vn</PageTitle>
 
-<div class="guide-wrapper">
-    <div class="guide-header">
-        <i class="fas fa-question-circle"></i>
-        <div>
-            <h1>Câu hỏi thường gặp (FAQ)</h1>
-            <p>Giải đáp thắc mắc liên quan tới thuật toán</p>
+    <HeadContent>
+        <meta name="description" content="Answers to common questions: BiliTool.Vn uses AAP 2022 guidelines, applies to infants ≥35 weeks gestation, requires Total Serum Bilirubin (TSB) without subtracting direct bilirubin, and can be integrated into electronic medical records (HIS/EMR)." />
+        <meta name="keywords" content="FAQ neonatal jaundice, total serum bilirubin TSB, AAP 2022, 35 weeks gestation, HIS EMR integration bilitool" />
+        <link rel="canonical" href="https://bilitool.vn/cau-hoi-thuong-gap" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="FAQ — Frequently Asked Questions | BiliTool.Vn" />
+        <meta property="og:description" content="Answers to questions regarding the neonatal bilirubin calculation algorithm, AAP 2022 guidelines, and EMR integration." />
+        <meta property="og:url" content="https://bilitool.vn/cau-hoi-thuong-gap" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="FAQ — Neonatal Jaundice & BiliTool.Vn" />
+        <meta name="twitter:description" content="Answers to common questions about neonatal bilirubin calculations and AAP 2022 guidelines." />
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@@type": "Question",
+                    "name": "Where does BiliTool.Vn get its reference data?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "BiliTool.Vn is built based on the Clinical Practice Guideline of the American Academy of Pediatrics (AAP) updated in 2022 combined with NICE CG98, using a cubic spline interpolation algorithm."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Which pediatric patients can be evaluated using this platform?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "The recommendation and calculation on the system is only medically valid when applied to newborns with a gestational age of 35 weeks or older (≥ 35 weeks gestation). Preterm infants under 35 weeks gestation require separate protocols."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Is the entered laboratory value direct or total bilirubin?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "AAP 2022 recommends using Total Serum Bilirubin (TSB). DO NOT subtract direct bilirubin from the total before entering it into the software."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Can I integrate this automated chart into my hospital's Electronic Medical Record?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "Yes. BiliTool.Vn supports integration into HIS/EMR systems via two methods: Deep Link (URL parameters) and RESTful API (JSON). Details are in the HIS Integration section of the website."
+                    }
+                }
+            ]
+        }
+        </script>
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-question-circle"></i>
+            <div>
+                <h1>Frequently Asked Questions (FAQ)</h1>
+                <p>Answers to questions related to the calculation algorithm</p>
+            </div>
+        </div>
+
+        <div class="guide-content custom-faq">
+            <section class="mb-5">
+                <h2 class="faq-title">
+                    <i class="fas fa-comments"></i> Common Questions
+                </h2>
+                
+                <div class="faq-accordion shadow-sm">
+                    
+                    <details class="faq-item" open>
+                        <summary class="faq-question">
+                            <span>1. Where does BiliTool.Vn get its reference data?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>The calculation tool on BiliTool.Vn is completely free, translated, and mathematically modeled from a pure cubic spline interpolation algorithm to systematically and automatically reconstruct the **Clinical Practice Guideline of the American Academy of Pediatrics (AAP) updated in 2022**. In addition, the calculation structure of Age in Hours is also established according to Vietnamese medical regulations.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>2. Which pediatric patients can be evaluated using this platform?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Calculations and representations on the system are medically valid only when applied to newborn infants with a **gestational age of 35 weeks or older (>= 35 weeks gestation)**. Preterm infants under 35 weeks gestational age have lower liver function and neurotoxicity thresholds; therefore, it is mandatory to use separate standard protocols, such as the low birth weight guidelines of the National Institute of Nutrition, the NICE charts in the UK, or the local standards of individual Neonatal Intensive Care Units (NICUs).</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>3. Is the entered laboratory value direct or total bilirubin?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>The 2022 AAP update inherits a very important point from 2004: it recommends using the blood biochemical test value **Total Serum Bilirubin (TSB)** to input into the calculation tool. Please note: Even if Direct Bilirubin is elevated, you **DO NOT** need to and **MUST NOT** subtract the direct value from the TSB total before entering it into the software, to avoid misinterpreting the phototherapy indications for the patient.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>4. Can I integrate this automated chart into my hospital's Electronic Medical Record?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>BiliTool.Vn supports a compatible module for embedding via iframe or pop-up link for Hospital Information Systems (HIS/EMR) through RESTful API protocols and Deep Link parameters via URL. This allows hospitals to transmit vital signs and laboratory results automatically instead of requiring users to type them manually. Please navigate to the <a href="/tich-hop-his" class="fw-bold faq-link">HIS Integration</a> tab on the menu to reference the technical documentation for developers.</p>
+                        </div>
+                    </details>
+                    
+                </div>
+                
+                <div class="faq-footer text-muted">
+                    <p><i class="fas fa-info-circle me-1"></i> If you cannot find your question, please use the form in the <a href="/lien-he" class="fw-bold faq-link">Contact</a> section.</p>
+                </div>
+            </section>
         </div>
     </div>
+}
+else if (lang == "fr")
+{
+    <PageTitle>FAQ sur l'Ictère Néonatal & BiliTool.Vn</PageTitle>
 
-    <div class="guide-content custom-faq">
-        <section class="mb-5">
-            <h2 class="faq-title">
-                <i class="fas fa-comments"></i> Những vấn đề phổ biến
-            </h2>
-            
-            <div class="faq-accordion shadow-sm">
-                
-                <details class="faq-item" open>
-                    <summary class="faq-question">
-                        <span>1. BiliTool.Vn sử dụng dữ liệu tham chiếu từ đâu?</span>
-                        <i class="fas fa-chevron-down faq-icon"></i>
-                    </summary>
-                    <div class="faq-answer">
-                        <p>Công cụ tính toán trên BiliTool.Vn hoàn toàn miễn phí và được phiên dịch, toán học hóa thuật toán nội suy phương trình bậc 3 thuần túy nhằm phục dựng lại một cách hệ thống và tự động <strong>Hướng dẫn thực hành lâm sàng của Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) cập nhật năm 2022</strong>. Ngoài ra, việc thiết lập cấu trúc tính Giờ Tuổi cũng được thiết lập theo quy chuẩn y tế Việt Nam.</p>
-                    </div>
-                </details>
-                
-                <details class="faq-item">
-                    <summary class="faq-question">
-                        <span>2. Những bệnh nhi nào có thể đánh giá kết quả từ nền tảng này?</span>
-                        <i class="fas fa-chevron-down faq-icon"></i>
-                    </summary>
-                    <div class="faq-answer">
-                        <p>Khuyến cáo tính toán và biểu diễn trên hệ thống chỉ có giá trị y khoa khi áp dụng cho các trẻ sơ sinh có <strong>tuổi thai từ 35 tuần trở lên (>= 35 weeks gestation)</strong>. Các trẻ sinh non tháng dưới 35 tuần thai có chức năng gan và ngưỡng chịu độc thần kinh thần kinh thấp hơn, do đó, bắt buộc phải sử dụng các phác đồ chuẩn riêng biệt ví dụ như khuyến cáo điều trị nhóm nhẹ cân của Viện Dinh Dưỡng, bảng của NICE ở Anh, hoặc các quy chuẩn cục bộ của từng khoa Hồi sức tích cực Sơ sinh (NICU).</p>
-                    </div>
-                </details>
-                
-                <details class="faq-item">
-                    <summary class="faq-question">
-                        <span>3. Giá trị xét nghiệm nhập vào là Bilirubin trực tiếp hay toàn phần?</span>
-                        <i class="fas fa-chevron-down faq-icon"></i>
-                    </summary>
-                    <div class="faq-answer">
-                        <p>AAP cập nhật 2022 vẫn duy trì tính kế thừa so với 2004 ở một điểm vô cùng quan trọng: Khuyến cáo sử dụng giá trị xét nghiệm sinh hóa máu <strong>Bilirubin toàn phần (Total Serum Bilirubin - TSB)</strong> để nhập vào công cụ tính toán. Xin lưu ý: Dù cho Bilirubin trực tiếp (Direct Bilirubin) tăng, bạn <strong>KHÔNG</strong> cần thiết và <strong>KHÔNG</strong> được phép trừ giá trị trực tiếp ra khỏi tổng số TSB trước khi đưa vào phần mềm, tránh việc hiểu sai các chỉ định can thiệp chiếu đèn của bệnh nhi.</p>
-                    </div>
-                </details>
-                
-                <details class="faq-item">
-                    <summary class="faq-question">
-                        <span>4. Tôi có thể tích hợp Biểu đồ tự động này vào Bệnh án điện tử của bệnh viện không?</span>
-                        <i class="fas fa-chevron-down faq-icon"></i>
-                    </summary>
-                    <div class="faq-answer">
-                        <p>Trang chủ BiliTool.Vn hỗ trợ sẵn module tương thích để nhúng iframe hoặc pop-up link đối với các phần mềm Quản lý Bệnh Viện (HIS/EMR) thông qua giao thức API RESTful và cấu trúc Deep Link qua tham số URL. Điều này giúp các Bệnh viện có thể truyền chỉ số Sinh hiệu và Xét nghiệm tự động nội suy sang đây thay vì bắt người dùng gõ lại bằng tay. Vui lòng chuyển hướng sang tab <a href="/tich-hop-his" class="fw-bold faq-link">Tích hợp HIS</a> trên menu tính năng để tham khảo tài liệu kỹ thuật dành cho Kỹ sư Lập trình.</p>
-                    </div>
-                </details>
-                
+    <HeadContent>
+        <meta name="description" content="Réponses aux questions courantes : BiliTool.Vn utilise les directives AAP 2022, s'applique aux nouveau-nés ≥35 semaines, nécessite la bilirubine sérique totale (TSB) sans soustraire la bilirubine directe, et s'intègre aux dossiers médicaux (HIS/EMR)." />
+        <meta name="keywords" content="FAQ ictère néonatal, bilirubine totale TSB, AAP 2022, 35 semaines de gestation, intégration HIS EMR bilitool" />
+        <link rel="canonical" href="https://bilitool.vn/cau-hoi-thuong-gap" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="FAQ — Questions Fréquentes | BiliTool.Vn" />
+        <meta property="og:description" content="Réponses aux questions concernant l'algorithme de calcul, les directives AAP 2022 et l'intégration EMR." />
+        <meta property="og:url" content="https://bilitool.vn/cau-hoi-thuong-gap" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="FAQ — l'Ictère Néonatal & BiliTool.Vn" />
+        <meta name="twitter:description" content="Réponses aux questions courantes sur le calcul de la bilirubine néonatale et les directives AAP 2022." />
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@@type": "Question",
+                    "name": "D'où proviennent les données de référence de BiliTool.Vn ?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "BiliTool.Vn est construit sur la base des directives de pratique clinique de l'American Academy of Pediatrics (AAP) mises à jour en 2022 combinées avec NICE CG98, utilisant un algorithme d'interpolation spline cubique."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Quels patients peuvent être évalués à l'aide de cette plateforme ?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "Les calculs et représentations sur le système ne sont médicalement valides que lorsqu'ils sont appliqués à des nouveau-nés ayant un âge gestationnel de 35 semaines ou plus (≥ 35 semaines de gestation). Les prématurés de moins de 35 semaines nécessitent des protocoles spécifiques."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "La valeur de laboratoire saisie est-elle la bilirubine directe ou totale ?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "L'AAP 2022 recommande d'utiliser la valeur du test biochimique sanguin Bilirubine Sérique Totale (TSB). NE PAS soustraire la valeur directe de la TSB totale avant de la saisir."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Puis-je intégrer ce graphique automatisé dans le dossier patient informatisé de mon hôpital ?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "Oui. BiliTool.Vn prend en charge l'intégration dans les systèmes HIS/EMR via deux méthodes : Deep Link (paramètres d'URL) et API RESTful (JSON). Détails dans la section Intégration HIS du site."
+                    }
+                }
+            ]
+        }
+        </script>
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-question-circle"></i>
+            <div>
+                <h1>Questions Fréquentes (FAQ)</h1>
+                <p>Réponses aux questions concernant l'algorithme de calcul</p>
             </div>
-            
-            <div class="faq-footer text-muted">
-                <p><i class="fas fa-info-circle me-1"></i> Nếu bạn không tìm thấy câu hỏi của mình, vui lòng sử dụng biểu mẫu ở mục <a href="/lien-he" class="fw-bold faq-link">Liên hệ</a>.</p>
-            </div>
-        </section>
+        </div>
+
+        <div class="guide-content custom-faq">
+            <section class="mb-5">
+                <h2 class="faq-title">
+                    <i class="fas fa-comments"></i> Questions Courantes
+                </h2>
+                
+                <div class="faq-accordion shadow-sm">
+                    
+                    <details class="faq-item" open>
+                        <summary class="faq-question">
+                            <span>1. D'où proviennent les données de référence de BiliTool.Vn ?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>L'outil de calcul de BiliTool.Vn est entièrement gratuit, traduit et modélisé mathématiquement à partir d'un algorithme d'interpolation spline cubique pure pour reconstruire systématiquement et automatiquement les **directives de pratique clinique de l'American Academy of Pediatrics (AAP) mises à jour en 2022**. De plus, la structure de calcul de l'âge en heures est établie selon les réglementations médicales en vigueur.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>2. Quels patients peuvent être évalués à l'aide de cette plateforme ?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Les calculs et représentations sur le système ne sont médicalement valides que lorsqu'ils sont appliqués à des nouveau-nés ayant un **âge gestationnel de 35 semaines ou plus (>= 35 semaines de gestation)**. Les prématurés de moins de 35 semaines ont une fonction hépatique et des seuils de neurotoxicité plus bas ; il est donc obligatoire d'utiliser des protocoles standard spécifiques, tels que les directives pour faible poids de naissance de l'Institut National de la Nutrition, les courbes NICE au Royaume-Uni ou les protocoles locaux de chaque unité de soins intensifs néonatals (NICU).</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>3. La valeur de laboratoire saisie est-elle la bilirubine directe ou totale ?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>La mise à jour 2022 de l'AAP conserve un point très important de 2004 : elle recommande d'utiliser la valeur du test biochimique sanguin **Bilirubine Sérique Totale (TSB)** dans l'outil de calcul. Veuillez noter : Même si la bilirubine directe est élevée, vous **N'AVEZ PAS** besoin et **NE DEVEZ PAS** soustraire la valeur directe du total de la TSB avant de la saisir dans le logiciel, afin d'éviter toute mauvaise interprétation des indications de traitement.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>4. Puis-je intégrer ce graphique automatisé dans le dossier patient informatisé de mon hôpital ?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>BiliTool.Vn prend en charge un module compatible pour intégration via iframe ou lien pop-up pour les systèmes d'information hospitaliers (HIS/EMR) via des protocoles API RESTful et des paramètres Deep Link dans l'URL. Cela permet aux hôpitaux de transmettre automatiquement les signes vitaux et les résultats de laboratoire sans saisie manuelle. Veuillez vous rendre sur l'onglet <a href="/tich-hop-his" class="fw-bold faq-link">Intégration HIS</a> du menu pour consulter la documentation technique pour les développeurs.</p>
+                        </div>
+                    </details>
+                    
+                </div>
+                
+                <div class="faq-footer text-muted">
+                    <p><i class="fas fa-info-circle me-1"></i> Si vous ne trouvez pas de réponse à votre question, veuillez utiliser le formulaire dans la section <a href="/lien-he" class="fw-bold faq-link">Contact</a>.</p>
+                </div>
+            </section>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <PageTitle>Câu Hỏi Thường Gặp Về Vàng Da Sơ Sinh & BiliTool.Vn (FAQ)</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="Giải đáp các thắc mắc phổ biến: BiliTool.Vn dùng dữ liệu AAP 2022, áp dụng cho trẻ ≥35 tuần thai, nhập Bilirubin toàn phần (TSB) không trừ trực tiếp, tích hợp được vào bệnh án điện tử (HIS/EMR)." />
+        <meta name="keywords" content="câu hỏi thường gặp vàng da sơ sinh, bilirubin toàn phần TSB, AAP 2022, trẻ 35 tuần thai, tích hợp HIS EMR bilitool" />
+        <link rel="canonical" href="https://bilitool.vn/cau-hoi-thuong-gap" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="FAQ — Câu Hỏi Thường Gặp Về Vàng Da Sơ Sinh | BiliTool.Vn" />
+        <meta property="og:description" content="Giải đáp thắc mắc về thuật toán tính bilirubin sơ sinh, phác đồ AAP 2022 và tích hợp EMR." />
+        <meta property="og:url" content="https://bilitool.vn/cau-hoi-thuong-gap" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="FAQ — Vàng Da Sơ Sinh & BiliTool.Vn" />
+        <meta name="twitter:description" content="Giải đáp các câu hỏi phổ biến về tính bilirubin sơ sinh và phác đồ AAP 2022." />
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@@type": "Question",
+                    "name": "BiliTool.Vn sử dụng dữ liệu tham chiếu từ đâu?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "BiliTool.Vn được xây dựng dựa trên Hướng dẫn thực hành lâm sàng của Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) cập nhật năm 2022 kết hợp NICE CG98, sử dụng thuật toán nội suy phương trình bậc 3."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Những bệnh nhi nào có thể đánh giá từ nền tảng này?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "Khuyến cáo áp dụng cho trẻ sơ sinh có tuổi thai từ 35 tuần trở lên (≥ 35 weeks gestation). Trẻ sinh non dưới 35 tuần cần sử dụng phác đồ riêng biệt."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Giá trị xét nghiệm nhập vào là Bilirubin trực tiếp hay toàn phần?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "AAP 2022 khuyến cáo sử dụng Bilirubin toàn phần (Total Serum Bilirubin - TSB). KHÔNG trừ giá trị Bilirubin trực tiếp ra khỏi tổng số trước khi nhập vào phần mềm."
+                    }
+                },
+                {
+                    "@@type": "Question",
+                    "name": "Tôi có thể tích hợp công cụ này vào Bệnh án điện tử không?",
+                    "acceptedAnswer": {
+                        "@@type": "Answer",
+                        "text": "Có. BiliTool.Vn hỗ trợ tích hợp vào HIS/EMR qua hai phương pháp: Deep Link (tham số URL) và RESTful API (JSON). Chi tiết tại mục Tích hợp HIS trên website."
+                    }
+                }
+            ]
+        }
+        </script>
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-question-circle"></i>
+            <div>
+                <h1>Câu hỏi thường gặp (FAQ)</h1>
+                <p>Giải đáp thắc mắc liên quan tới thuật toán</p>
+            </div>
+        </div>
+
+        <div class="guide-content custom-faq">
+            <section class="mb-5">
+                <h2 class="faq-title">
+                    <i class="fas fa-comments"></i> Những vấn đề phổ biến
+                </h2>
+                
+                <div class="faq-accordion shadow-sm">
+                    
+                    <details class="faq-item" open>
+                        <summary class="faq-question">
+                            <span>1. BiliTool.Vn sử dụng dữ liệu tham chiếu từ đâu?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Công cụ tính toán trên BiliTool.Vn hoàn toàn miễn phí và được phiên dịch, toán học hóa thuật toán nội suy phương trình bậc 3 thuần túy nhằm phục dựng lại một cách hệ thống và tự động <strong>Hướng dẫn thực hành lâm sàng của Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP) cập nhật năm 2022</strong>. Ngoài ra, việc thiết lập cấu trúc tính Giờ Tuổi cũng được thiết lập theo quy chuẩn y tế Việt Nam.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>2. Những bệnh nhi nào có thể đánh giá kết quả từ nền tảng này?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Khuyến cáo tính toán và biểu diễn trên hệ thống chỉ có giá trị y khoa khi áp dụng cho các trẻ sơ sinh có <strong>tuổi thai từ 35 tuần trở lên (>= 35 weeks gestation)</strong>. Các trẻ sinh non tháng dưới 35 tuần thai có chức năng gan và ngưỡng chịu độc thần kinh thần kinh thấp hơn, do đó, bắt buộc phải sử dụng các phác đồ chuẩn riêng biệt ví dụ như khuyến cáo điều trị nhóm nhẹ cân của Viện Dinh Dưỡng, bảng của NICE ở Anh, hoặc các quy chuẩn cục bộ của từng khoa Hồi sức tích cực Sơ sinh (NICU).</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>3. Giá trị xét nghiệm nhập vào là Bilirubin trực tiếp hay toàn phần?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>AAP cập nhật 2022 vẫn duy trì tính kế thừa so với 2004 ở một điểm vô cùng quan trọng: Khuyến cáo sử dụng giá trị xét nghiệm sinh hóa máu <strong>Bilirubin toàn phần (Total Serum Bilirubin - TSB)</strong> để nhập vào công cụ tính toán. Xin lưu ý: Dù cho Bilirubin trực tiếp (Direct Bilirubin) tăng, bạn <strong>KHÔNG</strong> cần thiết và <strong>KHÔNG</strong> được phép trừ giá trị trực tiếp ra khỏi tổng số TSB trước khi đưa vào phần mềm, tránh việc hiểu sai các chỉ định can thiệp chiếu đèn của bệnh nhi.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            <span>4. Tôi có thể tích hợp Biểu đồ tự động này vào Bệnh án điện tử của bệnh viện không?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Trang chủ BiliTool.Vn hỗ trợ sẵn module tương thích để nhúng iframe hoặc pop-up link đối với các phần mềm Quản lý Bệnh Viện (HIS/EMR) thông qua giao thức API RESTful và cấu trúc Deep Link qua tham số URL. Điều này giúp các Bệnh viện có thể truyền chỉ số Sinh hiệu và Xét nghiệm tự động nội suy sang đây thay vì bắt người dùng gõ lại bằng tay. Vui lòng chuyển hướng sang tab <a href="/tich-hop-his" class="fw-bold faq-link">Tích hợp HIS</a> trên menu tính năng để tham khảo tài liệu kỹ thuật dành cho Kỹ sư Lập trình.</p>
+                        </div>
+                    </details>
+                    
+                </div>
+                
+                <div class="faq-footer text-muted">
+                    <p><i class="fas fa-info-circle me-1"></i> Nếu bạn không tìm thấy câu hỏi của mình, vui lòng sử dụng biểu mẫu ở mục <a href="/lien-he" class="fw-bold faq-link">Liên hệ</a>.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+}
 
 <style>
     .faq-title {

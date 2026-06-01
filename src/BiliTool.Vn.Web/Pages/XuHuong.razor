@@ -19,8 +19,8 @@
     <div class="guide-header">
         <i class="fas fa-chart-line"></i>
         <div>
-            <h1>Theo dõi bé sơ sinh</h1>
-            <p>Quản lý hồ sơ và theo dõi diễn tiến Bilirubin từng bệnh nhi theo thời gian</p>
+            <h1>@T["Trend_Title"]</h1>
+            <p>@T["Trend_Subtitle"]</p>
         </div>
     </div>
 
@@ -33,17 +33,17 @@
             <div class="auth-gate-icon">
                 <i class="fas fa-lock"></i>
             </div>
-            <h2>Đăng nhập để sử dụng tính năng này</h2>
-            <p>Tính năng theo dõi hồ sơ yêu cầu đăng nhập bằng tài khoản Google để lưu trữ và bảo mật dữ liệu.</p>
+            <h2>@T["Trend_AuthRequired"]</h2>
+            <p>@T["Trend_AuthDesc"]</p>
             <ul class="auth-benefits">
-                <li><i class="fas fa-check-circle"></i> Lưu hồ sơ nhiều em bé</li>
-                <li><i class="fas fa-check-circle"></i> Theo dõi xu hướng Bilirubin theo thời gian</li>
-                <li><i class="fas fa-check-circle"></i> Cập nhật chỉ số mới trong vài giây</li>
-                <li><i class="fas fa-check-circle"></i> Dữ liệu chỉ hiển thị với bạn, bảo mật tuyệt đối</li>
+                <li><i class="fas fa-check-circle"></i> @T["Trend_Benefit1"]</li>
+                <li><i class="fas fa-check-circle"></i> @T["Trend_Benefit2"]</li>
+                <li><i class="fas fa-check-circle"></i> @T["Trend_Benefit3"]</li>
+                <li><i class="fas fa-check-circle"></i> @T["Trend_Benefit4"]</li>
             </ul>
             <a href="/dang-nhap" class="btn-google-login">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
-                Đăng nhập với Google
+                @T["Trend_LoginGoogle"]
             </a>
         </div>
     }
@@ -54,23 +54,23 @@
             <!-- ── Cột trái: Danh sách bé ── -->
             <div class="bn-sidebar">
                 <div class="bn-sidebar-header">
-                    <span><i class="fas fa-users"></i> Danh sách đang theo dõi</span>
-                    <button class="btn-them-bn" @onclick="MoModalTaoBenhNhan" title="Thêm hồ sơ bé mới">
+                    <span><i class="fas fa-users"></i> @T["Trend_SidebarHeader"]</span>
+                    <button class="btn-them-bn" @onclick="MoModalTaoBenhNhan" title="@T["Trend_AddTooltip"]">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
 
                 @if (dangTai)
                 {
-                    <div class="bn-loading"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>
+                    <div class="bn-loading"><i class="fas fa-spinner fa-spin"></i> @T["Trend_Loading"]</div>
                 }
                 else if (!dsBenhNhan.Any())
                 {
                     <div class="bn-empty">
                         <i class="fas fa-user-plus"></i>
-                        <p>Chưa có hồ sơ nào.</p>
+                        <p>@T["Trend_Empty"]</p>
                         <button class="btn-them-bn-empty" @onclick="MoModalTaoBenhNhan">
-                            <i class="fas fa-plus"></i> Thêm hồ sơ đầu tiên
+                            <i class="fas fa-plus"></i> @T["Trend_AddFirst"]
                         </button>
                     </div>
                 }
@@ -95,7 +95,7 @@
                                     }
                                     else
                                     {
-                                        <small class="text-muted">Chưa có xét nghiệm</small>
+                                        <small class="text-muted">@T["Trend_NoTest"]</small>
                                     }
                                 </div>
                                 @if (benhNhanChon?.Id == bn.Id)
@@ -114,10 +114,10 @@
                 {
                     <div class="bn-no-select">
                         <div class="bn-no-select-icon"><i class="fas fa-user-md"></i></div>
-                        <h3>Chọn bé để theo dõi</h3>
-                        <p>Chọn một bé từ danh sách bên trái để xem chi tiết và cập nhật chỉ số Bilirubin.</p>
+                        <h3>@T["Trend_SelectBaby"]</h3>
+                        <p>@T["Trend_SelectBabyDesc"]</p>
                         <button class="btn-primary-vn" style="margin-top:8px;" @onclick="MoModalTaoBenhNhan">
-                            <i class="fas fa-plus"></i> Thêm hồ sơ bé mới
+                            <i class="fas fa-plus"></i> @T["Trend_AddNewBaby"]
                         </button>
                     </div>
                 }
@@ -133,14 +133,14 @@
                         <div class="bn-detail-info">
                             <h2>@benhNhanChon.HoTenBenhNhan <small style="font-size: 1rem; color: #6c757d;">#@benhNhanChon.MaBenhNhan</small></h2>
                             <div class="bn-detail-tags">
-                                <span class="tag-info"><i class="fas fa-birthday-cake"></i> Sinh: @benhNhanChon.NgayGioSinh.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</span>
-                                <span class="tag-info"><i class="fas fa-baby"></i> @benhNhanChon.TuoiThaiTuan tuần</span>
+                                <span class="tag-info"><i class="fas fa-birthday-cake"></i> @T["Trend_Birth"] @benhNhanChon.NgayGioSinh.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</span>
+                                <span class="tag-info"><i class="fas fa-baby"></i> @benhNhanChon.TuoiThaiTuan @T["Weeks_Short"]</span>
                                 <span class="tag-info @(benhNhanChon.TuoiHienTaiGio > 168 ? "text-muted" : "text-primary")">
                                     <i class="fas fa-clock"></i> @FormatTuoiHienTai(benhNhanChon.TuoiHienTaiGio)
                                 </span>
                                 @if (benhNhanChon.CoNguyCoThanKinh)
                                 {
-                                    <span class="badge-nguycotk"><i class="fas fa-exclamation-triangle"></i> Có NCTK</span>
+                                    <span class="badge-nguycotk"><i class="fas fa-exclamation-triangle"></i> @T["Trend_HasNeuroRisk"]</span>
                                 }
                             </div>
                             @if (!string.IsNullOrEmpty(benhNhanChon.GhiChu))
@@ -149,41 +149,41 @@
                             }
                         </div>
                         <button class="btn-xoa-bn" @onclick="() => XoaBenhNhan(benhNhanChon.Id)"
-                                title="Xóa hồ sơ">
-                            <i class="fas fa-trash"></i> Xóa
+                                title="@T["Trend_DeleteProfile"]">
+                            <i class="fas fa-trash"></i> @T["Trend_Delete"]
                         </button>
                     </div>
 
                     <!-- Form nhập xét nghiệm mới -->
                     <div class="xn-form-card">
                         <div class="xn-form-title">
-                            <i class="fas fa-vial"></i> Thêm kết quả xét nghiệm mới
+                            <i class="fas fa-vial"></i> @T["Trend_AddTest"]
                         </div>
                         <div class="xn-form-fields">
                             <div class="form-group-vn">
                                 <label class="label-vn">
                                     <i class="fas fa-tint" style="color:var(--danger);"></i>
-                                    Bilirubin toàn phần (mg/dL) <span class="text-danger">*</span>
+                                    @T["TotalBilirubin"] (mg/dL) <span class="text-danger">*</span>
                                 </label>
                                 <input type="number" step="0.1" min="0" max="50"
                                        class="input-vn"
                                        @bind="bilirubinMoi"
-                                       placeholder="Ví dụ: 13.5" />
+                                       placeholder="@T["Trend_BiliPlaceholder"]" />
                             </div>
                             <div class="form-group-vn">
                                 <label class="label-vn">
                                     <i class="fas fa-clock" style="color:var(--primary);"></i>
-                                    Thời gian lấy mẫu
+                                    @T["SampleTime"]
                                     <button class="btn-link-inline" @onclick="ToggleTungChonThoiGian"
                                             type="button">
-                                        @(tuyChinh ? "↩ Dùng thời gian hiện tại" : "✏ Nhập khác")
+                                        @(tuyChinh ? T["Trend_UseCurrentTime"] : T["Trend_EnterDifferent"])
                                     </button>
                                 </label>
                                 @if (!tuyChinh)
                                 {
                                     <div class="input-readonly-display">
                                         <i class="fas fa-clock text-primary"></i>
-                                        <span>Tự động: <strong>@DateTime.Now.ToString("HH:mm — dd/MM/yyyy")</strong></span>
+                                        <span>@T["Trend_Auto"] <strong>@DateTime.Now.ToString("HH:mm — dd/MM/yyyy")</strong></span>
                                     </div>
                                 }
                                 else
@@ -191,7 +191,7 @@
                                     <input type="datetime-local"
                                            class="input-vn"
                                            @bind="thoiGianTuyChinhStr" />
-                                    <small class="text-muted">Dùng khi nhập kết quả muộn sau thời điểm lấy mẫu thực tế</small>
+                                    <small class="text-muted">@T["Trend_LateInputNote"]</small>
                                 }
                             </div>
                         </div>
@@ -199,31 +199,29 @@
                         {
                             <div class="alert-error-vn"><i class="fas fa-exclamation-circle"></i> @thongBaoLoi</div>
                         }
-                        <div style="display:flex; gap:12px; align-items:center; margin-top:4px;">
                             <button class="btn-primary-vn" style="min-width:160px;" @onclick="ThemXetNghiemMoi" disabled="@dangLuu">
                                 @if (dangLuu)
                                 {
                                     <i class="fas fa-spinner fa-spin"></i>
-                                    <span> Đang lưu...</span>
+                                    <span> @T["Modal_Saving"]</span>
                                 }
                                 else
                                 {
                                     <i class="fas fa-plus-circle"></i>
-                                    <span> Lưu kết quả</span>
+                                    <span> @T["Trend_SaveResult"]</span>
                                 }
                             </button>
                             @if (thongBaoOK)
                             {
-                                <span class="text-success" style="font-size:0.85rem;"><i class="fas fa-check-circle"></i> Đã lưu thành công!</span>
+                                <span class="text-success" style="font-size:0.85rem;"><i class="fas fa-check-circle"></i> @T["Trend_SaveSuccess"]</span>
                             }
                         </div>
-                    </div>
 
                     <!-- Biểu đồ xu hướng -->
                     @if (benhNhanChon.DsXetNghiem.Any())
                     {
                         <div class="section-divider">
-                            <span><i class="fas fa-chart-line"></i> Biểu đồ xu hướng</span>
+                            <span><i class="fas fa-chart-line"></i> @T["Trend_ChartTitle"]</span>
                         </div>
                         <div class="chart-container">
                             <canvas id="bilirubinBenhNhanChart"></canvas>
@@ -231,16 +229,16 @@
 
                         <!-- Bảng lịch sử -->
                         <div class="section-divider">
-                            <span><i class="fas fa-history"></i> Lịch sử xét nghiệm (@benhNhanChon.DsXetNghiem.Count lần đo)</span>
+                            <span><i class="fas fa-history"></i> @string.Format(T["Trend_HistoryTitle"], benhNhanChon.DsXetNghiem.Count)</span>
                         </div>
                         <div class="xn-history-table">
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Thời gian lấy mẫu</th>
-                                        <th>Giờ tuổi</th>
+                                        <th>@T["SampleTime"]</th>
+                                        <th>@T["Age"]</th>
                                         <th>Bilirubin (mg/dL)</th>
-                                        <th>Mức độ</th>
+                                        <th>@T["CalcBili_Evaluation"]</th>
                                         <th style="width:40px;"></th>
                                     </tr>
                                 </thead>
@@ -249,7 +247,7 @@
                                     {
                                         <tr>
                                             <td><i class="fas fa-calendar-alt text-muted" style="font-size:0.75rem;margin-right:4px;"></i>@xn.ThoiGianLayMau.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</td>
-                                            <td><strong>@xn.TuoiGioTuDong.ToString("F0")</strong> giờ</td>
+                                            <td><strong>@xn.TuoiGioTuDong.ToString("F0")</strong> @T["Hours"]</td>
                                             <td>
                                                 <span class="bili-value">@xn.BilirubinMgDl.ToString("F1")</span>
                                                 <small class="text-muted"> mg/dL</small>
@@ -261,7 +259,7 @@
                                             </td>
                                             <td>
                                                 <button class="btn-icon-danger" @onclick="() => XoaXetNghiem(xn.Id)"
-                                                        title="Xóa xét nghiệm này">
+                                                        title="@T["Trend_Delete"]">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </td>
@@ -275,7 +273,7 @@
                     {
                         <div class="xh-empty-chart">
                             <i class="fas fa-chart-area"></i>
-                            <p>Chưa có xét nghiệm nào. Nhập kết quả đầu tiên ở trên để bắt đầu theo dõi xu hướng!</p>
+                            <p>@T["Trend_NoTestDesc"]</p>
                         </div>
                     }
                 }
@@ -296,8 +294,8 @@
                     <i class="fas fa-user-plus"></i>
                 </div>
                 <div>
-                    <h3>Thêm hồ sơ mới</h3>
-                    <p>Điền thông tin để tạo hồ sơ theo dõi bệnh nhi</p>
+                    <h3>@T["Trend_AddTitle"]</h3>
+                    <p>@T["Trend_AddSubtitle"]</p>
                 </div>
                 <button class="modal-close" @onclick="DongModal"><i class="fas fa-times"></i></button>
             </div>
@@ -306,46 +304,46 @@
                 <div class="form-group-vn">
                     <label class="label-vn">
                         <i class="fas fa-user text-primary" style="font-size:0.8rem;"></i>
-                        Họ và tên bé <span class="text-danger">*</span>
+                        @T["Modal_Name"] <span class="text-danger">*</span>
                     </label>
                     <input type="text" class="input-vn" @bind="formTao.HoTenBenhNhan"
-                           placeholder="Ví dụ: Nguyễn Văn A" autofocus />
+                           placeholder="@T["Modal_NamePlaceholder"]" autofocus />
                 </div>
 
                 <div class="form-group-vn" style="margin-top:16px;">
                     <label class="label-vn">
                         <i class="fas fa-id-card text-primary" style="font-size:0.8rem;"></i>
-                        Mã Bệnh Nhi (tùy chọn)
+                        @T["Modal_Id"]
                     </label>
                     <input type="text" class="input-vn" @bind="formTao.MaBenhNhan"
-                           placeholder="Bỏ trống để tự động tạo" />
+                           placeholder="@T["Modal_IdPlaceholder"]" />
                 </div>
 
                 <div class="form-row-2" style="margin-top:16px;">
                     <div class="form-group-vn">
                         <label class="label-vn">
                             <i class="fas fa-calendar-alt text-primary" style="font-size:0.8rem;"></i>
-                            Ngày giờ sinh <span class="text-danger">*</span>
+                            @T["Trend_BirthTime"] <span class="text-danger">*</span>
                         </label>
                         <input type="datetime-local" class="input-vn" @bind="ngayGioSinhInput" />
                         <small class="text-muted" style="display:block;margin-top:4px;">
-                            <i class="fas fa-info-circle"></i> Mốc gốc để tính "Giờ tuổi" tự động
+                            <i class="fas fa-info-circle"></i> @T["Trend_BirthTimeNote"]
                         </small>
                     </div>
                     <div class="form-group-vn">
                         <label class="label-vn">
                             <i class="fas fa-baby text-primary" style="font-size:0.8rem;"></i>
-                            Tuổi thai lúc sinh (tuần)
+                            @T["Trend_GestAgeBirth"]
                         </label>
                         <select class="select-vn" @bind="formTao.TuoiThaiTuan">
-                            <option value="35">35 tuần</option>
-                            <option value="36">36 tuần</option>
-                            <option value="37">37 tuần</option>
-                            <option value="38">38 tuần</option>
-                            <option value="39">39 tuần</option>
-                            <option value="40">40 tuần (đủ tháng)</option>
-                            <option value="41">41 tuần</option>
-                            <option value="42">42 tuần</option>
+                            <option value="35">35 @T["Weeks_Short"]</option>
+                            <option value="36">36 @T["Weeks_Short"]</option>
+                            <option value="37">37 @T["Weeks_Short"]</option>
+                            <option value="38">38 @T["Weeks_Short"]</option>
+                            <option value="39">39 @T["Weeks_Short"]</option>
+                            <option value="40">40 @T["Weeks_Short"] (@T["WeeksTerm"])</option>
+                            <option value="41">41 @T["Weeks_Short"]</option>
+                            <option value="42">42 @T["Weeks_Short"]</option>
                         </select>
                     </div>
                 </div>
@@ -354,29 +352,29 @@
                 <div class="form-section" style="margin-top:20px;">
                     <h3 class="section-label">
                         <i class="fas fa-brain" style="color:var(--warning);"></i>
-                        Yếu tố nguy cơ thần kinh
-                        <span class="optional-badge">Tùy chọn</span>
+                        @T["NeuroRiskFactors"]
+                        <span class="optional-badge">@T["Optional"]</span>
                     </h3>
                     <div class="nguyen-co-grid">
                         <label class="checkbox-vn">
                             <input type="checkbox" @bind="formTao.BenhTanHuyetMienDichHoacThieuG6PD" />
                             <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Bệnh tan huyết miễn dịch hoặc thiếu G6PD</span>
+                            <span class="checkbox-label">@T["Risk_Hemolytic"]</span>
                         </label>
                         <label class="checkbox-vn">
                             <input type="checkbox" @bind="formTao.NhiemKhuanHuyetHoacNghiNgo" />
                             <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Nhiễm khuẩn huyết (hoặc nghi ngờ)</span>
+                            <span class="checkbox-label">@T["Risk_Sepsis"]</span>
                         </label>
                         <label class="checkbox-vn">
                             <input type="checkbox" @bind="formTao.AlbuminThapDuoi3gDl" />
                             <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Albumin huyết thanh &lt; 3.0 g/dL</span>
+                            <span class="checkbox-label">@T["Risk_Albumin"]</span>
                         </label>
                         <label class="checkbox-vn">
                             <input type="checkbox" @bind="formTao.TinhTrangLamSangKhongOnDinh" />
                             <span class="checkbox-box"></span>
-                            <span class="checkbox-label">Tình trạng lâm sàng không ổn định</span>
+                            <span class="checkbox-label">@T["Risk_Unstable"]</span>
                         </label>
                     </div>
 
@@ -397,7 +395,7 @@
                     {
                         <div class="etcoc-warning">
                             <i class="fas fa-exclamation-triangle"></i>
-                            ETCOc &gt; 1.7 ppm — Nguy cơ tan huyết tăng
+                            ETCOc &gt; 1.7 ppm — @T["ETCOc_Warning"]
                         </div>
                     }
                 </div>
@@ -405,10 +403,10 @@
                 <div class="form-group-vn" style="margin-top:16px;">
                     <label class="label-vn">
                         <i class="fas fa-sticky-note text-muted" style="font-size:0.8rem;"></i>
-                        Ghi chú (tùy chọn)
+                        @T["Trend_Note"]
                     </label>
                     <textarea class="input-vn" rows="2" @bind="formTao.GhiChu"
-                              placeholder="Ghi chú thêm về bé, hoàn cảnh lâm sàng..."></textarea>
+                              placeholder="@T["Trend_NotePlaceholder"]"></textarea>
                 </div>
 
                 @if (!string.IsNullOrEmpty(thongBaoLoiModal))
@@ -420,18 +418,18 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary-vn" @onclick="DongModal">
-                    <i class="fas fa-times"></i> Hủy
+                    <i class="fas fa-times"></i> @T["Modal_Cancel"]
                 </button>
                 <button class="btn-primary-vn" @onclick="TaoBenhNhanMoi" disabled="@dangLuu">
                     @if (dangLuu)
                     {
                         <i class="fas fa-spinner fa-spin"></i>
-                        <span> Đang tạo...</span>
+                        <span> @T["Trend_Creating"]</span>
                     }
                     else
                     {
                         <i class="fas fa-save"></i>
-                        <span> Tạo hồ sơ</span>
+                        <span> @T["Trend_Create"]</span>
                     }
                 </button>
             </div>

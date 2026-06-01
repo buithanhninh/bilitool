@@ -2,57 +2,172 @@
 @inject BiliTool.Vn.Web.Services.TranslationService TranslationService
 @inject IJSRuntime JS
 
-<PageTitle>@T("Privacy_Policy") - BiliTool.Vn</PageTitle>
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 
-<HeadContent>
-    <meta name="description" content="Chính sách quyền riêng tư và bảo mật thông tin của BiliTool.Vn. Chúng tôi cam kết bảo vệ dữ liệu cá nhân và hồ sơ bệnh nhi." />
-    <meta property="og:title" content="Chính sách Quyền riêng tư - BiliTool.Vn" />
-    <link rel="canonical" href="https://bilitool.vn/chinh-sach-bao-mat" />
-</HeadContent>
+@if (lang == "en")
+{
+    <PageTitle>Privacy Policy - BiliTool.Vn</PageTitle>
 
-<div class="privacy-container container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-8">
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-5">
-                    <div class="text-center mb-5">
-                        <i class="fas fa-shield-alt text-primary mb-3" style="font-size: 3rem;"></i>
-                        <h1 class="fw-bold mb-2">Chính Sách Quyền Riêng Tư</h1>
-                        <p class="text-muted">Cập nhật lần cuối: 01/06/2026</p>
-                    </div>
+    <HeadContent>
+        <meta name="description" content="Privacy and data protection policy of BiliTool.Vn. We are committed to protecting personal data and pediatric patient records." />
+        <meta property="og:title" content="Privacy Policy - BiliTool.Vn" />
+        <link rel="canonical" href="https://bilitool.vn/chinh-sach-bao-mat" />
+    </HeadContent>
 
-                    <div class="privacy-content">
-                        <h4 class="fw-bold text-primary mb-3 mt-4">1. Mục đích thu thập dữ liệu</h4>
-                        <p>BiliTool.Vn thu thập thông tin để cung cấp trải nghiệm sử dụng phần mềm ổn định và cá nhân hóa. Các thông tin được thu thập bao gồm:</p>
-                        <ul>
-                            <li><strong>Thông tin tài khoản:</strong> Địa chỉ Email, Họ và tên, và Ảnh đại diện (được cung cấp tự động bởi Google khi bạn sử dụng chức năng Đăng nhập bằng Google).</li>
-                            <li><strong>Dữ liệu y khoa:</strong> Các thông tin về trẻ sơ sinh (như tên, ngày sinh, tuổi thai, mức Bilirubin) do bạn tự nguyện nhập vào hệ thống để phục vụ tính toán phác đồ.</li>
-                            <li><strong>Dữ liệu kỹ thuật:</strong> Địa chỉ IP, loại trình duyệt (UserAgent) và phiên đăng nhập (Cookies) để duy trì trạng thái đăng nhập và ghi nhận lịch sử tính toán tạm thời.</li>
-                        </ul>
+    <div class="privacy-container container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <i class="fas fa-shield-alt text-primary mb-3" style="font-size: 3rem;"></i>
+                            <h1 class="fw-bold mb-2">Privacy Policy</h1>
+                            <p class="text-muted">Last updated: June 1, 2026</p>
+                        </div>
 
-                        <h4 class="fw-bold text-primary mb-3 mt-4">2. Bảo vệ dữ liệu cá nhân</h4>
-                        <p>Chúng tôi cam kết sử dụng các tiêu chuẩn mã hóa cơ sở dữ liệu hiện đại để bảo vệ thông tin cá nhân của bạn và bệnh nhi. Dữ liệu y khoa chỉ có thể truy cập bởi chính tài khoản đã tạo ra hồ sơ đó.</p>
-                        <p>Chúng tôi <strong>không bao giờ</strong> bán, cho thuê hoặc chia sẻ thông tin cá nhân của bạn với bất kỳ bên thứ ba nào vì mục đích quảng cáo thương mại.</p>
+                        <div class="privacy-content">
+                            <h4 class="fw-bold text-primary mb-3 mt-4">1. Purpose of Data Collection</h4>
+                            <p>BiliTool.Vn collects information to provide a stable and personalized software experience. The collected information includes:</p>
+                            <ul>
+                                <li><strong>Account Information:</strong> Email address, Full name, and Profile picture (automatically provided by Google when you use the "Sign in with Google" feature).</li>
+                                <li><strong>Medical Data:</strong> Information about newborns (such as name, date of birth, gestational age, Bilirubin level) that you voluntarily enter into the system for protocol calculation purposes.</li>
+                                <li><strong>Technical Data:</strong> IP address, browser type (UserAgent) and login session (Cookies) to maintain login status and temporarily record calculation history.</li>
+                            </ul>
 
-                        <h4 class="fw-bold text-primary mb-3 mt-4">3. Quyền của người dùng</h4>
-                        <p>Với tư cách là người dùng của BiliTool.Vn, bạn có quyền:</p>
-                        <ul>
-                            <li>Chủ động chỉnh sửa hoặc cập nhật thông tin cá nhân trong mục Quản lý Tài khoản.</li>
-                            <li>Yêu cầu xóa toàn bộ dữ liệu tài khoản và hồ sơ bệnh nhi liên quan khỏi hệ thống của chúng tôi.</li>
-                            <li>Sử dụng hệ thống ở chế độ "Ẩn danh" (không cần đăng nhập) nếu không muốn lưu trữ dài hạn dữ liệu tính toán.</li>
-                        </ul>
+                            <h4 class="fw-bold text-primary mb-3 mt-4">2. Protection of Personal Data</h4>
+                            <p>We are committed to using modern database encryption standards to protect your personal information and that of the patients. Medical data can only be accessed by the account that created the profile.</p>
+                            <p>We <strong>never</strong> sell, rent or share your personal information with any third party for commercial advertising purposes.</p>
 
-                        <h4 class="fw-bold text-primary mb-3 mt-4">4. Chính sách sử dụng Cookies</h4>
-                        <p>Chúng tôi sử dụng Cookies để nhận diện người dùng, duy trì trạng thái đăng nhập và lưu trữ tùy chọn ngôn ngữ hiển thị. Khi tiếp tục sử dụng website, bạn đồng ý với việc chúng tôi lưu trữ Cookies trên trình duyệt của bạn.</p>
+                            <h4 class="fw-bold text-primary mb-3 mt-4">3. User Rights</h4>
+                            <p>As a user of BiliTool.Vn, you have the right to:</p>
+                            <ul>
+                                <li>Actively edit or update personal information in the Account Management section.</li>
+                                <li>Request deletion of all account data and related pediatric patient files from our system.</li>
+                                <li>Use the system in "Anonymous" mode (no login required) if you do not want long-term storage of calculation data.</li>
+                            </ul>
 
-                        <h4 class="fw-bold text-primary mb-3 mt-4">5. Liên hệ</h4>
-                        <p>Nếu bạn có bất kỳ câu hỏi nào liên quan đến bảo mật hoặc muốn yêu cầu xóa dữ liệu, vui lòng liên hệ với ban quản trị thông qua địa chỉ Email hỗ trợ hoặc qua trang <a href="/lien-he">Liên Hệ</a>.</p>
+                            <h4 class="fw-bold text-primary mb-3 mt-4">4. Cookie Policy</h4>
+                            <p>We use Cookies to recognize users, maintain login status, and store display language preferences. By continuing to use the website, you agree to our storage of Cookies on your browser.</p>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">5. Contact</h4>
+                            <p>If you have any questions regarding privacy or wish to request data deletion, please contact the administration via the support Email address or through the <a href="/lien-he">Contact</a> page.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
+else if (lang == "fr")
+{
+    <PageTitle>Politique de Confidentialité - BiliTool.Vn</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="Politique de confidentialité et de protection des données de BiliTool.Vn. Nous nous engageons à protéger les données personnelles et les dossiers des patients." />
+        <meta property="og:title" content="Politique de Confidentialité - BiliTool.Vn" />
+        <link rel="canonical" href="https://bilitool.vn/chinh-sach-bao-mat" />
+    </HeadContent>
+
+    <div class="privacy-container container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <i class="fas fa-shield-alt text-primary mb-3" style="font-size: 3rem;"></i>
+                            <h1 class="fw-bold mb-2">Politique de Confidentialité</h1>
+                            <p class="text-muted">Dernière mise à jour : 1er Juin 2026</p>
+                        </div>
+
+                        <div class="privacy-content">
+                            <h4 class="fw-bold text-primary mb-3 mt-4">1. Objectif de la collecte de données</h4>
+                            <p>BiliTool.Vn collecte des informations pour offrir une expérience logicielle stable et personnalisée. Les informations collectées comprennent :</p>
+                            <ul>
+                                <li><strong>Informations de compte :</strong> Adresse e-mail, Nom complet et Photo de profil (fournies automatiquement par Google lorsque vous utilisez la fonction "Se connecter avec Google").</li>
+                                <li><strong>Données médicales :</strong> Informations sur le nouveau-né (telles que le nom, la date de naissance, l'âge gestationnel, le taux de bilirubine) que vous saisissez volontairement dans le système à des fins de calcul de protocole.</li>
+                                <li><strong>Données techniques :</strong> Adresse IP, type de navigateur (UserAgent) et session de connexion (Cookies) pour maintenir l'état de connexion et enregistrer temporairement l'historique des calculs.</li>
+                            </ul>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">2. Protection des données personnelles</h4>
+                            <p>Nous nous engageons à utiliser des normes modernes de cryptage de base de données pour protéger vos informations personnelles et celles des patients. Les données médicales ne sont accessibles que par le compte ayant créé le dossier.</p>
+                            <p>Nous ne vendons, ne louons et ne partageons **jamais** vos informations personnelles avec des tiers à des fins de publicité commerciale.</p>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">3. Droits de l'utilisateur</h4>
+                            <p>En tant qu'utilisateur de BiliTool.Vn, vous avez le droit de :</p>
+                            <ul>
+                                <li>Modifier ou mettre à jour activement vos informations personnelles dans la section Gestion du Compte.</li>
+                                <li>Demander la suppression de toutes les données du compte et des dossiers patients associés de notre système.</li>
+                                <li>Utiliser le système en mode "Anonyme" (sans connexion) si vous ne souhaitez pas stocker durablement les données de calcul.</li>
+                            </ul>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">4. Politique relative aux Cookies</h4>
+                            <p>Nous utilisons des Cookies pour reconnaître les utilisateurs, maintenir l'état de connexion et stocker les préférences linguistiques d'affichage. En continuant à utiliser le site, vous acceptez que nous stockions des Cookies sur votre navigateur.</p>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">5. Contact</h4>
+                            <p>Si vous avez des questions concernant la confidentialité ou si vous souhaitez demander la suppression de vos données, veuillez contacter l'administration via l'adresse e-mail de support ou via la page <a href="/lien-he">Contact</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <PageTitle>Chính Sách Quyền Riêng Tư - BiliTool.Vn</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="Chính sách quyền riêng tư và bảo mật thông tin của BiliTool.Vn. Chúng tôi cam kết bảo vệ dữ liệu cá nhân và hồ sơ bệnh nhi." />
+        <meta property="og:title" content="Chính sách Quyền riêng tư - BiliTool.Vn" />
+        <link rel="canonical" href="https://bilitool.vn/chinh-sach-bao-mat" />
+    </HeadContent>
+
+    <div class="privacy-container container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <i class="fas fa-shield-alt text-primary mb-3" style="font-size: 3rem;"></i>
+                            <h1 class="fw-bold mb-2">Chính Sách Quyền Riêng Tư</h1>
+                            <p class="text-muted">Cập nhật lần cuối: 01/06/2026</p>
+                        </div>
+
+                        <div class="privacy-content">
+                            <h4 class="fw-bold text-primary mb-3 mt-4">1. Mục đích thu thập dữ liệu</h4>
+                            <p>BiliTool.Vn thu thập thông tin để cung cấp trải nghiệm sử dụng phần mềm ổn định và cá nhân hóa. Các thông tin được thu thập bao gồm:</p>
+                            <ul>
+                                <li><strong>Thông tin tài khoản:</strong> Địa chỉ Email, Họ và tên, và Ảnh đại diện (được cung cấp tự động bởi Google khi bạn sử dụng chức năng Đăng nhập bằng Google).</li>
+                                <li><strong>Dữ liệu y khoa:</strong> Các thông tin về trẻ sơ sinh (như tên, ngày sinh, tuổi thai, mức Bilirubin) do bạn tự nguyện nhập vào hệ thống để phục vụ tính toán phác đồ.</li>
+                                <li><strong>Dữ liệu kỹ thuật:</strong> Địa chỉ IP, loại trình duyệt (UserAgent) và phiên đăng nhập (Cookies) để duy trì trạng thái đăng nhập và ghi nhận lịch sử tính toán tạm thời.</li>
+                            </ul>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">2. Bảo vệ dữ liệu cá nhân</h4>
+                            <p>Chúng tôi cam kết sử dụng các tiêu chuẩn mã hóa cơ sở dữ liệu hiện đại để bảo vệ thông tin cá nhân của bạn và bệnh nhi. Dữ liệu y khoa chỉ có thể truy cập bởi chính tài khoản đã tạo ra hồ sơ đó.</p>
+                            <p>Chúng tôi <strong>không bao giờ</strong> bán, cho thuê hoặc chia sẻ thông tin cá nhân của bạn với bất kỳ bên thứ ba nào vì mục đích quảng cáo thương mại.</p>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">3. Quyền của người dùng</h4>
+                            <p>Với tư cách là người dùng của BiliTool.Vn, bạn có quyền:</p>
+                            <ul>
+                                <li>Chủ động chỉnh sửa hoặc cập nhật thông tin cá nhân trong mục Quản lý Tài khoản.</li>
+                                <li>Yêu cầu xóa toàn bộ dữ liệu tài khoản và hồ sơ bệnh nhi liên quan khỏi hệ thống của chúng tôi.</li>
+                                <li>Sử dụng hệ thống ở chế độ "Ẩn danh" (không cần đăng nhập) nếu không muốn lưu trữ dài hạn dữ liệu tính toán.</li>
+                            </ul>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">4. Chính sách sử dụng Cookies</h4>
+                            <p>Chúng tôi sử dụng Cookies để nhận diện người dùng, duy trì trạng thái đăng nhập và lưu trữ tùy chọn ngôn ngữ hiển thị. Khi tiếp tục sử dụng website, bạn đồng ý với việc chúng tôi lưu trữ Cookies trên trình duyệt của bạn.</p>
+
+                            <h4 class="fw-bold text-primary mb-3 mt-4">5. Liên hệ</h4>
+                            <p>Nếu bạn có bất kỳ câu hỏi nào liên quan đến bảo mật hoặc muốn yêu cầu xóa dữ liệu, vui lòng liên hệ với ban quản trị thông qua địa chỉ Email hỗ trợ hoặc qua trang <a href="/lien-he">Liên Hợp</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <style>
     .privacy-container {

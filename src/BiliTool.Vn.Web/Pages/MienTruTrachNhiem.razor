@@ -1,49 +1,151 @@
 @page "/mien-tru-trach-nhiem"
+@using System.Globalization
 
-<PageTitle>Tuyên Bố Miễn Trừ Trách Nhiệm Y Khoa | BiliTool.Vn</PageTitle>
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 
-<HeadContent>
-    <meta name="description" content="Điều khoản sử dụng BiliTool.Vn. Phần mềm chỉ mang tính chất hỗ trợ quyết định lâm sàng, không thay thế đánh giá chuyên môn của bác sĩ Nhi — Sơ sinh. Người sử dụng tự chịu trách nhiệm y khoa và pháp lý." />
-    <link rel="canonical" href="https://bilitool.vn/mien-tru-trach-nhiem" />
-    <meta name="robots" content="noindex, follow" />
-</HeadContent>
+@if (lang == "en")
+{
+    <PageTitle>Medical Disclaimer | BiliTool.Vn</PageTitle>
 
-<div class="guide-wrapper">
-    <div class="guide-header">
-        <i class="fas fa-exclamation-triangle"></i>
-        <div>
-            <h1>Miễn trừ trách nhiệm (Disclaimer)</h1>
-            <p>Trách nhiệm lâm sàng và tính pháp lý của hệ thống</p>
+    <HeadContent>
+        <meta name="description" content="Terms of Use of BiliTool.Vn. The software is for clinical decision support only and does not replace the professional judgement of pediatric or neonatal doctors." />
+        <link rel="canonical" href="https://bilitool.vn/mien-tru-trach-nhiem" />
+        <meta name="robots" content="noindex, follow" />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <h1>Medical Disclaimer</h1>
+                <p>Clinical responsibility and legal limits of the system</p>
+            </div>
+        </div>
+
+        <div class="guide-content custom-typography">
+            <section class="disclaimer-section">
+                <h2><i class="fas fa-gavel"></i> Limitations of Clinical Responsibility</h2>
+                
+                <div class="disclaimer-card border-warning">
+                    <p>
+                        <strong>BiliTool.Vn</strong> was independently developed, translated, and designed based on official medical guidelines <em>(including but not limited to the AAP 2022 Clinical Practice Guideline)</em>. However, all content, interpolation charts, and calculation algorithms on this interface <strong>are absolutely not intended</strong> to replace independent clinical assessments, professional medical judgements, or direct diagnoses and intervention orders from a pediatrician or neonatologist.
+                    </p>
+                    <p>
+                        Applying clinical practice guidelines using this tool always requires clinicians to carefully consider the specific clinical status of each individual infant, given the highly individualized nature of neonatal jaundice progression.
+                    </p>
+                    <div class="disclaimer-alert">
+                        <p>
+                            <i class="fas fa-info-circle"></i> <strong>Clinicians, medical staff, and users of this platform voluntarily and independently assume full clinical and legal responsibility</strong> for any decisions or treatment interventions made or refused based on parameters calculated by BiliTool.Vn. The development team disclaims all liability for any damages or outcomes.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="disclaimer-section mt-extra">
+                <h2><i class="fas fa-shield-alt"></i> Responsibility of Parents and Families</h2>
+                <p class="plain-text">
+                    BiliTool.Vn is a professional clinical support platform intended for healthcare staff. If you are a parent or relative monitoring an infant, please <strong>do not make any decisions regarding phototherapy or exchange transfusion yourself</strong>. Even if the calculations indicate a low hazard level, infants must be evaluated by qualified pediatricians to screen for potential underlying causes of jaundice.
+                </p>
+            </section>
         </div>
     </div>
+}
+else if (lang == "fr")
+{
+    <PageTitle>Avertissement Médical | BiliTool.Vn</PageTitle>
 
-    <div class="guide-content custom-typography">
-        <section class="disclaimer-section">
-            <h2><i class="fas fa-gavel"></i> Giới hạn trách nhiệm y khoa</h2>
-            
-            <div class="disclaimer-card border-warning">
-                <p>
-                    <strong>BiliTool.Vn</strong> được phát triển, phiên dịch và thiết kế độc lập dựa trên các tài liệu y khoa chính thống <em>(bao gồm nhưng không giới hạn: Khuyến cáo sửa đổi AAP 2022)</em>. Tuy nhiên, toàn bộ nội dung, biểu đồ nội suy và thuật toán tính toán trên giao diện <strong>tuyệt đối không nhằm mục đích</strong> thay thế cho các đánh giá lâm sàng độc lập, các phán đoán y khoa chuyên môn, hay chẩn đoán và chỉ định can thiệp trực tiếp từ bác sĩ chuyên khoa Nhi - Sơ sinh.
-                </p>
-                <p>
-                    Việc áp dụng các hướng dẫn thực hành y khoa dựa trên công cụ này luôn đòi hỏi người thầy thuốc phải cân nhắc kỹ lưỡng đối với tình trạng bệnh lý của từng bệnh nhi cụ thể, do đặc thù diễn biến lâm sàng của bệnh lý hoàng đản sơ sinh mang tính chất cá thể hóa cực kì cao.
-                </p>
-                <div class="disclaimer-alert">
-                    <p>
-                        <i class="fas fa-info-circle"></i> Bác sĩ, Nhân viên y tế và Người trực tiếp sử dụng nền tảng <strong>sẽ tự nguyện, độc lập chịu trách nhiệm hoàn toàn về mặt y khoa và pháp lý</strong> đối với bất kỳ quyết định, can thiệp điều trị nào được đưa ra hoặc bị từ chối dựa trên các chỉ số được tính toán bởi BiliTool.Vn. Nhóm phát triển khước từ toàn bộ các yếu tố bồi thường (nếu có).
-                    </p>
-                </div>
+    <HeadContent>
+        <meta name="description" content="Conditions d'utilisation de BiliTool.Vn. Le logiciel est un outil d'aide à la décision et ne remplace pas le jugement professionnel des pédiatres." />
+        <link rel="canonical" href="https://bilitool.vn/mien-tru-trach-nhiem" />
+        <meta name="robots" content="noindex, follow" />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <h1>Avertissement Médical</h1>
+                <p>Responsabilité clinique et limites légales du système</p>
             </div>
-        </section>
+        </div>
 
-        <section class="disclaimer-section mt-extra">
-            <h2><i class="fas fa-shield-alt"></i> Trách nhiệm người thân, gia đình</h2>
-            <p class="plain-text">
-                BiliTool.Vn là một nền tảng hỗ trợ y khoa chuyên nghiệp dành cho đội ngũ nhân viên y tế. Nếu bạn là cha/mẹ hoặc người nhà theo dõi bệnh nhi, xin <strong>tuyệt đối không tự ý quyết định việc chiếu đèn hoặc thay máu</strong> cho con trẻ. Ngay cả khi kết quả tính toán trên phần mềm cảnh báo mức nguy hiểm thấp, trẻ vẫn cần được các Bác sĩ sơ sinh đánh giá chuyên sâu và tầm soát nguyên nhân vàng da trước khi kết luận.
-            </p>
-        </section>
+        <div class="guide-content custom-typography">
+            <section class="disclaimer-section">
+                <h2><i class="fas fa-gavel"></i> Limitation de Responsabilité Clinique</h2>
+                
+                <div class="disclaimer-card border-warning">
+                    <p>
+                        <strong>BiliTool.Vn</strong> a été développé, traduit et conçu de manière indépendante sur la base de directives médicales officielles <em>(y compris, mais sans s'y limiter, les directives de l'AAP 2022)</em>. Cependant, l'ensemble du contenu, des courbes d'interpolation et des calculs sur cette interface <strong>ne vise en aucun cas</strong> à remplacer l'évaluation clinique indépendante, le jugement professionnel ou les prescriptions directes d'un pédiatre ou néonatologue.
+                    </p>
+                    <p>
+                        L'application des directives cliniques via cet outil exige toujours du médecin une évaluation attentive de l'état spécifique de chaque nourrisson, étant donné le caractère hautement individualisé de l'évolution de l'ictère néonatal.
+                    </p>
+                    <div class="disclaimer-alert">
+                        <p>
+                            <i class="fas fa-info-circle"></i> <strong>Les médecins, le personnel soignant et les utilisateurs assument volontairement, de manière indépendante, l'entière responsabilité clinique et légale</strong> de toute décision ou traitement pris ou refusé sur la base des calculs fournis par BiliTool.Vn. L'équipe de développement décline toute responsabilité en cas de dommages ou résultats.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="disclaimer-section mt-extra">
+                <h2><i class="fas fa-shield-alt"></i> Responsabilité des Parents et Familles</h2>
+                <p class="plain-text">
+                    BiliTool.Vn est un outil professionnel destiné aux soignants. Si vous êtes parent ou proche, <strong>ne prenez jamais de décisions concernant la photothérapie ou l'exsanguino-transfusion vous-même</strong>. Même si les calculs indiquent un risque faible, les nourrissons doivent être évalués par des pédiatres qualifiés pour dépister les causes sous-jacentes de l'ictère.
+                </p>
+            </section>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <PageTitle>Tuyên Bố Miễn Trừ Trách Nhiệm Y Khoa | BiliTool.Vn</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="Điều khoản sử dụng BiliTool.Vn. Phần mềm chỉ mang tính chất hỗ trợ quyết định lâm sàng, không thay thế đánh giá chuyên môn của bác sĩ Nhi — Sơ sinh. Người sử dụng tự chịu trách nhiệm y khoa và pháp lý." />
+        <link rel="canonical" href="https://bilitool.vn/mien-tru-trach-nhiem" />
+        <meta name="robots" content="noindex, follow" />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <h1>Miễn trừ trách nhiệm (Disclaimer)</h1>
+                <p>Trách nhiệm lâm sàng và tính pháp lý của hệ thống</p>
+            </div>
+        </div>
+
+        <div class="guide-content custom-typography">
+            <section class="disclaimer-section">
+                <h2><i class="fas fa-gavel"></i> Giới hạn trách nhiệm y khoa</h2>
+                
+                <div class="disclaimer-card border-warning">
+                    <p>
+                        <strong>BiliTool.Vn</strong> được phát triển, phiên dịch và thiết kế độc lập dựa trên các tài liệu y khoa chính thống <em>(bao gồm nhưng không giới hạn: Khuyến cáo sửa đổi AAP 2022)</em>. Tuy nhiên, toàn bộ nội dung, biểu đồ nội suy và thuật toán tính toán trên giao diện <strong>tuyệt đối không nhằm mục đích</strong> thay thế cho các đánh giá lâm sàng độc lập, các phán đoán y khoa chuyên môn, hay chẩn đoán và chỉ định can thiệp trực tiếp từ bác sĩ chuyên khoa Nhi - Sơ sinh.
+                    </p>
+                    <p>
+                        Việc áp dụng các hướng dẫn thực hành y khoa dựa trên công cụ này luôn đòi hỏi người thầy thuốc phải cân nhắc kỹ lưỡng đối với tình trạng bệnh lý của từng bệnh nhi cụ thể, do đặc thù diễn biến lâm sàng của bệnh lý hoàng đản sơ sinh mang tính chất cá thể hóa cực kì cao.
+                    </p>
+                    <div class="disclaimer-alert">
+                        <p>
+                            <i class="fas fa-info-circle"></i> Bác sĩ, Nhân viên y tế và Người trực tiếp sử dụng nền tảng <strong>sẽ tự nguyện, độc lập chịu trách nhiệm hoàn toàn về mặt y khoa và pháp lý</strong> đối với bất kỳ quyết định, can thiệp điều trị nào được đưa ra hoặc bị từ chối dựa trên các chỉ số được tính toán bởi BiliTool.Vn. Nhóm phát triển khước từ toàn bộ các yếu tố bồi thường (nếu có).
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="disclaimer-section mt-extra">
+                <h2><i class="fas fa-shield-alt"></i> Trách nhiệm người thân, gia đình</h2>
+                <p class="plain-text">
+                    BiliTool.Vn là một nền tảng hỗ trợ y khoa chuyên nghiệp dành cho đội ngũ nhân viên y tế. Nếu bạn là cha/mẹ hoặc người nhà theo dõi bệnh nhi, xin <strong>tuyệt đối không tự ý quyết định việc chiếu đèn hoặc thay máu</strong> cho con trẻ. Ngay cả khi kết quả tính toán trên phần mềm cảnh báo mức nguy hiểm thấp, trẻ vẫn cần được các Bác sĩ sơ sinh đánh giá chuyên sâu và tầm soát nguyên nhân vàng da trước khi kết luận.
+                </p>
+            </section>
+        </div>
+    </div>
+}
 
 <style>
     .custom-typography h2 {

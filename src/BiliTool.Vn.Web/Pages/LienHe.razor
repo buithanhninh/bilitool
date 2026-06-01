@@ -1,66 +1,201 @@
 @page "/lien-he"
 
-<PageTitle>Liên Hệ BiliTool.Vn — Phản Hồi Chuyên Môn & Hợp Tác</PageTitle>
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 
-<HeadContent>
-    <meta name="description" content="Liên hệ đội ngũ BiliTool.Vn để phản hồi y thuật, đề xuất tính năng, báo lỗi hệ thống hoặc hợp tác phát triển. Hotline: 093 6626 007. Website: DrNinhMai.Com." />
-    <meta name="keywords" content="liên hệ bilitool, hotline bilitool, phản hồi y khoa, hợp tác phát triển" />
-    <link rel="canonical" href="https://bilitool.vn/lien-he" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Liên Hệ BiliTool.Vn" />
-    <meta property="og:description" content="Phản hồi chuyên môn, hợp tác phát triển. Hotline: 093 6626 007." />
-    <meta property="og:url" content="https://bilitool.vn/lien-he" />
-    <meta property="og:site_name" content="BiliTool.Vn" />
-    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Liên Hệ BiliTool.Vn" />
-    <meta name="twitter:description" content="Phản hồi chuyên môn, hợp tác phát triển. Hotline: 093 6626 007." />
-</HeadContent>
+@if (lang == "en")
+{
+    <PageTitle>Contact BiliTool.Vn — Professional Feedback & Collaboration</PageTitle>
 
-<div class="guide-wrapper">
-    <div class="guide-header">
-        <i class="fas fa-headset"></i>
-        <div>
-            <h1>Liên hệ (Contact Us)</h1>
-            <p>Phản hồi, tư vấn và đóng góp xây dựng chuyên môn</p>
+    <HeadContent>
+        <meta name="description" content="Contact the BiliTool.Vn team for medical feedback, feature suggestions, system bug reports, or development collaboration. Hotline: 093 6626 007. Website: DrNinhMai.Com." />
+        <meta name="keywords" content="contact bilitool, hotline bilitool, medical feedback, collaboration development" />
+        <link rel="canonical" href="https://bilitool.vn/lien-he" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Contact BiliTool.Vn" />
+        <meta property="og:description" content="Medical feedback, professional collaboration. Hotline: 093 6626 007." />
+        <meta property="og:url" content="https://bilitool.vn/lien-he" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Contact BiliTool.Vn" />
+        <meta name="twitter:description" content="Medical feedback, professional collaboration. Hotline: 093 6626 007." />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-headset"></i>
+            <div>
+                <h1>Contact Us</h1>
+                <p>Feedback, consultation, and contribution to professional development</p>
+            </div>
         </div>
-    </div>
 
-    <div class="guide-content">
-        <div class="contact-banner">
-            <div class="contact-content">
-                <h2><i class="fas fa-paper-plane"></i> Giữ liên lạc với BiliTool.Vn</h2>
-                <p class="contact-desc">Chúng tôi luôn trân trọng mọi phản hồi về y thuật cơ bản, những đề xuất tính năng phần mềm, báo cáo trục trặc hệ thống, hoặc các chương trình kết nối hợp tác từ quý chuyên gia y tế trên toàn quốc. Vui lòng kết nối với Dr. Mai qua những kênh dưới đây:</p>
-                
-                <div class="contact-cards">
-                    <div class="contact-card">
-                        <div class="contact-icon"><i class="fas fa-phone-volume"></i></div>
-                        <div class="contact-info">
-                            <span class="contact-label">Đường dây nóng (Hotline)</span>
-                            <span class="contact-value">093 6626 007</span>
-                        </div>
-                    </div>
+        <div class="guide-content">
+            <div class="contact-banner">
+                <div class="contact-content">
+                    <h2><i class="fas fa-paper-plane"></i> Keep in touch with BiliTool.Vn</h2>
+                    <p class="contact-desc">We always appreciate all feedback on basic medicine, software feature proposals, system issue reports, or collaboration programs from medical experts nationwide. Please connect with Dr. Mai through the channels below:</p>
                     
-                    <div class="contact-card">
-                        <div class="contact-icon"><i class="fas fa-business-time"></i></div>
-                        <div class="contact-info">
-                            <span class="contact-label">Giờ làm việc văn phòng</span>
-                            <span class="contact-value">Thứ 2 - Thứ 6: 7:30 AM - 5:00 PM</span>
+                    <div class="contact-cards">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-phone-volume"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Hotline</span>
+                                <span class="contact-value">093 6626 007</span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="contact-card">
-                        <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
-                        <div class="contact-info">
-                            <span class="contact-label">Cổng Đăng Ký Y tế Điện tử</span>
-                            <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-business-time"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Office Working Hours</span>
+                                <span class="contact-value">Monday - Friday: 7:30 AM - 5:00 PM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Electronic Medical Portal</span>
+                                <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
+else if (lang == "fr")
+{
+    <PageTitle>Contactez BiliTool.Vn — Retours Professionnels & Collaboration</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="Contactez l'équipe BiliTool.Vn pour des retours médicaux, des suggestions de fonctionnalités, des rapports de bogues ou une collaboration. Hotline : 093 6626 007. Site web : DrNinhMai.Com." />
+        <meta name="keywords" content="contact bilitool, hotline bilitool, retours médicaux, collaboration développement" />
+        <link rel="canonical" href="https://bilitool.vn/lien-he" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Contactez BiliTool.Vn" />
+        <meta property="og:description" content="Retours médicaux, collaboration professionnelle. Hotline : 093 6626 007." />
+        <meta property="og:url" content="https://bilitool.vn/lien-he" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Contactez BiliTool.Vn" />
+        <meta name="twitter:description" content="Retours médicaux, collaboration professionnelle. Hotline : 093 6626 007." />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-headset"></i>
+            <div>
+                <h1>Contactez-nous</h1>
+                <p>Retours, consultations et contributions au développement professionnel</p>
+            </div>
+        </div>
+
+        <div class="guide-content">
+            <div class="contact-banner">
+                <div class="contact-content">
+                    <h2><i class="fas fa-paper-plane"></i> Restez en contact avec BiliTool.Vn</h2>
+                    <p class="contact-desc">Nous apprécions toujours tous les retours sur la médecine générale, les propositions de fonctionnalités logicielles, les rapports d'incidents système ou les programmes de collaboration de la part des professionnels de santé à l'échelle nationale. Veuillez contacter la Dre Mai via les canaux ci-dessous :</p>
+                    
+                    <div class="contact-cards">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-phone-volume"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Ligne directe (Hotline)</span>
+                                <span class="contact-value">093 6626 007</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-business-time"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Heures de bureau</span>
+                                <span class="contact-value">Lundi - Vendredi : 7h30 - 17h00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Portail Médical Électronique</span>
+                                <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <PageTitle>Liên Hệ BiliTool.Vn — Phản Hồi Chuyên Môn & Hợp Tác</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="Liên hệ đội ngũ BiliTool.Vn để phản hồi y thuật, đề xuất tính năng, báo lỗi hệ thống hoặc hợp tác phát triển. Hotline: 093 6626 007. Website: DrNinhMai.Com." />
+        <meta name="keywords" content="liên hệ bilitool, hotline bilitool, phản hồi y khoa, hợp tác phát triển" />
+        <link rel="canonical" href="https://bilitool.vn/lien-he" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Liên Hệ BiliTool.Vn" />
+        <meta property="og:description" content="Phản hồi chuyên môn, hợp tác phát triển. Hotline: 093 6626 007." />
+        <meta property="og:url" content="https://bilitool.vn/lien-he" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Liên Hệ BiliTool.Vn" />
+        <meta name="twitter:description" content="Phản hồi chuyên môn, hợp tác phát triển. Hotline: 093 6626 007." />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-headset"></i>
+            <div>
+                <h1>Liên hệ (Contact Us)</h1>
+                <p>Phản hồi, tư vấn và đóng góp xây dựng chuyên môn</p>
+            </div>
+        </div>
+
+        <div class="guide-content">
+            <div class="contact-banner">
+                <div class="contact-content">
+                    <h2><i class="fas fa-paper-plane"></i> Giữ liên lạc với BiliTool.Vn</h2>
+                    <p class="contact-desc">Chúng tôi luôn trân trọng mọi phản hồi về y thuật cơ bản, những đề xuất tính năng phần mềm, báo cáo trục trặc hệ thống, hoặc các chương trình kết nối hợp tác từ quý chuyên gia y tế trên toàn quốc. Vui lòng kết nối với Dr. Mai qua những kênh dưới đây:</p>
+                    
+                    <div class="contact-cards">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-phone-volume"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Đường dây nóng (Hotline)</span>
+                                <span class="contact-value">093 6626 007</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-business-time"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Giờ làm việc văn phòng</span>
+                                <span class="contact-value">Thứ 2 - Thứ 6: 7:30 AM - 5:00 PM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
+                            <div class="contact-info">
+                                <span class="contact-label">Cổng Đăng Ký Y tế Điện tử</span>
+                                <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <style>
     .contact-banner {

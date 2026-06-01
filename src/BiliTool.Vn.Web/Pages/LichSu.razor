@@ -33,15 +33,15 @@
     {
         <div class="ls-loading">
             <i class="fas fa-spinner fa-spin"></i>
-            <p>Đang tải dữ liệu...</p>
+            <p>@T["Loading"]</p>
         </div>
     }
     else if (!lichSuTinhToan.Any())
     {
         <div class="ls-empty">
             <i class="fas fa-box-open"></i>
-            <p>Chưa có dữ liệu lịch sử nào.</p>
-            <a href="/may-tinh" class="btn-to-calc">Tới máy tính</a>
+            <p>@T["History_Empty"]</p>
+            <a href="/may-tinh" class="btn-to-calc">@T["History_GoToCalc"]</a>
         </div>
     }
     else
@@ -63,27 +63,27 @@
                     <div class="ls-card-body">
                         <div class="ls-stat-row">
                             <div class="ls-stat">
-                                <small>Tuổi</small>
-                                <strong>@item.TuoiGio giờ</strong>
-                                <span class="ls-note">(@item.TuoiThaiTuan tuần)</span>
+                                <small>@T["Age"]</small>
+                                <strong>@string.Format(T["Age_Hours"], item.TuoiGio)</strong>
+                                <span class="ls-note">(@item.TuoiThaiTuan @T["Weeks_Short"])</span>
                             </div>
                             <div class="ls-stat">
-                                <small>Bilirubin</small>
+                                <small>@T["TotalBilirubin"]</small>
                                 <strong>@item.BilirubinMgDl.ToString("0.#") <span class="ls-unit">mg/dL</span></strong>
                             </div>
                         </div>
-
+ 
                         <div class="ls-thresholds">
                             <div class="ls-th-item">
                                 <i class="fas fa-lightbulb" style="color: #e67e22;"></i>
-                                N. Chiếu Đèn: <strong>@item.NguongChieuDen.ToString("0.#")</strong>
+                                @T["Threshold_ChieuDen_Short"] <strong>@item.NguongChieuDen.ToString("0.#")</strong>
                             </div>
                             <div class="ls-th-item">
                                 <i class="fas fa-sync" style="color: #c0392b;"></i>
-                                N. Thay Máu: <strong>@item.NguongThayCuuMau.ToString("0.#")</strong>
+                                @T["Threshold_ThayMau_Short"] <strong>@item.NguongThayCuuMau.ToString("0.#")</strong>
                             </div>
                         </div>
-
+ 
                         <div class="ls-recommendation">
                             @item.KhuyenNghiChinh
                         </div>

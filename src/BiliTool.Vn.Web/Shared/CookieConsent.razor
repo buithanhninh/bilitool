@@ -1,6 +1,7 @@
 @inject IJSRuntime JS
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject BiliTool.Vn.Web.Services.TranslationService T
 
 @if (showBanner)
 {
@@ -8,14 +9,14 @@
         <div class="cookie-content">
             <div class="cookie-header">
                 <i class="fas fa-cookie-bite cookie-icon"></i>
-                <h3>Cookie & Quyền riêng tư</h3>
+                <h3>@T["Cookie_Title"]</h3>
             </div>
             <p class="cookie-text">
-                BiliTool.Vn sử dụng cookie để mang lại trải nghiệm tối ưu nhất cho bạn. Khi tiếp tục sử dụng website, bạn đồng ý với 
-                <a href="/chinh-sach-bao-mat">Chính sách Quyền riêng tư</a> của chúng tôi.
+                @T["Cookie_Desc"] 
+                <a href="/chinh-sach-bao-mat">@T["Cookie_PrivacyLinkText"]</a>.
             </p>
             <div class="cookie-actions">
-                <button class="btn-accept" @onclick="AcceptCookies">Đồng ý & Tiếp tục</button>
+                <button class="btn-accept" @onclick="AcceptCookies">@T["Cookie_BtnAccept"]</button>
             </div>
         </div>
     </div>

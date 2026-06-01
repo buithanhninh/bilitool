@@ -1,138 +1,355 @@
 @page "/gioi-thieu"
+@using System.Globalization
 
-<PageTitle>Giới Thiệu BiliTool.Vn — Cố Vấn Chuyên Môn ThS. BS. Ninh Thị Phương Mai | Bệnh Viện E</PageTitle>
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 
-<HeadContent>
-    <meta name="description" content="BiliTool.Vn - phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh tại Việt Nam. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai — Khoa Nội Nhi Tổng Hợp, Bệnh viện E. Thuật toán dựa trên phác đồ AAP 2022 và NICE CG98." />
-    <meta name="keywords" content="BiliTool.Vn, giới thiệu, ThS BS Ninh Thị Phương Mai, bệnh viện E, phần mềm y khoa sơ sinh, vàng da sơ sinh, AAP 2022" />
-    <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
-    <meta property="og:type" content="profile" />
-    <meta property="og:title" content="Giới Thiệu BiliTool.Vn — ThS. BS. Ninh Thị Phương Mai" />
-    <meta property="og:description" content="Phần mềm y khoa vàng da sơ sinh Việt Nam. Cố vấn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
-    <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
-    <meta property="og:site_name" content="BiliTool.Vn" />
-    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Giới Thiệu BiliTool.Vn — ThS. BS. Ninh Thị Phương Mai" />
-    <meta name="twitter:description" content="Phần mềm y khoa vàng da sơ sinh. Cố vấn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "Physician",
-        "name": "ThS. BS. Ninh Thị Phương Mai",
-        "jobTitle": "Thạc sĩ Bác sĩ Nhi Khoa",
-        "worksFor": {
-            "@@type": "Hospital",
-            "name": "Bệnh viện E",
-            "department": "Khoa Nội Nhi Tổng Hợp"
-        },
-        "alumniOf": {
-            "@@type": "EducationalOrganization",
-            "name": "Đại học Y Hà Nội"
-        },
-        "url": "https://drninhmai.com/",
-        "image": "https://bilitool.vn/images/bs-mai.jpg",
-        "medicalSpecialty": "Pediatrics",
-        "description": "Cố vấn chuyên môn y khoa cho phần mềm BiliTool.Vn, chuyên gia Nhi khoa với nhiều năm kinh nghiệm tại Bệnh viện E"
-    }
-    </script>
-</HeadContent>
+@if (lang == "en")
+{
+    <PageTitle>About BiliTool.Vn — Medical Advisor ThS. BS. Ninh Thi Phuong Mai | E Hospital</PageTitle>
 
-<div class="guide-wrapper">
-    <div class="guide-header">
-        <i class="fas fa-info-circle"></i>
-        <div>
-            <h1>Giới thiệu BiliTool.Vn</h1>
-            <p>Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh</p>
-        </div>
-    </div>
+    <HeadContent>
+        <meta name="description" content="BiliTool.Vn - clinical software supporting neonatal jaundice management in Vietnam. Advisor: ThS. BS. Ninh Thi Phuong Mai - General Pediatrics Department, E Hospital. Algorithm per AAP 2022 and NICE CG98." />
+        <meta name="keywords" content="BiliTool.Vn, about, ThS BS Ninh Thi Phuong Mai, E Hospital, pediatric medical software, neonatal jaundice, AAP 2022" />
+        <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content="About BiliTool.Vn — ThS. BS. Ninh Thi Phuong Mai" />
+        <meta property="og:description" content="Neonatal jaundice clinical software in Vietnam. Advisor: ThS. BS. Ninh Thi Phuong Mai — E Hospital." />
+        <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About BiliTool.Vn — ThS. BS. Ninh Thi Phuong Mai" />
+        <meta name="twitter:description" content="Clinical software for neonatal jaundice. Advisor: ThS. BS. Ninh Thi Phuong Mai — E Hospital." />
+    </HeadContent>
 
-    <div class="guide-content">
-        
-        <!-- Giới thiệu phần mềm -->
-        <section class="mb-5">
-            <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> Về BiliTool.Vn</h2>
-            <p>
-                <strong>BiliTool.Vn</strong> là một công cụ y khoa dạng web được thiết kế nhằm hỗ trợ các bác sĩ nhi khoa, bác sĩ sơ sinh và nhân viên y tế trong việc đánh giá, theo dõi và ra quyết định điều trị bệnh lý vàng da ở trẻ sơ sinh (hỗ trợ cả trẻ đẻ non nhờ thuật toán kết hợp).
-            </p>
-            <p>
-                Hệ thống cung cấp một quy trình khép kín từ việc nhập liệu thông số lâm sàng (giờ tuổi, nồng độ Bilirubin toàn phần, tuổi thai, và các yếu tố nguy cơ thần kinh/lâm sàng), tính toán chính xác các ngưỡng can thiệp (Chiếu đèn, Thay máu) và trực quan hóa dữ liệu theo thời gian (Biểu đồ xu hướng). Đặc biệt, hệ thống xử lý tính toán song song đa phác đồ để đưa ra khuyến cáo an toàn nhất.
-            </p>
-            <div class="card bg-light border-0 shadow-sm mt-4">
-                <div class="card-body">
-                    <h5 class="text-danger"><i class="fas fa-book-medical"></i> Căn cứ khoa học (Dual-Protocol)</h5>
-                    <p class="mb-2 mt-2">
-                        Toàn bộ thuật toán, hằng số cấu hình toán học và các khuyến nghị lâm sàng hiển thị trên phần mềm này được xây dựng dựa trên sự kết hợp đối chiếu khắt khe của 2 phác đồ y khoa hàng đầu thế giới:
-                    </p>
-                    <ul class="mb-0">
-                        <li class="mb-2">
-                            <strong>Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP 2022):</strong><br/>
-                            <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
-                                <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Tháng 9/2022).</em>
-                            </a>
-                        </li>
-                        <li>
-                            <strong>Viện Y tế và Chăm sóc Xuất sắc Quốc gia Anh (NICE CG98):</strong><br/>
-                            <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
-                                <em>"Jaundice in newborn babies under 28 days" (Updated October 2023).</em>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <h1>About BiliTool.Vn</h1>
+                <p>Clinical decision support software for neonatal jaundice management</p>
             </div>
-        </section>
+        </div>
 
-        <hr class="my-5" />
-
-        <!-- Giới thiệu tác giả -->
-        <section>
-            <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Tác giả - Cố vấn chuyên môn</h2>
+        <div class="guide-content">
             
-            <div class="author-card">
-                <div class="author-image-wrapper">
-                    <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thị Phương Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
-                </div>
-                <div class="author-details">
-                    <h3 class="author-name">ThS. BS. Ninh Thị Phương Mai</h3>
-                    <p class="author-title"><i class="fas fa-hospital"></i> Khoa Nội Nhi Tổng Hợp – Bệnh viện E</p>
-                    
-                    <div class="author-bio">
-                        <p>Ths. BS. Ninh Thị Phương Mai đã có nhiều năm kinh nghiệm trực tiếp thăm khám và điều trị các bệnh lý chuyên khoa Nhi. Đặc biệt, bác sĩ có thế mạnh về các bệnh lý hô hấp, miễn dịch – dị ứng, tiêu hóa và dinh dưỡng trẻ em.</p>
-                        <p>Phần mềm <strong>BiliTool.Vn</strong> được bác sĩ tham gia biên dịch, số hóa thuật toán y khoa và cố vấn quy trình vận hành lâm sàng thực tế nhằm mang lại công cụ hỗ trợ cho cộng đồng Y khoa.</p>
+            <!-- Software Introduction -->
+            <section class="mb-5">
+                <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> About BiliTool.Vn</h2>
+                <p>
+                    <strong>BiliTool.Vn</strong> is a web-based medical calculator designed to support pediatricians, neonatologists, and healthcare professionals in assessing, monitoring, and decision-making for neonatal jaundice (including preterms thanks to the combined algorithm).
+                </p>
+                <p>
+                    The system provides an end-to-end workflow from inputting clinical parameters (age in hours, total serum bilirubin, gestational age, and neurotoxicity/clinical risk factors), precisely calculating intervention thresholds (Phototherapy, Exchange Transfusion), and visualizing trend data over time (Trend Chart). In particular, the system handles parallel calculations under multiple protocols to deliver the safest possible clinical recommendation.
+                </p>
+                <div class="card bg-light border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h5 class="text-danger"><i class="fas fa-book-medical"></i> Scientific Basis (Dual-Protocol)</h5>
+                        <p class="mb-2 mt-2">
+                            All algorithms, mathematical configurations, and clinical recommendations are built upon rigorous validation and cross-referencing of 2 leading international guidelines:
+                        </p>
+                        <ul class="mb-0">
+                            <li class="mb-2">
+                                <strong>American Academy of Pediatrics (AAP 2022):</strong><br/>
+                                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
+                                    <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Sept 2022).</em>
+                                </a>
+                            </li>
+                            <li>
+                                <strong>UK National Institute for Health and Care Excellence (NICE CG98):</strong><br/>
+                                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
+                                    <em>"Jaundice in newborn babies under 28 days" (Updated October 2023).</em>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
+                </div>
+            </section>
 
-                    <div class="author-credentials mt-4">
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Đào tạo</h6>
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Tốt nghiệp BS Đa khoa - ĐH Y Hà Nội (2017)</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> BS Định hướng Nhi - BV Nhi Trung ương (2018)</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Thạc Sĩ chuyên ngành Nhi Khoa - ĐH Y Hà Nội (2024)</li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Hoạt động chuyên môn</h6>
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Công tác tại BV E (2018 - Nay)</li>
-                                    <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Tác giả nhiều nghiên cứu chuyên ngành Nhi khoa.</li>
-                                    <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Nhận Bằng khen của Bộ Y Tế (2024).</li>
-                                </ul>
+            <hr class="my-5" />
+
+            <!-- Author Introduction -->
+            <section>
+                <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Author - Clinical Advisor</h2>
+                
+                <div class="author-card">
+                    <div class="author-image-wrapper">
+                        <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thi Phuong Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
+                    </div>
+                    <div class="author-details">
+                        <h3 class="author-name">ThS. BS. Ninh Thi Phuong Mai</h3>
+                        <p class="author-title"><i class="fas fa-hospital"></i> General Pediatrics Department – E Hospital</p>
+                        
+                        <div class="author-bio">
+                            <p>Dr. Ninh Thi Phuong Mai has many years of clinical experience diagnosing and treating pediatric patients. Her primary specialties include respiratory illnesses, allergy & immunology, gastroenterology, and childhood nutrition.</p>
+                            <p>Dr. Mai translated, digitized the medical algorithms, and advised on the real-world clinical workflow design of <strong>BiliTool.Vn</strong> to provide a helpful tool for the medical community.</p>
+                        </div>
+
+                        <div class="author-credentials mt-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Education</h6>
+                                    <ul class="list-unstyled text-start" style="padding-left:0;">
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> MD degree - Hanoi Medical University (2017)</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Pediatric Residency - National Children's Hospital (2018)</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Master of Science in Pediatrics - Hanoi Medical University (2024)</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Professional Activities</h6>
+                                    <ul class="list-unstyled text-start" style="padding-left:0;">
+                                        <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Pediatrician at E Hospital (2018 - Present)</li>
+                                        <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Author of multiple clinical pediatric research studies</li>
+                                        <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Recipient of Certificate of Merit from the Ministry of Health (2024)</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="author-links mt-1">
-                        <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
-                            <i class="fas fa-globe me-2"></i> Ghé thăm Trang web DrNinhMai.Com
-                        </a>
+                        
+                        <div class="author-links mt-1">
+                            <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
+                                <i class="fas fa-globe me-2"></i> Visit DrNinhMai.Com Website
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
+        </div>
     </div>
-</div>
+}
+else if (lang == "fr")
+{
+    <PageTitle>À propos de BiliTool.Vn — Conseiller Médical Dr. Ninh Thi Phuong Mai | Hôpital E</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="BiliTool.Vn - logiciel clinique d'aide à la décision pour l'ictère du nouveau-né au Vietnam. Conseiller : Dr. Ninh Thi Phuong Mai - Pédiatrie Générale, Hôpital E. Algorithmes AAP 2022 et NICE." />
+        <meta name="keywords" content="BiliTool.Vn, à propos, Dr Ninh Thi Phuong Mai, Hôpital E, logiciel médical pédiatrique, ictère néonatal, AAP 2022" />
+        <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content="À propos de BiliTool.Vn — Dr. Ninh Thi Phuong Mai" />
+        <meta property="og:description" content="Logiciel clinique de l'ictère néonatal au Vietnam. Conseiller : Dr. Ninh Thi Phuong Mai — Hôpital E." />
+        <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="À propos de BiliTool.Vn — Dr. Ninh Thi Phuong Mai" />
+        <meta name="twitter:description" content="Logiciel clinique pour l'ictère néonatal. Conseiller : Dr. Ninh Thi Phuong Mai — Hôpital E." />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <h1>À propos de BiliTool.Vn</h1>
+                <p>Logiciel d'aide à la décision clinique pour la prise en charge de l'ictère néonatal</p>
+            </div>
+        </div>
+
+        <div class="guide-content">
+            
+            <!-- Software Introduction -->
+            <section class="mb-5">
+                <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> À propos de BiliTool.Vn</h2>
+                <p>
+                    <strong>BiliTool.Vn</strong> est un outil médical web conçu pour aider les pédiatres, néonatologues et professionnels de santé à évaluer, suivre et traiter l'ictère du nouveau-né (y compris les prématurés grâce à l'algorithme combiné).
+                </p>
+                <p>
+                    Le système propose un flux de travail complet : saisie des paramètres cliniques (heures de vie, bilirubine totale, âge gestationnel et facteurs de risque), calcul précis des seuils d'intervention (Photothérapie, Exsanguino-transfusion) et visualisation de l'évolution (courbe de tendance). De plus, le système traite les calculs en parallèle selon les deux directives pour fournir la recommandation la plus sûre.
+                </p>
+                <div class="card bg-light border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h5 class="text-danger"><i class="fas fa-book-medical"></i> Bases Scientifiques (Double Protocole)</h5>
+                        <p class="mb-2 mt-2">
+                            Tous les algorithmes et recommandations cliniques sont basés sur le croisement rigoureux des 2 protocoles leaders mondiaux :
+                        </p>
+                        <ul class="mb-0">
+                            <li class="mb-2">
+                                <strong>American Academy of Pediatrics (AAP 2022):</strong><br/>
+                                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
+                                    <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Septembre 2022).</em>
+                                </a>
+                            </li>
+                            <li>
+                                <strong>UK National Institute for Health and Care Excellence (NICE CG98):</strong><br/>
+                                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
+                                    <em>"Jaundice in newborn babies under 28 days" (Mis à jour en Octobre 2023).</em>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-5" />
+
+            <!-- Author Introduction -->
+            <section>
+                <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Auteur - Conseiller Médical</h2>
+                
+                <div class="author-card">
+                    <div class="author-image-wrapper">
+                        <img src="/images/bs-mai.jpg" alt="Dr. Ninh Thi Phuong Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
+                    </div>
+                    <div class="author-details">
+                        <h3 class="author-name">Dr. Ninh Thi Phuong Mai</h3>
+                        <p class="author-title"><i class="fas fa-hospital"></i> Département de Pédiatrie Générale – Hôpital E</p>
+                        
+                        <div class="author-bio">
+                            <p>Le Dr. Ninh Thi Phuong Mai possède de nombreuses années d'expérience clinique dans le traitement des nouveau-nés et enfants. Ses domaines d'expertise comprennent les maladies respiratoires, l'allergie/immunologie, la gastro-entérologie et la nutrition pédiatrique.</p>
+                            <p>Le Dr. Mai a participé à la traduction, à la numérisation des algorithmes médicaux et a conseillé sur le flux clinique de <strong>BiliTool.Vn</strong> pour offrir un outil d'aide performant à la communauté médicale.</p>
+                        </div>
+
+                        <div class="author-credentials mt-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Formation</h6>
+                                    <ul class="list-unstyled text-start" style="padding-left:0;">
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Diplôme de Docteur en Médecine - Université de Médecine de Hanoï (2017)</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Résidence en Pédiatrie - Hôpital National de Pédiatrie (2018)</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Master en Sciences Pédiatriques - Université de Médecine de Hanoï (2024)</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Activités Professionnelles</h6>
+                                    <ul class="list-unstyled text-start" style="padding-left:0;">
+                                        <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Pédiatre à l'Hôpital E (2018 - Présent)</li>
+                                        <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Auteur de plusieurs travaux de recherche en pédiatrie clinique</li>
+                                        <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Récipiendaire d'une mention d'honneur du Ministère de la Santé (2024)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="author-links mt-1">
+                            <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
+                                <i class="fas fa-globe me-2"></i> Visiter le site DrNinhMai.Com
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+}
+else
+{
+    <PageTitle>Giới Thiệu BiliTool.Vn — Cố Vấn Chuyên Môn ThS. BS. Ninh Thị Phương Mai | Bệnh Viện E</PageTitle>
+
+    <HeadContent>
+        <meta name="description" content="BiliTool.Vn - phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh tại Việt Nam. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai — Khoa Nội Nhi Tổng Hợp, Bệnh viện E. Thuật toán dựa trên phác đồ AAP 2022 và NICE CG98." />
+        <meta name="keywords" content="BiliTool.Vn, giới thiệu, ThS BS Ninh Thị Phương Mai, bệnh viện E, phần mềm y khoa sơ sinh, vàng da sơ sinh, AAP 2022" />
+        <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content="Giới Thiệu BiliTool.Vn — ThS. BS. Ninh Thị Phương Mai" />
+        <meta property="og:description" content="Phần mềm y khoa vàng da sơ sinh Việt Nam. Cố vấn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
+        <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
+        <meta property="og:site_name" content="BiliTool.Vn" />
+        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Giới Thiệu BiliTool.Vn — ThS. BS. Ninh Thị Phương Mai" />
+        <meta name="twitter:description" content="Phần mềm y khoa vàng da sơ sinh. Cố vấn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
+    </HeadContent>
+
+    <div class="guide-wrapper">
+        <div class="guide-header">
+            <i class="fas fa-info-circle"></i>
+            <div>
+                <h1>Giới thiệu BiliTool.Vn</h1>
+                <p>Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh</p>
+            </div>
+        </div>
+
+        <div class="guide-content">
+            
+            <!-- Giới thiệu phần mềm -->
+            <section class="mb-5">
+                <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> Về BiliTool.Vn</h2>
+                <p>
+                    <strong>BiliTool.Vn</strong> là một công cụ y khoa dạng web được thiết kế nhằm hỗ trợ các bác sĩ nhi khoa, bác sĩ sơ sinh và nhân viên y tế trong việc đánh giá, theo dõi và ra quyết định điều trị bệnh lý vàng da ở trẻ sơ sinh (hỗ trợ cả trẻ đẻ non nhờ thuật toán kết hợp).
+                </p>
+                <p>
+                    Hệ thống cung cấp một quy trình khép kín từ việc nhập liệu thông số lâm sàng (giờ tuổi, nồng độ Bilirubin toàn phần, tuổi thai, và các yếu tố nguy cơ thần kinh/lâm sàng), tính toán chính xác các ngưỡng can thiệp (Chiếu đèn, Thay máu) và trực quan hóa dữ liệu theo thời gian (Biểu đồ xu hướng). Đặc biệt, hệ thống xử lý tính toán song song đa phác đồ để đưa ra khuyến cáo an toàn nhất.
+                </p>
+                <div class="card bg-light border-0 shadow-sm mt-4">
+                    <div class="card-body">
+                        <h5 class="text-danger"><i class="fas fa-book-medical"></i> Căn cứ khoa học (Dual-Protocol)</h5>
+                        <p class="mb-2 mt-2">
+                            Toàn bộ thuật toán, hằng số cấu hình toán học và các khuyến nghị lâm sàng hiển thị trên phần mềm này được xây dựng dựa trên sự kết hợp đối chiếu khắt khe của 2 phác đồ y khoa hàng đầu thế giới:
+                        </p>
+                        <ul class="mb-0">
+                            <li class="mb-2">
+                                <strong>Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP 2022):</strong><br/>
+                                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
+                                    <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Tháng 9/2022).</em>
+                                </a>
+                            </li>
+                            <li>
+                                <strong>Viện Y tế và Chăm sóc Xuất sắc Quốc gia Anh (NICE CG98):</strong><br/>
+                                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
+                                    <em>"Jaundice in newborn babies under 28 days" (Updated October 2023).</em>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-5" />
+
+            <!-- Giới thiệu tác giả -->
+            <section>
+                <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Tác giả - Cố vấn chuyên môn</h2>
+                
+                <div class="author-card">
+                    <div class="author-image-wrapper">
+                        <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thị Phương Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
+                    </div>
+                    <div class="author-details">
+                        <h3 class="author-name">ThS. BS. Ninh Thị Phương Mai</h3>
+                        <p class="author-title"><i class="fas fa-hospital"></i> Khoa Nội Nhi Tổng Hợp – Bệnh viện E</p>
+                        
+                        <div class="author-bio">
+                            <p>Ths. BS. Ninh Thị Phương Mai đã có nhiều năm kinh nghiệm trực tiếp thăm khám và điều trị các bệnh lý chuyên khoa Nhi. Đặc biệt, bác sĩ có thế mạnh về các bệnh lý hô hấp, miễn dịch – dị ứng, tiêu hóa và dinh dưỡng trẻ em.</p>
+                            <p>Phần mềm <strong>BiliTool.Vn</strong> được bác sĩ tham gia biên dịch, số hóa thuật toán y khoa và cố vấn quy trình vận hành lâm sàng thực tế nhằm mang lại công cụ hỗ trợ cho cộng đồng Y khoa.</p>
+                        </div>
+
+                        <div class="author-credentials mt-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Đào tạo</h6>
+                                    <ul class="list-unstyled text-start" style="padding-left:0;">
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Tốt nghiệp BS Đa khoa - ĐH Y Hà Nội (2017)</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> BS Định hướng Nhi - BV Nhi Trung ương (2018)</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Thạc Sĩ chuyên ngành Nhi Khoa - ĐH Y Hà Nội (2024)</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Hoạt động chuyên môn</h6>
+                                    <ul class="list-unstyled text-start" style="padding-left:0;">
+                                        <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Công tác tại BV E (2018 - Nay)</li>
+                                        <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Tác giả nhiều nghiên cứu chuyên ngành Nhi khoa.</li>
+                                        <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Nhận Bằng khen của Bộ Y Tế (2024).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="author-links mt-1">
+                            <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
+                                <i class="fas fa-globe me-2"></i> Ghé thăm Trang web DrNinhMai.Com
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+}
 
 <style>
     .author-card {

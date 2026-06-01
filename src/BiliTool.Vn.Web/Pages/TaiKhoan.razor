@@ -7,8 +7,9 @@
 @inject NguoiDungHienTaiService NguoiDung
 @inject IMediator Mediator
 @inject NavigationManager NavManager
+@inject BiliTool.Vn.Web.Services.TranslationService TranslationService
 
-<PageTitle>Quản lý tài khoản - BiliTool.Vn</PageTitle>
+<PageTitle>@T("Profile_Title") - BiliTool.Vn</PageTitle>
 
 <AuthorizeView>
     <Authorized>
@@ -28,7 +29,7 @@
                     </div>
                     <div class="profile-text">
                         <h1>@(string.IsNullOrEmpty(HoSoForm.HoTen) ? NguoiDung.TenHienThi : HoSoForm.HoTen)</h1>
-                        <p><i class="fab fa-google"></i> Xác thực thông qua Google</p>
+                        <p><i class="fab fa-google"></i> @T("Profile_AuthGoogle")</p>
                         <span class="user-email">@NguoiDung.Email</span>
                     </div>
                 </div>
@@ -38,11 +39,11 @@
             <div class="profile-tabs">
                 <button class="ptab @(TabActive == "thongke" ? "ptab-active" : "")" 
                         @onclick='() => TabActive = "thongke"'>
-                    <i class="fas fa-chart-pie"></i> Thống kê
+                    <i class="fas fa-chart-pie"></i> @T("Profile_TabStats")
                 </button>
                 <button class="ptab @(TabActive == "hoso" ? "ptab-active" : "")" 
                         @onclick='() => TabActive = "hoso"'>
-                    <i class="fas fa-id-card"></i> Hồ sơ cá nhân
+                    <i class="fas fa-id-card"></i> @T("Profile_TabPersonal")
                 </button>
             </div>
 
@@ -53,7 +54,7 @@
                     @if (IsLoading)
                     {
                         <div class="loading-state">
-                            <i class="fas fa-circle-notch fa-spin"></i> Đang tải dữ liệu...
+                            <i class="fas fa-circle-notch fa-spin"></i> @T("Profile_Loading")
                         </div>
                     }
                     else
@@ -71,7 +72,7 @@
                                 </div>
                                 <div class="mc-content">
                                     <span class="mc-value">@(ThongBaoLoi != null ? "--" : TongSoCa.ToString())</span>
-                                    <span class="mc-label">Số ca lâm sàng (Phiên làm việc)</span>
+                                    <span class="mc-label">@T("Profile_ClinicalCases")</span>
                                 </div>
                             </div>
                             <div class="metric-card">
@@ -80,7 +81,7 @@
                                 </div>
                                 <div class="mc-content">
                                     <span class="mc-value">@(ThongBaoLoi != null ? "--" : TongSoLanTinh.ToString())</span>
-                                    <span class="mc-label">Tổng số phép tính đã thực hiện</span>
+                                    <span class="mc-label">@T("Profile_CalculationsCount")</span>
                                 </div>
                             </div>
                             <div class="metric-card">
@@ -88,8 +89,8 @@
                                     <i class="fas fa-history"></i>
                                 </div>
                                 <div class="mc-content">
-                                    <span class="mc-value">Truy cập</span>
-                                    <a href="/lich-su" class="mc-link">Xem lại lịch sử <i class="fas fa-arrow-right"></i></a>
+                                    <span class="mc-value">@T("Menu_History")</span>
+                                    <a href="/lich-su" class="mc-link">@T("Profile_ReviewHistory") <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -104,43 +105,43 @@
                     @if (LuuThanhCong)
                     {
                         <div class="alert-success-soft">
-                            <i class="fas fa-check-circle"></i> Hồ sơ đã được lưu thành công!
+                            <i class="fas fa-check-circle"></i> @T("Profile_SaveSuccess")
                         </div>
                     }
                     @if (LuuThatBai)
                     {
                         <div class="alert-info-soft">
-                            <i class="fas fa-exclamation-triangle"></i> Không thể lưu hồ sơ. Vui lòng thử lại sau.
+                            <i class="fas fa-exclamation-triangle"></i> @T("Profile_SaveError")
                         </div>
                     }
 
                     <div class="profile-form">
                         <div class="form-section-title">
-                            <i class="fas fa-user-edit"></i> Thông tin cá nhân
+                            <i class="fas fa-user-edit"></i> @T("Profile_PersonalDetails")
                         </div>
 
                         <div class="form-row-2">
                             <div class="form-group-vn">
-                                <label class="form-label-vn">Họ và tên đầy đủ <span class="text-danger">*</span></label>
-                                <input class="form-input-vn" type="text" @bind="HoSoForm.HoTen" placeholder="Vd: Nguyễn Thị Phương Mai" />
+                                <label class="form-label-vn">@T("Profile_FullName") <span class="text-danger">*</span></label>
+                                <input class="form-input-vn" type="text" @bind="HoSoForm.HoTen" placeholder="@T("Profile_FullName")" />
                             </div>
                             <div class="form-group-vn">
-                                <label class="form-label-vn">Email (từ Google)</label>
+                                <label class="form-label-vn">@T("Profile_GoogleEmail")</label>
                                 <input class="form-input-vn" type="email" value="@NguoiDung.Email" disabled />
                             </div>
                         </div>
 
                         <div class="form-row-2">
                             <div class="form-group-vn">
-                                <label class="form-label-vn">Chức danh / Học vị</label>
+                                <label class="form-label-vn">@T("Profile_TitleDegree")</label>
                                 <input class="form-input-vn" type="text" @bind="HoSoForm.ChucDanh" placeholder="Vd: ThS. BS., BS. CKII, TS. BS." />
                             </div>
                             <div class="form-group-vn">
-                                <label class="form-label-vn">Ngày sinh</label>
+                                <label class="form-label-vn">@T("Profile_DateOfBirth")</label>
                                 <input class="form-input-vn" type="text"
                                        value="@NgaySinhStr"
                                        @onchange="OnNgaySinhChange"
-                                       placeholder="dd/mm/yyyy"
+                                       placeholder="@T("Profile_DobPlaceholder")"
                                        maxlength="10" />
                                 @if (NgaySinhLoi != null)
                                 {
@@ -151,18 +152,18 @@
 
                         <div class="form-row-2">
                             <div class="form-group-vn">
-                                <label class="form-label-vn">Số điện thoại</label>
+                                <label class="form-label-vn">@T("Profile_Phone")</label>
                                 <input class="form-input-vn" type="tel" @bind="HoSoForm.SoDienThoai" placeholder="0912 345 678" />
                             </div>
                             <div class="form-group-vn">
-                                <label class="form-label-vn">Chuyên khoa</label>
-                                <input class="form-input-vn" type="text" @bind="HoSoForm.ChuyenKhoa" placeholder="Vd: Nhi khoa, Sơ sinh, Hô hấp..." />
+                                <label class="form-label-vn">@T("Profile_Specialty")</label>
+                                <input class="form-input-vn" type="text" @bind="HoSoForm.ChuyenKhoa" placeholder="Vd: Nhi khoa, Sơ sinh..." />
                             </div>
                         </div>
 
                         <div class="form-group-vn">
-                            <label class="form-label-vn">Đơn vị công tác</label>
-                            <input class="form-input-vn" type="text" @bind="HoSoForm.DonViCongTac" placeholder="Vd: Khoa Nội Nhi tổng hợp – Bệnh viện E, Hà Nội" />
+                            <label class="form-label-vn">@T("Profile_Institution")</label>
+                            <input class="form-input-vn" type="text" @bind="HoSoForm.DonViCongTac" placeholder="Vd: Khoa Nội Nhi tổng hợp..." />
                         </div>
 
                         <div class="form-actions">
@@ -170,12 +171,12 @@
                                 @if (DangLuu)
                                 {
                                     <i class="fas fa-circle-notch fa-spin"></i>
-                                    <span>Đang lưu...</span>
+                                    <span>@T("Profile_Saving")</span>
                                 }
                                 else
                                 {
                                     <i class="fas fa-save"></i>
-                                    <span>Lưu thông tin</span>
+                                    <span>@T("Profile_SaveInfo")</span>
                                 }
                             </button>
                         </div>
@@ -185,7 +186,7 @@
 
             <div class="profile-actions">
                 <a href="/dang-xuat" class="btn btn-danger btn-logout-large">
-                    <i class="fas fa-sign-out-alt"></i> Đăng xuất tài khoản
+                    <i class="fas fa-sign-out-alt"></i> @T("Profile_Logout")
                 </a>
             </div>
         </div>
@@ -208,6 +209,8 @@
     private HoSoNguoiDungDto HoSoForm = new();
     private string NgaySinhStr = "";
     private string? NgaySinhLoi = null;
+
+    private string T(string key) => TranslationService[key];
 
     protected override async Task OnInitializedAsync()
     {
@@ -243,7 +246,7 @@
         }
         catch (Exception)
         {
-            ThongBaoLoi = "Không thể kết nối cơ sở dữ liệu. Số liệu thống kê tạm thời chưa hiển thị.";
+            ThongBaoLoi = T("Profile_DbError");
         }
         finally
         {
@@ -268,7 +271,7 @@
             }
             else
             {
-                NgaySinhLoi = "Vui lòng nhập đúng định dạng dd/mm/yyyy (ví dụ: 15/03/1990)";
+                NgaySinhLoi = T("Profile_DobError");
                 return;
             }
         }
