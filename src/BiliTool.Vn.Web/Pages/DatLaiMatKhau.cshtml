@@ -1,11 +1,25 @@
 @page "/dat-lai-mat-khau"
 @model BiliTool.Vn.Web.Pages.DatLaiMatKhauModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="@lang">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đặt lại mật khẩu — BiliTool.Vn</title>
+    @if (lang == "en")
+    {
+        <title>Reset Password — BiliTool.Vn</title>
+    }
+    else if (lang == "fr")
+    {
+        <title>Réinitialiser le mot de passe — BiliTool.Vn</title>
+    }
+    else
+    {
+        <title>Đặt lại mật khẩu — BiliTool.Vn</title>
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -42,8 +56,21 @@
             <span>BiliTool.Vn</span>
         </div>
 
-        <h1>Đặt lại mật khẩu mới</h1>
-        <p class="subtitle">Nhập mã OTP đã nhận qua email và mật khẩu mới.</p>
+        @if (lang == "en")
+        {
+            <h1>Set New Password</h1>
+            <p class="subtitle">Enter the OTP code received via email and your new password.</p>
+        }
+        else if (lang == "fr")
+        {
+            <h1>Définir un nouveau mot de passe</h1>
+            <p class="subtitle">Saisissez le code OTP reçu par e-mail et votre nouveau mot de passe.</p>
+        }
+        else
+        {
+            <h1>Đặt lại mật khẩu mới</h1>
+            <p class="subtitle">Nhập mã OTP đã nhận qua email và mật khẩu mới.</p>
+        }
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
@@ -56,25 +83,80 @@
             <input type="hidden" name="Email" value="@Model.Email" />
             
             <div class="form-group">
-                <label class="form-label" for="OtpCode">Mã OTP</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="OtpCode">OTP Code</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="OtpCode">Code OTP</label>
+                }
+                else
+                {
+                    <label class="form-label" for="OtpCode">Mã OTP</label>
+                }
                 <input type="text" id="OtpCode" name="OtpCode" class="form-control otp" maxlength="6" autocomplete="off" required placeholder="000000" />
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="NewPassword">Mật khẩu mới</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="NewPassword">New Password</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="NewPassword">Nouveau mot de passe</label>
+                }
+                else
+                {
+                    <label class="form-label" for="NewPassword">Mật khẩu mới</label>
+                }
                 <input type="password" id="NewPassword" name="NewPassword" class="form-control" required placeholder="••••••••" />
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="ConfirmPassword">Xác nhận mật khẩu mới</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="ConfirmPassword">Confirm New Password</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="ConfirmPassword">Confirmer le nouveau mot de passe</label>
+                }
+                else
+                {
+                    <label class="form-label" for="ConfirmPassword">Xác nhận mật khẩu mới</label>
+                }
                 <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required placeholder="••••••••" />
             </div>
 
-            <button type="submit" class="btn-primary">Hoàn tất đặt lại</button>
+            @if (lang == "en")
+            {
+                <button type="submit" class="btn-primary">Complete Reset</button>
+            }
+            else if (lang == "fr")
+            {
+                <button type="submit" class="btn-primary">Réinitialisation terminée</button>
+            }
+            else
+            {
+                <button type="submit" class="btn-primary">Hoàn tất đặt lại</button>
+            }
         </form>
 
         <p class="register-text">
-            <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Hủy và quay lại</a>
+            @if (lang == "en")
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Cancel and go back</a>
+            }
+            else if (lang == "fr")
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Annuler et retourner</a>
+            }
+            else
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Hủy và quay lại</a>
+            }
         </p>
     </div>
 </body>

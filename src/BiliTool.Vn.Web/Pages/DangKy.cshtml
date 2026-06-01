@@ -1,11 +1,25 @@
 @page "/dang-ky"
 @model BiliTool.Vn.Web.Pages.DangKyModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="@lang">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng ký tài khoản — BiliTool.Vn</title>
+    @if (lang == "en")
+    {
+        <title>Create Account — BiliTool.Vn</title>
+    }
+    else if (lang == "fr")
+    {
+        <title>Créer un compte — BiliTool.Vn</title>
+    }
+    else
+    {
+        <title>Đăng ký tài khoản — BiliTool.Vn</title>
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -41,8 +55,21 @@
             <span>BiliTool.Vn</span>
         </div>
 
-        <h1>Tạo tài khoản mới</h1>
-        <p class="subtitle">Tham gia nền tảng hỗ trợ bác sĩ nhi khoa hàng đầu.</p>
+        @if (lang == "en")
+        {
+            <h1>Create new account</h1>
+            <p class="subtitle">Join the leading clinical support platform for pediatricians.</p>
+        }
+        else if (lang == "fr")
+        {
+            <h1>Créer un nouveau compte</h1>
+            <p class="subtitle">Rejoignez la plateforme d'aide clinique pour pédiatres.</p>
+        }
+        else
+        {
+            <h1>Tạo tài khoản mới</h1>
+            <p class="subtitle">Tham gia nền tảng hỗ trợ bác sĩ nhi khoa hàng đầu.</p>
+        }
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
@@ -53,30 +80,96 @@
 
         <form method="post">
             <div class="form-group">
-                <label class="form-label" for="HoTen">Họ và Tên</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="HoTen">Full Name</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="HoTen">Nom complet</label>
+                }
+                else
+                {
+                    <label class="form-label" for="HoTen">Họ và Tên</label>
+                }
                 <input type="text" id="HoTen" name="RegisterData.HoTen" class="form-control" value="@Model.RegisterData.HoTen" required placeholder="Nguyễn Văn A" />
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="Email">Địa chỉ Email</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="Email">Email Address</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="Email">Adresse E-mail</label>
+                }
+                else
+                {
+                    <label class="form-label" for="Email">Địa chỉ Email</label>
+                }
                 <input type="email" id="Email" name="RegisterData.Email" class="form-control" value="@Model.RegisterData.Email" required placeholder="nhapemail@domain.com" />
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="Password">Mật khẩu</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="Password">Password</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="Password">Mot de passe</label>
+                }
+                else
+                {
+                    <label class="form-label" for="Password">Mật khẩu</label>
+                }
                 <input type="password" id="Password" name="RegisterData.Password" class="form-control" required placeholder="••••••••" />
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="ConfirmPassword">Xác nhận mật khẩu</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="ConfirmPassword">Confirm Password</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="ConfirmPassword">Confirmer le mot de passe</label>
+                }
+                else
+                {
+                    <label class="form-label" for="ConfirmPassword">Xác nhận mật khẩu</label>
+                }
                 <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required placeholder="••••••••" />
             </div>
 
-            <button type="submit" class="btn-primary">Đăng ký</button>
+            @if (lang == "en")
+            {
+                <button type="submit" class="btn-primary">Sign Up</button>
+            }
+            else if (lang == "fr")
+            {
+                <button type="submit" class="btn-primary">S'inscrire</button>
+            }
+            else
+            {
+                <button type="submit" class="btn-primary">Đăng ký</button>
+            }
         </form>
 
         <p class="register-text">
-            Đã có tài khoản? <a href="/dang-nhap">Đăng nhập</a>
+            @if (lang == "en")
+            {
+                <span>Already have an account? <a href="/dang-nhap">Sign In</a></span>
+            }
+            else if (lang == "fr")
+            {
+                <span>Déjà un compte ? <a href="/dang-nhap">Se connecter</a></span>
+            }
+            else
+            {
+                <span>Đã có tài khoản? <a href="/dang-nhap">Đăng nhập</a></span>
+            }
         </p>
     </div>
 </body>

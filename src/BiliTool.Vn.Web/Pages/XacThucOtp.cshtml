@@ -1,11 +1,25 @@
 @page "/xac-thuc-otp"
 @model BiliTool.Vn.Web.Pages.XacThucOtpModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="@lang">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Xác thực OTP — BiliTool.Vn</title>
+    @if (lang == "en")
+    {
+        <title>Verify OTP — BiliTool.Vn</title>
+    }
+    else if (lang == "fr")
+    {
+        <title>Vérification OTP — BiliTool.Vn</title>
+    }
+    else
+    {
+        <title>Xác thực OTP — BiliTool.Vn</title>
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -42,10 +56,32 @@
     <div class="login-card">
         <div class="logo">
             <i class="fas fa-envelope-open-text"></i>
-            <span>Xác thực Email</span>
+            @if (lang == "en")
+            {
+                <span>Email Verification</span>
+            }
+            else if (lang == "fr")
+            {
+                <span>Vérification d'e-mail</span>
+            }
+            else
+            {
+                <span>Xác thực Email</span>
+            }
         </div>
 
-        <p class="subtitle">Chúng tôi đã gửi một mã gồm 6 số đến email <strong>@Model.Email</strong>. Vui lòng kiểm tra hộp thư đến hoặc thư mục Spam.</p>
+        @if (lang == "en")
+        {
+            <p class="subtitle">We have sent a 6-digit code to email <strong>@Model.Email</strong>. Please check your inbox or Spam folder.</p>
+        }
+        else if (lang == "fr")
+        {
+            <p class="subtitle">Nous avons envoyé un code à 6 chiffres à l'adresse <strong>@Model.Email</strong>. Veuillez vérifier votre boîte de réception ou dossier Spams.</p>
+        }
+        else
+        {
+            <p class="subtitle">Chúng tôi đã gửi một mã gồm 6 số đến email <strong>@Model.Email</strong>. Vui lòng kiểm tra hộp thư đến hoặc thư mục Spam.</p>
+        }
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
@@ -63,20 +99,64 @@
         <form method="post">
             <input type="hidden" name="Email" value="@Model.Email" />
             <div class="form-group">
-                <label class="form-label" for="OtpCode">Mã OTP</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="OtpCode">OTP Code</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="OtpCode">Code OTP</label>
+                }
+                else
+                {
+                    <label class="form-label" for="OtpCode">Mã OTP</label>
+                }
                 <input type="text" id="OtpCode" name="OtpCode" class="form-control" maxlength="6" autocomplete="off" required placeholder="000000" />
             </div>
 
-            <button type="submit" class="btn-primary">Xác nhận</button>
+            @if (lang == "en")
+            {
+                <button type="submit" class="btn-primary">Verify</button>
+            }
+            else if (lang == "fr")
+            {
+                <button type="submit" class="btn-primary">Vérifier</button>
+            }
+            else
+            {
+                <button type="submit" class="btn-primary">Xác nhận</button>
+            }
         </form>
 
         <form method="post" asp-page-handler="Resend">
             <input type="hidden" name="Email" value="@Model.Email" />
-            <button type="submit" class="btn-outline">Gửi lại mã OTP</button>
+            @if (lang == "en")
+            {
+                <button type="submit" class="btn-outline">Resend OTP Code</button>
+            }
+            else if (lang == "fr")
+            {
+                <button type="submit" class="btn-outline">Renvoyer le code OTP</button>
+            }
+            else
+            {
+                <button type="submit" class="btn-outline">Gửi lại mã OTP</button>
+            }
         </form>
 
         <p class="register-text">
-            <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Quay lại đăng nhập</a>
+            @if (lang == "en")
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Back to Login</a>
+            }
+            else if (lang == "fr")
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Retour à la connexion</a>
+            }
+            else
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Quay lại đăng nhập</a>
+            }
         </p>
     </div>
 </body>

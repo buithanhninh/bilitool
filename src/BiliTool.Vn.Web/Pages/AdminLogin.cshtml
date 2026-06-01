@@ -2,14 +2,26 @@
 @model BiliTool.Vn.Web.Pages.AdminLoginModel
 @{
     Layout = null;
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
 }
 
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="@lang">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập Quản trị - BiliTool.Vn</title>
+    @if (lang == "en")
+    {
+        <title>Admin Login - BiliTool.Vn</title>
+    }
+    else if (lang == "fr")
+    {
+        <title>Connexion Administrateur - BiliTool.Vn</title>
+    }
+    else
+    {
+        <title>Đăng nhập Quản trị - BiliTool.Vn</title>
+    }
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
@@ -39,7 +51,18 @@
 <body>
 
 <div class="login-card">
-    <h3><i class="fas fa-shield-alt text-primary"></i> Admin Login</h3>
+    @if (lang == "en")
+    {
+        <h3><i class="fas fa-shield-alt text-primary"></i> Admin Login</h3>
+    }
+    else if (lang == "fr")
+    {
+        <h3><i class="fas fa-shield-alt text-primary"></i> Connexion Admin</h3>
+    }
+    else
+    {
+        <h3><i class="fas fa-shield-alt text-primary"></i> Đăng nhập Quản trị</h3>
+    }
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
@@ -51,16 +74,62 @@
     <form method="post">
         @Html.AntiForgeryToken()
         <div class="mb-3">
-            <label for="Username" class="form-label">Tài khoản</label>
+            @if (lang == "en")
+            {
+                <label for="Username" class="form-label">Username</label>
+            }
+            else if (lang == "fr")
+            {
+                <label for="Username" class="form-label">Nom d'utilisateur</label>
+            }
+            else
+            {
+                <label for="Username" class="form-label">Tài khoản</label>
+            }
             <input type="text" class="form-control" id="Username" name="Username" value="@Model.Username" required autofocus />
         </div>
         <div class="mb-3">
-            <label for="Password" class="form-label">Mật khẩu</label>
+            @if (lang == "en")
+            {
+                <label for="Password" class="form-label">Password</label>
+            }
+            else if (lang == "fr")
+            {
+                <label for="Password" class="form-label">Mot de passe</label>
+            }
+            else
+            {
+                <label for="Password" class="form-label">Mật khẩu</label>
+            }
             <input type="password" class="form-control" id="Password" name="Password" required />
         </div>
-        <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+        
+        @if (lang == "en")
+        {
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        }
+        else if (lang == "fr")
+        {
+            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+        }
+        
         <div class="text-center mt-3">
-            <a href="/" class="text-decoration-none"><i class="fas fa-arrow-left"></i> Về trang chủ</a>
+            @if (lang == "en")
+            {
+                <a href="/" class="text-decoration-none"><i class="fas fa-arrow-left"></i> Back to homepage</a>
+            }
+            else if (lang == "fr")
+            {
+                <a href="/" class="text-decoration-none"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+            }
+            else
+            {
+                <a href="/" class="text-decoration-none"><i class="fas fa-arrow-left"></i> Về trang chủ</a>
+            }
         </div>
     </form>
 </div>

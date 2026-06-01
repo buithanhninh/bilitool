@@ -40,8 +40,21 @@
     <component type="typeof(App)" render-mode="ServerPrerendered" />
 
     <div id="blazor-error-ui" class="blazor-error-ui-custom">
-        <span><i class="fas fa-exclamation-circle text-warning"></i> Đã xảy ra lỗi hệ thống.</span>
-        <a href="" class="reload btn btn-sm btn-outline-warning ms-2">Tải lại trang</a>
+        @if (currentLang == "en")
+        {
+            <span><i class="fas fa-exclamation-circle text-warning"></i> An error has occurred.</span>
+            <a href="" class="reload btn btn-sm btn-outline-warning ms-2">Reload</a>
+        }
+        else if (currentLang == "fr")
+        {
+            <span><i class="fas fa-exclamation-circle text-warning"></i> Une erreur est survenue.</span>
+            <a href="" class="reload btn btn-sm btn-outline-warning ms-2">Recharger</a>
+        }
+        else
+        {
+            <span><i class="fas fa-exclamation-circle text-warning"></i> Đã xảy ra lỗi hệ thống.</span>
+            <a href="" class="reload btn btn-sm btn-outline-warning ms-2">Tải lại trang</a>
+        }
         <a class="dismiss ms-2" style="cursor:pointer;"><i class="fas fa-times"></i></a>
     </div>
 
@@ -50,22 +63,61 @@
         <div class="show">
             <div class="reconnect-box shadow-lg">
                 <i class="fas fa-wifi fa-beat fa-2x text-primary mb-2"></i>
-                <h5 class="mb-1 text-dark">Đang kết nối lại...</h5>
-                <p class="text-muted small mb-0">Đường truyền mạng không ổn định, vui lòng chờ.</p>
+                @if (currentLang == "en")
+                {
+                    <h5 class="mb-1 text-dark">Reconnecting...</h5>
+                    <p class="text-muted small mb-0">Unstable network connection, please wait.</p>
+                }
+                else if (currentLang == "fr")
+                {
+                    <h5 class="mb-1 text-dark">Reconnexion...</h5>
+                    <p class="text-muted small mb-0">Connexion réseau instable, veuillez patienter.</p>
+                }
+                else
+                {
+                    <h5 class="mb-1 text-dark">Đang kết nối lại...</h5>
+                    <p class="text-muted small mb-0">Đường truyền mạng không ổn định, vui lòng chờ.</p>
+                }
             </div>
         </div>
         <div class="failed">
             <div class="reconnect-box shadow-lg border-danger border border-2">
                 <i class="fas fa-satellite-dish fa-2x text-danger mb-2"></i>
-                <h5 class="mb-1 text-danger">Mất kết nối máy chủ</h5>
-                <p class="text-muted small mb-0">Đang tự động tải lại trang...</p>
+                @if (currentLang == "en")
+                {
+                    <h5 class="mb-1 text-danger">Connection lost</h5>
+                    <p class="text-muted small mb-0">Automatically reloading page...</p>
+                }
+                else if (currentLang == "fr")
+                {
+                    <h5 class="mb-1 text-danger">Connexion perdue</h5>
+                    <p class="text-muted small mb-0">Rechargement automatique...</p>
+                }
+                else
+                {
+                    <h5 class="mb-1 text-danger">Mất kết nối máy chủ</h5>
+                    <p class="text-muted small mb-0">Đang tự động tải lại trang...</p>
+                }
             </div>
         </div>
         <div class="rejected">
             <div class="reconnect-box shadow-lg border-warning border border-2">
                 <i class="fas fa-stopwatch fa-2x text-warning mb-2"></i>
-                <h5 class="mb-1 text-warning">Phiên làm việc hết hạn</h5>
-                <p class="text-muted small mb-0">Đang tự động tải lại trang...</p>
+                @if (currentLang == "en")
+                {
+                    <h5 class="mb-1 text-warning">Session expired</h5>
+                    <p class="text-muted small mb-0">Automatically reloading page...</p>
+                }
+                else if (currentLang == "fr")
+                {
+                    <h5 class="mb-1 text-warning">Session expirée</h5>
+                    <p class="text-muted small mb-0">Rechargement automatique...</p>
+                }
+                else
+                {
+                    <h5 class="mb-1 text-warning">Phiên làm việc hết hạn</h5>
+                    <p class="text-muted small mb-0">Đang tự động tải lại trang...</p>
+                }
             </div>
         </div>
     </div>

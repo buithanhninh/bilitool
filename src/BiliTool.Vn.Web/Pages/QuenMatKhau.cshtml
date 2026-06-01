@@ -1,11 +1,25 @@
 @page "/quen-mat-khau"
 @model BiliTool.Vn.Web.Pages.QuenMatKhauModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="@lang">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quên mật khẩu — BiliTool.Vn</title>
+    @if (lang == "en")
+    {
+        <title>Forgot Password — BiliTool.Vn</title>
+    }
+    else if (lang == "fr")
+    {
+        <title>Mot de passe oublié — BiliTool.Vn</title>
+    }
+    else
+    {
+        <title>Quên mật khẩu — BiliTool.Vn</title>
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -41,8 +55,21 @@
             <span>BiliTool.Vn</span>
         </div>
 
-        <h1>Khôi phục mật khẩu</h1>
-        <p class="subtitle">Nhập email của bạn để nhận mã xác thực đặt lại mật khẩu.</p>
+        @if (lang == "en")
+        {
+            <h1>Reset Password</h1>
+            <p class="subtitle">Enter your email to receive an OTP code to reset your password.</p>
+        }
+        else if (lang == "fr")
+        {
+            <h1>Récupérer le mot de passe</h1>
+            <p class="subtitle">Entrez votre e-mail pour recevoir un code OTP afin de réinitialiser votre mot de passe.</p>
+        }
+        else
+        {
+            <h1>Khôi phục mật khẩu</h1>
+            <p class="subtitle">Nhập email của bạn để nhận mã xác thực đặt lại mật khẩu.</p>
+        }
 
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
@@ -53,15 +80,48 @@
 
         <form method="post">
             <div class="form-group">
-                <label class="form-label" for="Email">Địa chỉ Email</label>
+                @if (lang == "en")
+                {
+                    <label class="form-label" for="Email">Email Address</label>
+                }
+                else if (lang == "fr")
+                {
+                    <label class="form-label" for="Email">Adresse E-mail</label>
+                }
+                else
+                {
+                    <label class="form-label" for="Email">Địa chỉ Email</label>
+                }
                 <input type="email" id="Email" name="Email" class="form-control" value="@Model.Email" required placeholder="nhapemail@domain.com" />
             </div>
 
-            <button type="submit" class="btn-primary">Gửi mã OTP</button>
+            @if (lang == "en")
+            {
+                <button type="submit" class="btn-primary">Send OTP Code</button>
+            }
+            else if (lang == "fr")
+            {
+                <button type="submit" class="btn-primary">Envoyer le code OTP</button>
+            }
+            else
+            {
+                <button type="submit" class="btn-primary">Gửi mã OTP</button>
+            }
         </form>
 
         <p class="register-text">
-            <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Quay lại đăng nhập</a>
+            @if (lang == "en")
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Back to Login</a>
+            }
+            else if (lang == "fr")
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Retour à la connexion</a>
+            }
+            else
+            {
+                <a href="/dang-nhap"><i class="fas fa-arrow-left"></i> Quay lại đăng nhập</a>
+            }
         </p>
     </div>
 </body>
