@@ -1,7 +1,37 @@
 @page "/dang-xuat"
 @model BiliTool.Vn.Web.Pages.DangXuatModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 <!DOCTYPE html>
-<html lang="vi">
-<head><meta charset="utf-8" /><title>Đang đăng xuất...</title></head>
-<body><p>Đang đăng xuất...</p></body>
+<html lang="@lang">
+<head>
+    <meta charset="utf-8" />
+    @if (lang == "en")
+    {
+        <title>Logging out...</title>
+    }
+    else if (lang == "fr")
+    {
+        <title>Déconnexion en cours...</title>
+    }
+    else
+    {
+        <title>Đang đăng xuất...</title>
+    }
+</head>
+<body>
+    @if (lang == "en")
+    {
+        <p>Logging out...</p>
+    }
+    else if (lang == "fr")
+    {
+        <p>Déconnexion en cours...</p>
+    }
+    else
+    {
+        <p>Đang đăng xuất...</p>
+    }
+</body>
 </html>

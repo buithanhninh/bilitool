@@ -248,6 +248,8 @@ public class MayTinhBilirubin : IMayTinhBilirubin
         // ========== KẾT HỢP: lấy ngưỡng THẤP HƠN (an toàn hơn) ==========
         decimal nguongChieuDen, nguongThayCuuMau, nguongEscalationChon;
         PhacDo phacDoQD;
+        var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+
         if (niceCD_MgDl <= nguongChieuDen_AAP)
         {
             nguongChieuDen = niceCD_MgDl;
@@ -255,7 +257,13 @@ public class MayTinhBilirubin : IMayTinhBilirubin
             // NICE CG98: Escalation (Intensify phototherapy) khi cách ngưỡng TM 50 µmol/L (~2.9 mg/dL)
             nguongEscalationChon = niceTM_MgDl - Math.Round(50m / 17.104m, 1);
             phacDoQD = PhacDo.NICE_CG98;
-            chuThich.Add("Ngưỡng chiếu đèn theo NICE CG98 (thấp hơn AAP 2022)");
+            
+            if (lang == "en")
+                chuThich.Add("Phototherapy threshold per NICE CG98 (lower than AAP 2022)");
+            else if (lang == "fr")
+                chuThich.Add("Seuil de photothérapie selon NICE CG98 (inférieur à AAP 2022)");
+            else
+                chuThich.Add("Ngưỡng chiếu đèn theo NICE CG98 (thấp hơn AAP 2022)");
         }
         else
         {
@@ -264,7 +272,13 @@ public class MayTinhBilirubin : IMayTinhBilirubin
             // AAP 2022: Escalation of Care khi cách ngưỡng TM 2.0 mg/dL
             nguongEscalationChon = nguongTM_AAP - 2.0m;
             phacDoQD = PhacDo.AAP2022;
-            chuThich.Add($"Ngưỡng chiếu đèn theo AAP 2022 (GA {tuoiThaiTuan}w, {(coNguyCo ? "có" : "không")} nguy cơ TK)");
+            
+            if (lang == "en")
+                chuThich.Add($"Phototherapy threshold per AAP 2022 (GA {tuoiThaiTuan}w, {(coNguyCo ? "with" : "without")} neuro risk)");
+            else if (lang == "fr")
+                chuThich.Add($"Seuil de photothérapie selon AAP 2022 (AG {tuoiThaiTuan}s, {(coNguyCo ? "avec" : "sans")} risque NT)");
+            else
+                chuThich.Add($"Ngưỡng chiếu đèn theo AAP 2022 (GA {tuoiThaiTuan}w, {(coNguyCo ? "có" : "không")} nguy cơ TK)");
         }
 
         var mucDo = XacDinhMucDo(bilirubinMgDl, nguongChieuDen, nguongEscalationChon, nguongThayCuuMau);
@@ -276,31 +290,60 @@ public class MayTinhBilirubin : IMayTinhBilirubin
         if (tuoiThaiTuan >= 37 && biliUmolL > 340m)
         {
             nguyCoKernicterus = true;
-            lyDoKernicterus.Add("Bilirubin > 340 µmol/L ở trẻ ≥37 tuần (NICE 1.5.1)");
+            if (lang == "en")
+                lyDoKernicterus.Add("Bilirubin > 340 µmol/L in infants ≥37 weeks (NICE 1.5.1)");
+            else if (lang == "fr")
+                lyDoKernicterus.Add("Bilirubine > 340 µmol/L chez les nourrissons ≥37 semaines (NICE 1.5.1)");
+            else
+                lyDoKernicterus.Add("Bilirubin > 340 µmol/L ở trẻ ≥37 tuần (NICE 1.5.1)");
         }
         decimal tocDoUmolH = tocDoTangBili.HasValue ? tocDoTangBili.Value * 17.104m : 0;
         if (tocDoTangBili.HasValue && tocDoUmolH > 8.5m)
         {
             nguyCoKernicterus = true;
-            lyDoKernicterus.Add($"Tốc độ tăng {tocDoUmolH:F1} µmol/L/h > 8.5 (NICE 1.5.1)");
+            if (lang == "en")
+                lyDoKernicterus.Add($"Rate of rise {tocDoUmolH:F1} µmol/L/h > 8.5 (NICE 1.5.1)");
+            else if (lang == "fr")
+                lyDoKernicterus.Add($"Taux d'augmentation {tocDoUmolH:F1} µmol/L/h > 8.5 (NICE 1.5.1)");
+            else
+                lyDoKernicterus.Add($"Tốc độ tăng {tocDoUmolH:F1} µmol/L/h > 8.5 (NICE 1.5.1)");
         }
         if (yeuToNguyCo.DauHieuBenhNaoBilirubinCap)
         {
             nguyCoKernicterus = true;
-            lyDoKernicterus.Add("Dấu hiệu bệnh não bilirubin cấp (NICE 1.5.1)");
+            if (lang == "en")
+                lyDoKernicterus.Add("Signs of acute bilirubin encephalopathy (NICE 1.5.1)");
+            else if (lang == "fr")
+                lyDoKernicterus.Add("Signes d'encéphalopathie bilirubinique aiguë (NICE 1.5.1)");
+            else
+                lyDoKernicterus.Add("Dấu hiệu bệnh não bilirubin cấp (NICE 1.5.1)");
         }
 
         // ========== NICE §1.7: VÀNG DA KÉO DÀI ==========
         bool laVDKD = tuoiThaiTuan >= 37 ? tuoiGio > 336 : tuoiGio > 504;
-        string? canhBaoVDKD = laVDKD
-            ? $"Vàng da kéo dài (>{(tuoiThaiTuan >= 37 ? 14 : 21)} ngày). Cần: conjugated bili, FBC, blood group, DAT, metabolic screening (NICE 1.7.1)"
-            : null;
+        string? canhBaoVDKD = null;
+        if (laVDKD)
+        {
+            if (lang == "en")
+                canhBaoVDKD = $"Prolonged jaundice (>{(tuoiThaiTuan >= 37 ? 14 : 21)} days). Required: conjugated bili, FBC, blood group, DAT, metabolic screening (NICE 1.7.1)";
+            else if (lang == "fr")
+                canhBaoVDKD = $"Ictère prolongé (>{(tuoiThaiTuan >= 37 ? 14 : 21)} jours). Recommandé: bilirubine conjuguée, NFS, groupe sanguin, DAT, dépistage métabolique (NICE 1.7.1)";
+            else
+                canhBaoVDKD = $"Vàng da kéo dài (>{(tuoiThaiTuan >= 37 ? 14 : 21)} ngày). Cần: conjugated bili, FBC, blood group, DAT, metabolic screening (NICE 1.7.1)";
+        }
 
         // ========== NICE §1.8.1: IVIG ==========
         bool canIVIG = yeuToNguyCo.CoBenhTanHuyetMienDich && tocDoTangBili.HasValue && tocDoUmolH > 8.5m;
-        string? moTaIVIG = canIVIG
-            ? "IVIG 500 mg/kg truyền TM trong 4 giờ — Bệnh tan huyết Rh/ABO + tăng >8.5 µmol/L/h (NICE 1.8.1)"
-            : null;
+        string? moTaIVIG = null;
+        if (canIVIG)
+        {
+            if (lang == "en")
+                moTaIVIG = "IVIG 500 mg/kg IV over 4 hours — Rh/ABO hemolytic disease + rise >8.5 µmol/L/h (NICE 1.8.1)";
+            else if (lang == "fr")
+                moTaIVIG = "IVIG 500 mg/kg IV en 4 heures — maladie hémolytique Rh/ABO + hausse >8.5 µmol/L/h (NICE 1.8.1)";
+            else
+                moTaIVIG = "IVIG 500 mg/kg truyền TM trong 4 giờ — Bệnh tan huyết Rh/ABO + tăng >8.5 µmol/L/h (NICE 1.8.1)";
+        }
 
         // ========== NICE §1.4.5: DỪNG CHIẾU ĐÈN ==========
         bool dangChieu = trangThaiChieuDen == TrangThaiChieuDen.DangChieuDen
@@ -309,8 +352,24 @@ public class MayTinhBilirubin : IMayTinhBilirubin
         bool coTheDung = dangChieu && biliUmolL < nguongDung_UmolL;
         bool canRebound = trangThaiChieuDen == TrangThaiChieuDen.DaDungChieuDen;
 
-        if (coTheDung) chuThich.Add("Có thể dừng chiếu đèn: bili < ngưỡng - 50 µmol/L (NICE 1.4.5)");
-        if (canRebound) chuThich.Add("Kiểm tra rebound bilirubin 12-18h sau dừng (NICE 1.4.6)");
+        if (coTheDung)
+        {
+            if (lang == "en")
+                chuThich.Add("Phototherapy can be stopped: bili < threshold - 50 µmol/L (NICE 1.4.5)");
+            else if (lang == "fr")
+                chuThich.Add("La photothérapie peut être arrêtée: bili < seuil - 50 µmol/L (NICE 1.4.5)");
+            else
+                chuThich.Add("Có thể dừng chiếu đèn: bili < ngưỡng - 50 µmol/L (NICE 1.4.5)");
+        }
+        if (canRebound)
+        {
+            if (lang == "en")
+                chuThich.Add("Check rebound bilirubin 12-18h after stopping (NICE 1.4.6)");
+            else if (lang == "fr")
+                chuThich.Add("Contrôle rebond de bilirubine 12-18h après l'arrêt (NICE 1.4.6)");
+            else
+                chuThich.Add("Kiểm tra rebound bilirubin 12-18h sau dừng (NICE 1.4.6)");
+        }
 
         // ========== NICE §1.4.1-1.4.4: LỊCH ĐO LẶP ==========
         string? lichDoLap = null;
@@ -319,36 +378,82 @@ public class MayTinhBilirubin : IMayTinhBilirubin
 
         if (dangChieu)
         {
-            lichDoLap = "Đo lại 4-6h sau bắt đầu chiếu đèn, sau đó mỗi 6-12h khi ổn định (NICE 1.4.4)";
+            if (lang == "en")
+                lichDoLap = "Repeat TSB 4-6h after starting phototherapy, then every 6-12h when stable (NICE 1.4.4)";
+            else if (lang == "fr")
+                lichDoLap = "Mesurer à nouveau 4-6h après le début, puis toutes les 6-12h après stabilisation (NICE 1.4.4)";
+            else
+                lichDoLap = "Đo lại 4-6h sau bắt đầu chiếu đèn, sau đó mỗi 6-12h khi ổn định (NICE 1.4.4)";
             gioDoLap = 6;
         }
         else if (tuoiGio <= 24 && mucDo >= MucDoNguyHiem.CanTheoDoiSat)
         {
-            lichDoLap = "Vàng da trong 24h đầu: đo serum bilirubin mỗi 6h (NICE 1.2.11)";
+            if (lang == "en")
+                lichDoLap = "Jaundice visible within 24h: check TSB every 6h (NICE 1.2.11)";
+            else if (lang == "fr")
+                lichDoLap = "Ictère dans les 24h premières: mesurer la bilirubine toutes les 6h (NICE 1.2.11)";
+            else
+                lichDoLap = "Vàng da trong 24h đầu: đo serum bilirubin mỗi 6h (NICE 1.2.11)";
             gioDoLap = 6;
         }
         else if (kcNICE_UmolL > 0 && kcNICE_UmolL <= 50)
         {
             if (yeuToNguyCo.CoNguyCoLamSangNICE)
             {
-                lichDoLap = "Trong 50 µmol/L dưới ngưỡng + có nguy cơ LS → đo lại trong 18h (NICE 1.4.1)";
+                if (lang == "en")
+                    lichDoLap = "Within 50 µmol/L below threshold + clinical risk factors → repeat in 18h (NICE 1.4.1)";
+                else if (lang == "fr")
+                    lichDoLap = "À moins de 50 µmol/L sous le seuil + facteurs de risque → mesurer dans les 18h (NICE 1.4.1)";
+                else
+                    lichDoLap = "Trong 50 µmol/L dưới ngưỡng + có nguy cơ LS → đo lại trong 18h (NICE 1.4.1)";
                 gioDoLap = 18;
             }
             else
             {
-                lichDoLap = "Trong 50 µmol/L dưới ngưỡng → đo lại trong 24h (NICE 1.4.1)";
+                if (lang == "en")
+                    lichDoLap = "Within 50 µmol/L below threshold → repeat in 24h (NICE 1.4.1)";
+                else if (lang == "fr")
+                    lichDoLap = "À moins de 50 µmol/L sous le seuil → mesurer dans les 24h (NICE 1.4.1)";
+                else
+                    lichDoLap = "Trong 50 µmol/L dưới ngưỡng → đo lại trong 24h (NICE 1.4.1)";
                 gioDoLap = 24;
             }
         }
         else if (kcNICE_UmolL > 50)
         {
-            lichDoLap = "Dưới ngưỡng >50 µmol/L — không cần đo lặp thường quy (NICE 1.4.2)";
+            if (lang == "en")
+                lichDoLap = "Below threshold by >50 µmol/L — no routine repeat required (NICE 1.4.2)";
+            else if (lang == "fr")
+                lichDoLap = "Sous le seuil de >50 µmol/L — pas de mesure de contrôle de routine (NICE 1.4.2)";
+            else
+                lichDoLap = "Dưới ngưỡng >50 µmol/L — không cần đo lặp thường quy (NICE 1.4.2)";
             gioDoLap = null;
         }
 
-        if (canIVIG) chuThich.Add("Chỉ định IVIG (NICE 1.8.1)");
-        if (nguyCoKernicterus) chuThich.Add("⚠️ NGUY CƠ KERNICTERUS (NICE 1.5.1)");
-        chuThich.Add("Lưu ý: Có sai lệch giữa các kit xét nghiệm bilirubin khác nhau (NICE CG98, 03/2023)");
+        if (canIVIG)
+        {
+            if (lang == "en")
+                chuThich.Add("IVIG indicated (NICE 1.8.1)");
+            else if (lang == "fr")
+                chuThich.Add("Indication d'IVIG (NICE 1.8.1)");
+            else
+                chuThich.Add("Chỉ định IVIG (NICE 1.8.1)");
+        }
+        if (nguyCoKernicterus)
+        {
+            if (lang == "en")
+                chuThich.Add("⚠️ KERNICTERUS RISK (NICE 1.5.1)");
+            else if (lang == "fr")
+                chuThich.Add("⚠️ RISQUE D'ICTÈRE NUCLÉAIRE (NICE 1.5.1)");
+            else
+                chuThich.Add("⚠️ NGUY CƠ KERNICTERUS (NICE 1.5.1)");
+        }
+        if (lang == "en")
+            chuThich.Add("Note: Clinical variation may exist among lab kits (NICE CG98, 03/2023)");
+        else if (lang == "fr")
+            chuThich.Add("Note: Des variations cliniques peuvent exister selon les kits de labo (NICE CG98, 03/2023)");
+        else
+            chuThich.Add("Lưu ý: Có sai lệch giữa các kit xét nghiệm bilirubin khác nhau (NICE CG98, 03/2023)");
 
         return new KetQuaTinhToanBilirubin
         {

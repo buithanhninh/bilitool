@@ -597,7 +597,7 @@
 
             var cmd = new TinhToanBilirubinCommand(model);
             ketQua = await Mediator.Send(cmd);
-            Toast.ShowSuccess("Tính toán thành công!");
+            Toast.ShowSuccess(T["Calc_Success"] ?? "Tính toán thành công!");
 
             // Lưu lịch sử
             try 
@@ -617,7 +617,7 @@
         }
         catch (Exception ex)
         {
-            Toast.ShowError($"Lỗi: {ex.Message}");
+            Toast.ShowError($"{(T["DeleteError"] ?? "Lỗi")}: {ex.Message}");
         }
         finally
         {
@@ -649,7 +649,7 @@
     {
         if (!NguoiDung.DaDangNhap)
         {
-            Toast.ShowWarning("Vui lòng đăng nhập để lưu trữ dữ liệu bệnh nhi!");
+            Toast.ShowWarning(T["LoginRequired_Toast"] ?? "Vui lòng đăng nhập để lưu trữ dữ liệu bệnh nhi!");
             return;
         }
 
@@ -688,7 +688,7 @@
         thongBaoLoiModal = string.Empty;
         if (string.IsNullOrWhiteSpace(formTao.HoTenBenhNhan))
         {
-            thongBaoLoiModal = "Vui lòng nhập họ tên bé.";
+            thongBaoLoiModal = T["EnterName_Error"] ?? "Vui lòng nhập họ tên bé.";
             return;
         }
 
@@ -715,7 +715,7 @@
             await Mediator.Send(new ThemXetNghiemCommand(userId, xnDto));
 
             hienModalTaoBe = false;
-            Toast.ShowSuccess("Lưu thành công! Bạn có thể xem hồ sơ ở phần báo cáo.");
+            Toast.ShowSuccess(T["Save_Success"] ?? "Lưu thành công! Bạn có thể xem hồ sơ ở phần báo cáo.");
             StateHasChanged();
         }
         catch (Exception ex)

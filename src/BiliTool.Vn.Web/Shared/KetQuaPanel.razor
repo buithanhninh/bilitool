@@ -13,19 +13,19 @@
                 @T[$"MucDo_{KetQua.MucDoNguyHiemEnum}"].ToString().ToUpper()
             </div>
             <div style="font-size: 0.85rem; margin-top: 6px; font-weight: 500; opacity: 0.9; text-transform: none;">
-                (Phiên giải theo phác đồ: @(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98"))
+                (@T["ProtocolInterpretation"]: @(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98"))
             </div>
         </div>
 
         <!-- Thông số tóm tắt -->
         <div class="thong-so-row mt-3">
             <div class="thong-so-item">
-                <span class="ts-label">Tuổi</span>
-                <span class="ts-value">@KetQua.TuoiGio giờ</span>
+                <span class="ts-label">@T["Age"]</span>
+                <span class="ts-value">@string.Format(T["Age_Hours"], KetQua.TuoiGio)</span>
             </div>
             <div class="thong-so-item">
-                <span class="ts-label">Tuổi thai</span>
-                <span class="ts-value">@KetQua.TuoiThaiTuan tuần</span>
+                <span class="ts-label">@T["GestationalAge"]</span>
+                <span class="ts-value">@KetQua.TuoiThaiTuan @T["Weeks_Short"]</span>
             </div>
             <div class="thong-so-item">
                 <span class="ts-label">Bilirubin</span>
@@ -35,9 +35,9 @@
                 </span>
             </div>
             <div class="thong-so-item">
-                <span class="ts-label">Nguy cơ TK</span>
+                <span class="ts-label">@T["CalcBili_Risk"]</span>
                 <span class="ts-value @(KetQua.CoNguyCoThanKinh ? "text-danger" : "text-success")">
-                    @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")
+                    @(KetQua.CoNguyCoThanKinh ? T["Yes"] : T["No"])
                 </span>
             </div>
         </div>
@@ -48,13 +48,13 @@
         <!-- Khoảng cách -->
         <div class="khoang-cach-grid">
             <div class="khoang-cach-item @(KetQua.CanChieuDenNgay ? "alert-style" : "")">
-                <span>Đến ngưỡng chiếu đèn</span>
+                <span>@T["ToPhototherapyThreshold"]</span>
                 <strong class="@LayClassKhoangCach(KetQua.KhoangCachDenNguongChieuDen)">
                     @FormatKhoangCach(KetQua.KhoangCachDenNguongChieuDen)
                 </strong>
             </div>
             <div class="khoang-cach-item @(KetQua.CanXemXetThayCuuMau ? "alert-style" : "")">
-                <span>Đến ngưỡng thay máu</span>
+                <span>@T["ToExchangeThreshold"]</span>
                 <strong class="@LayClassKhoangCach(KetQua.KhoangCachDenNguongThayCuuMau)">
                     @FormatKhoangCach(KetQua.KhoangCachDenNguongThayCuuMau)
                 </strong>
@@ -93,7 +93,7 @@
             <div class="nice-alert nice-alert-danger">
                 <div class="nice-alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
                 <div>
-                    <strong>⚠️ NGUY CƠ KERNICTERUS (NICE CG98 §1.5.1)</strong>
+                    <strong>@T["KernicterusRiskTitle"]</strong>
                     <ul class="mb-0 mt-1">
                         @foreach (var lyDo in KetQua.LyDoNguyCoKernicterus)
                         {
@@ -110,7 +110,7 @@
             <div class="nice-alert nice-alert-warning">
                 <div class="nice-alert-icon"><i class="fas fa-syringe"></i></div>
                 <div>
-                    <strong>Chỉ định IVIG (NICE CG98 §1.8.1)</strong>
+                    <strong>@T["IVIGIndicationTitle"]</strong>
                     <p class="mb-0 mt-1">@KetQua.MoTaIVIG</p>
                 </div>
             </div>
@@ -122,7 +122,7 @@
             <div class="nice-alert nice-alert-info">
                 <div class="nice-alert-icon"><i class="fas fa-hourglass-half"></i></div>
                 <div>
-                    <strong>Vàng da kéo dài (NICE CG98 §1.7.1)</strong>
+                    <strong>@T["ProlongedJaundiceTitle"]</strong>
                     <p class="mb-0 mt-1">@KetQua.CanhBaoVangDaKeoDai</p>
                 </div>
             </div>
@@ -134,8 +134,8 @@
             <div class="nice-alert nice-alert-success">
                 <div class="nice-alert-icon"><i class="fas fa-stop-circle"></i></div>
                 <div>
-                    <strong>Có thể dừng chiếu đèn (NICE CG98 §1.4.5)</strong>
-                    <p class="mb-0 mt-1">Bilirubin đã giảm dưới ngưỡng chiếu đèn - 50 µmol/L. Kiểm tra rebound 12-18h sau dừng (§1.4.6).</p>
+                    <strong>@T["CanStopPhotoTitle"]</strong>
+                    <p class="mb-0 mt-1">@T["CanStopPhotoDesc"]</p>
                 </div>
             </div>
         }
@@ -144,8 +144,8 @@
             <div class="nice-alert nice-alert-warning">
                 <div class="nice-alert-icon"><i class="fas fa-redo"></i></div>
                 <div>
-                    <strong>Kiểm tra Rebound (NICE CG98 §1.4.6)</strong>
-                    <p class="mb-0 mt-1">Cần đo lại bilirubin huyết thanh 12-18h sau khi dừng chiếu đèn.</p>
+                    <strong>@T["ReboundCheckTitle"]</strong>
+                    <p class="mb-0 mt-1">@T["ReboundCheckDesc"]</p>
                 </div>
             </div>
         }
@@ -153,16 +153,16 @@
         <!-- ══════ Ngưỡng tham chiếu NICE CG98 ══════ -->
         <div class="nice-thresholds-box">
             <div class="nice-thresholds-title">
-                <i class="fas fa-book-medical"></i> Ngưỡng tham chiếu NICE CG98 (µmol/L)
+                <i class="fas fa-book-medical"></i> @T["NiceRefThresholdTitle"]
             </div>
             <div class="nice-thresholds-grid">
                 <div class="nice-th-item">
-                    <span class="nice-th-label">Chiếu đèn</span>
+                    <span class="nice-th-label">@T["Phototherapy"]</span>
                     <span class="nice-th-value">@KetQua.NguongChieuDen_NICE_UmolL µmol/L</span>
                     <span class="nice-th-sub">≈ @KetQua.NguongChieuDen_NICE_MgDl mg/dL</span>
                 </div>
                 <div class="nice-th-item">
-                    <span class="nice-th-label">Thay máu</span>
+                    <span class="nice-th-label">@T["ExchangeTransfusion"]</span>
                     <span class="nice-th-value">@KetQua.NguongThayCuuMau_NICE_UmolL µmol/L</span>
                     <span class="nice-th-sub">≈ @KetQua.NguongThayCuuMau_NICE_MgDl mg/dL</span>
                 </div>
@@ -184,9 +184,9 @@
 
         <!-- ══════ Chú thích nguồn tham chiếu ══════ -->
         <div class="nice-references">
-            <div class="nice-ref-title"><i class="fas fa-info-circle"></i> Nguồn tham chiếu</div>
+            <div class="nice-ref-title"><i class="fas fa-info-circle"></i> @T["ReferenceSource"]</div>
             <div class="nice-ref-badge">
-                Phác đồ quyết định: <strong>@(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")</strong>
+                @T["DecisiveProtocol"]: <strong>@(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")</strong>
             </div>
             <ul class="nice-ref-list">
                 @foreach (var ct in KetQua.ChuThichThamChieu)
@@ -199,13 +199,13 @@
         <!-- Actions -->
         <div class="action-buttons">
             <button class="btn-primary-vn" @onclick="OnTaoHoSoClicked" style="grid-column: 1 / -1; margin-bottom: 8px;">
-                <i class="fas fa-user-plus"></i> Tạo hồ sơ trẻ
+                <i class="fas fa-user-plus"></i> @T["Trend_Create"]
             </button>
             <button class="btn-copy" @onclick="HandleSaoChep">
-                <i class="fas fa-copy"></i> Sao chép báo cáo
+                <i class="fas fa-copy"></i> @T["CopyReport"]
             </button>
             <button class="btn-print text-white bg-primary bg-gradient" style="border: none;" @onclick="OnIn">
-                <i class="fas fa-file-pdf"></i> Xuất file PDF
+                <i class="fas fa-file-pdf"></i> @T["ExportPdf"]
             </button>
         </div>
     </div>
@@ -262,8 +262,8 @@
 
     private string FormatKhoangCach(decimal d) =>
         d < 0
-            ? $"Đã vượt {Math.Abs(d):F1} mg/dL"
-            : $"Còn {d:F1} mg/dL";
+            ? $"{T["Exceeded"]} {Math.Abs(d):F1} mg/dL"
+            : $"{T["Remaining"]} {d:F1} mg/dL";
 
     private string GetKhuyenNghiChinh()
     {
@@ -295,11 +295,11 @@
         sb.AppendLine($"{T["CalcBili_ThresholdChieuDenTichCuc"]}: {KetQua.NguongChieuDenTichCuc:F1} mg/dL");
         sb.AppendLine($"{T["CalcBili_ThresholdThayMau"]}: {KetQua.NguongThayCuuMau:F1} mg/dL");
         sb.AppendLine("--- NICE CG98 ---");
-        sb.AppendLine($"Ngưỡng chiếu đèn NICE: {KetQua.NguongChieuDen_NICE_UmolL} µmol/L (≈{KetQua.NguongChieuDen_NICE_MgDl} mg/dL)");
-        sb.AppendLine($"Ngưỡng thay máu NICE: {KetQua.NguongThayCuuMau_NICE_UmolL} µmol/L (≈{KetQua.NguongThayCuuMau_NICE_MgDl} mg/dL)");
+        sb.AppendLine($"{T["Phototherapy"]} NICE: {KetQua.NguongChieuDen_NICE_UmolL} µmol/L (≈{KetQua.NguongChieuDen_NICE_MgDl} mg/dL)");
+        sb.AppendLine($"{T["ExchangeTransfusion"]} NICE: {KetQua.NguongThayCuuMau_NICE_UmolL} µmol/L (≈{KetQua.NguongThayCuuMau_NICE_MgDl} mg/dL)");
         sb.AppendLine("---");
-        sb.AppendLine($"Phác đồ quyết định: {(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")}");
-        sb.AppendLine($"{T["CalcBili_Evaluation"]}: {T[$"MucDo_{KetQua.MucDoNguyHiemEnum}"]} (Nguồn: {(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")})");
+        sb.AppendLine($"{T["DecisiveProtocol"]}: {(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")}");
+        sb.AppendLine($"{T["CalcBili_Evaluation"]}: {T[$"MucDo_{KetQua.MucDoNguyHiemEnum}"]} ({T["ReferenceSource"]}: {(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")})");
         sb.AppendLine($"{T["CalcBili_Recommendation"]}: {GetKhuyenNghiChinh()}");
         sb.AppendLine($"{T["CalcBili_FollowUp"]}: {GetTheoDoiTiepTheo()}");
         if (KetQua.NguyCoKernicterus)

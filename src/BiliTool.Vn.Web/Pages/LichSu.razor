@@ -124,7 +124,7 @@
 
     private async Task ThongBaoXoa()
     {
-        bool confirm = await JS.InvokeAsync<bool>("confirm", "Bạn có chắc chắn muốn xóa toàn bộ lịch sử trong phiên này?");
+        bool confirm = await JS.InvokeAsync<bool>("confirm", T["Confirm_ClearHistory"] ?? "Bạn có chắc chắn muốn xóa toàn bộ lịch sử trong phiên này?");
         if (confirm && phienHienTai != null)
         {
             try
@@ -132,14 +132,14 @@
                 var result = await Mediator.Send(new XoaLichSuCommand(phienHienTai.Id));
                 if (result)
                 {
-                    Toast.ShowSuccess("Đã xóa lịch sử tính toán!");
+                    Toast.ShowSuccess(T["HistoryDeleted"] ?? "Đã xóa lịch sử tính toán!");
                     await LoadDataAsync();
                     StateHasChanged();
                 }
             }
             catch (Exception ex)
             {
-                Toast.ShowError($"Lỗi khi xóa: {ex.Message}");
+                Toast.ShowError($"{(T["DeleteError"] ?? "Lỗi khi xóa")}: {ex.Message}");
             }
         }
     }

@@ -1,75 +1,239 @@
-<div class="huong-dan-ban-dau">
-    <div class="hd-icon">
-        <i class="fas fa-baby-carriage"></i>
-    </div>
-    <h2>BiliTool.Vn — Dual Protocol Engine</h2>
-    <h3>Kết hợp AAP 2022 & NICE CG98 — Hệ thống đánh giá vàng da sơ sinh đa phác đồ</h3>
-    <p>Nhập thông tin trẻ sơ sinh ở bên trái để nhận kết quả đánh giá ngưỡng bilirubin tự động. Hệ thống sẽ tính toán song song theo cả hai phác đồ và chọn ngưỡng <strong>an toàn nhất</strong> cho bệnh nhi.</p>
+@using System.Globalization
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+}
 
-    <div class="update-list">
-        <h4><i class="fas fa-book-medical" style="color:#2563eb;"></i> AAP 2022 — Pediatrics 150(3):e2022058859</h4>
-        <ul>
-            <li>
-                <i class="fas fa-check-circle text-success"></i>
-                Ngưỡng chiếu đèn/thay máu phân theo GA (35–40 tuần) và nguy cơ thần kinh
-            </li>
-            <li>
-                <i class="fas fa-check-circle text-success"></i>
-                Escalation of Care khi bilirubin cách ngưỡng thay máu 2.0 mg/dL
-            </li>
-            <li>
-                <i class="fas fa-check-circle text-success"></i>
-                Tốc độ tăng nhanh: ≥ 0.3 mg/dL/h (&lt;24h) hoặc ≥ 0.2 mg/dL/h (≥24h)
-            </li>
-        </ul>
-    </div>
+@if (lang == "en")
+{
+    <div class="huong-dan-ban-dau">
+        <div class="hd-icon">
+            <i class="fas fa-baby-carriage"></i>
+        </div>
+        <h2>BiliTool.Vn — Dual Protocol Engine</h2>
+        <h3>Combined AAP 2022 & NICE CG98 — Dual-protocol neonatal jaundice evaluation system</h3>
+        <p>Enter neonatal details on the left to receive automated bilirubin evaluations. The system calculates thresholds under both guidelines in parallel and recommends the most conservative (safest) intervention threshold.</p>
 
-    <div class="update-list" style="margin-top: 16px; border-left: 4px solid #059669; padding-left: 16px;">
-        <h4><i class="fas fa-book-medical" style="color:#059669;"></i> NICE CG98 — Jaundice in newborn babies under 28 days</h4>
-        <ul>
-            <li>
-                <i class="fas fa-check-circle" style="color:#059669;"></i>
-                Bảng ngưỡng theo tuổi (giờ) cho trẻ ≥38w + công thức cho trẻ đẻ non
-            </li>
-            <li>
-                <i class="fas fa-check-circle" style="color:#059669;"></i>
-                Đánh giá nguy cơ Kernicterus (TSB &gt;340 µmol/L, tăng &gt;8.5 µmol/L/h)
-            </li>
-            <li>
-                <i class="fas fa-check-circle" style="color:#059669;"></i>
-                Phát hiện vàng da kéo dài (≥37w: &gt;14 ngày; &lt;37w: &gt;21 ngày)
-            </li>
-            <li>
-                <i class="fas fa-check-circle" style="color:#059669;"></i>
-                Chỉ định IVIG (tan huyết Rh/ABO + tăng &gt;8.5 µmol/L/h)
-            </li>
-            <li>
-                <i class="fas fa-check-circle" style="color:#059669;"></i>
-                Quy tắc dừng chiếu đèn (giảm ≥50 µmol/L dưới ngưỡng) + kiểm tra rebound 12-18h
-            </li>
-        </ul>
-    </div>
+        <div class="update-list">
+            <h4><i class="fas fa-book-medical" style="color:#2563eb;"></i> AAP 2022 — Pediatrics 150(3):e2022058859</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Phototherapy/Exchange thresholds sorted by GA (35–40 weeks) and neurotoxicity risks
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Escalation of Care when bilirubin is within 2.0 mg/dL of the exchange threshold
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Rapid rate of rise: ≥ 0.3 mg/dL/h (&lt;24h) or ≥ 0.2 mg/dL/h (≥24h)
+                </li>
+            </ul>
+        </div>
 
-    <div class="nguyen-tac-chieu-den">
-        <h4><i class="fas fa-shield-alt"></i> Nguyên tắc an toàn:</h4>
-        <ul>
-            <li>Hệ thống luôn chọn ngưỡng <strong>thấp hơn (an toàn hơn)</strong> giữa AAP 2022 và NICE CG98</li>
-            <li>Kết quả ghi rõ phác đồ quyết định (AAP 2022 hoặc NICE CG98) để minh bạch lâm sàng</li>
-            <li>Hỗ trợ đầy đủ cả mg/dL (Mỹ) và µmol/L (Quốc tế)</li>
-            <li>Đánh giá toàn diện: nguy cơ thần kinh (AAP) + nguy cơ lâm sàng (NICE)</li>
-        </ul>
-    </div>
+        <div class="update-list" style="margin-top: 16px; border-left: 4px solid #059669; padding-left: 16px;">
+            <h4><i class="fas fa-book-medical" style="color:#059669;"></i> NICE CG98 — Jaundice in newborn babies under 28 days</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Threshold tables by age (hours) for infants ≥38w + formula interpolation for preterm infants
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Kernicterus risk assessment (TSB &gt;340 µmol/L, rate of rise &gt;8.5 µmol/L/h)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Prolonged jaundice detection (≥37w: &gt;14 days; &lt;37w: &gt;21 days)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    IVIG indications (Rh/ABO hemolytic disease + rate of rise &gt;8.5 µmol/L/h)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Phototherapy stopping criteria (TSB ≥50 µmol/L below threshold) + rebound check at 12-18h
+                </li>
+            </ul>
+        </div>
 
-    <div class="ref-link" style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859"
-           target="_blank" rel="noopener">
-            <i class="fas fa-external-link-alt"></i>
-            Phác đồ AAP 2022
-        </a>
-        <a href="https://www.nice.org.uk/guidance/cg98"
-           target="_blank" rel="noopener" style="color: #059669;">
-            <i class="fas fa-external-link-alt"></i>
-            NICE CG98 Guideline
-        </a>
+        <div class="nguyen-tac-chieu-den">
+            <h4><i class="fas fa-shield-alt"></i> Safety Principle:</h4>
+            <ul>
+                <li>The algorithm always selects the <strong>lower (safer)</strong> threshold between AAP 2022 and NICE CG98</li>
+                <li>Results indicate the decisive protocol (AAP 2022 or NICE CG98) for clinical transparency</li>
+                <li>Full support for both mg/dL (US) and µmol/L (International)</li>
+                <li>Comprehensive assessment: neurotoxicity risks (AAP) + clinical risk factors (NICE)</li>
+            </ul>
+        </div>
+
+        <div class="ref-link" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859"
+               target="_blank" rel="noopener">
+                <i class="fas fa-external-link-alt"></i>
+                AAP 2022 Protocol
+            </a>
+            <a href="https://www.nice.org.uk/guidance/cg98"
+               target="_blank" rel="noopener" style="color: #059669;">
+                <i class="fas fa-external-link-alt"></i>
+                NICE CG98 Guideline
+            </a>
+        </div>
     </div>
-</div>
+}
+else if (lang == "fr")
+{
+    <div class="huong-dan-ban-dau">
+        <div class="hd-icon">
+            <i class="fas fa-baby-carriage"></i>
+        </div>
+        <h2>BiliTool.Vn — Dual Protocol Engine</h2>
+        <h3>Combined AAP 2022 & NICE CG98 — Système d'évaluation de l'ictère néonatal multi-protocoles</h3>
+        <p>Saisissez les informations du nouveau-né à gauche pour recevoir l'évaluation automatique de la bilirubine. Le système calcule en parallèle selon les deux directives et recommande le seuil d'intervention le plus bas (le plus sûr).</p>
+
+        <div class="update-list">
+            <h4><i class="fas fa-book-medical" style="color:#2563eb;"></i> AAP 2022 — Pediatrics 150(3):e2022058859</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Seuils de photothérapie/exsanguino-transfusion selon l'âge gestationnel (35–40s) et le risque de neurotoxicité
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Escalation of Care lorsque la bilirubine est à moins de 2.0 mg/dL du seuil d'exsanguino-transfusion
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Vitesse de hausse rapide: ≥ 0.3 mg/dL/h (&lt;24h) ou ≥ 0.2 mg/dL/h (≥24h)
+                </li>
+            </ul>
+        </div>
+
+        <div class="update-list" style="margin-top: 16px; border-left: 4px solid #059669; padding-left: 16px;">
+            <h4><i class="fas fa-book-medical" style="color:#059669;"></i> NICE CG98 — Jaundice in newborn babies under 28 days</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Tableaux de seuils selon l'âge (heures) pour nouveau-nés ≥38s + formule pour prématurés
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Évaluation du risque d'ictère nucléaire (TSB &gt;340 µmol/L, hausse &gt;8.5 µmol/L/h)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Détection d'ictère prolongé (≥37s: &gt;14 jours; &lt;37s: &gt;21 jours)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Indications pour IVIG (maladie hémolytique Rh/ABO + hausse &gt;8.5 µmol/L/h)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Critères d'arrêt de photothérapie (diminution ≥50 µmol/L sous le seuil) + contrôle rebond à 12-18h
+                </li>
+            </ul>
+        </div>
+
+        <div class="nguyen-tac-chieu-den">
+            <h4><i class="fas fa-shield-alt"></i> Principe de sécurité :</h4>
+            <ul>
+                <li>Le système choisit toujours le seuil <strong>le plus bas (le plus sûr)</strong> entre AAP 2022 et NICE CG98</li>
+                <li>Les résultats indiquent clairement le protocole décisif (AAP 2022 ou NICE CG98) pour la transparence clinique</li>
+                <li>Prise en charge complète du mg/dL (USA) et du µmol/L (International)</li>
+                <li>Évaluation globale: risque neurotoxique (AAP) + facteurs de risque clinique (NICE)</li>
+            </ul>
+        </div>
+
+        <div class="ref-link" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859"
+               target="_blank" rel="noopener">
+                <i class="fas fa-external-link-alt"></i>
+                Protocole AAP 2022
+            </a>
+            <a href="https://www.nice.org.uk/guidance/cg98"
+               target="_blank" rel="noopener" style="color: #059669;">
+                <i class="fas fa-external-link-alt"></i>
+                Directive NICE CG98
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="huong-dan-ban-dau">
+        <div class="hd-icon">
+            <i class="fas fa-baby-carriage"></i>
+        </div>
+        <h2>BiliTool.Vn — Dual Protocol Engine</h2>
+        <h3>Kết hợp AAP 2022 & NICE CG98 — Hệ thống đánh giá vàng da sơ sinh đa phác đồ</h3>
+        <p>Nhập thông tin trẻ sơ sinh ở bên trái để nhận kết quả đánh giá ngưỡng bilirubin tự động. Hệ thống sẽ tính toán song song theo cả hai phác đồ và chọn ngưỡng <strong>an toàn nhất</strong> cho bệnh nhi.</p>
+
+        <div class="update-list">
+            <h4><i class="fas fa-book-medical" style="color:#2563eb;"></i> AAP 2022 — Pediatrics 150(3):e2022058859</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Ngưỡng chiếu đèn/thay máu phân theo GA (35–40 tuần) và nguy cơ thần kinh
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Escalation of Care khi bilirubin cách ngưỡng thay máu 2.0 mg/dL
+                </li>
+                <li>
+                    <i class="fas fa-check-circle text-success"></i>
+                    Tốc độ tăng nhanh: ≥ 0.3 mg/dL/h (&lt;24h) hoặc ≥ 0.2 mg/dL/h (≥24h)
+                </li>
+            </ul>
+        </div>
+
+        <div class="update-list" style="margin-top: 16px; border-left: 4px solid #059669; padding-left: 16px;">
+            <h4><i class="fas fa-book-medical" style="color:#059669;"></i> NICE CG98 — Jaundice in newborn babies under 28 days</h4>
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Bảng ngưỡng theo tuổi (giờ) cho trẻ ≥38w + công thức cho trẻ đẻ non
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Đánh giá nguy cơ Kernicterus (TSB &gt;340 µmol/L, tăng &gt;8.5 µmol/L/h)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Phát hiện vàng da kéo dài (≥37w: &gt;14 ngày; &lt;37w: &gt;21 ngày)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Chỉ định IVIG (tan huyết Rh/ABO + tăng &gt;8.5 µmol/L/h)
+                </li>
+                <li>
+                    <i class="fas fa-check-circle" style="color:#059669;"></i>
+                    Quy tắc dừng chiếu đèn (giảm ≥50 µmol/L dưới ngưỡng) + kiểm tra rebound 12-18h
+                </li>
+            </ul>
+        </div>
+
+        <div class="nguyen-tac-chieu-den">
+            <h4><i class="fas fa-shield-alt"></i> Nguyên tắc an toàn:</h4>
+            <ul>
+                <li>Hệ thống luôn chọn ngưỡng <strong>thấp hơn (an toàn hơn)</strong> giữa AAP 2022 và NICE CG98</li>
+                <li>Kết quả ghi rõ phác đồ quyết định (AAP 2022 hoặc NICE CG98) để minh bạch lâm sàng</li>
+                <li>Hỗ trợ đầy đủ cả mg/dL (Mỹ) và µmol/L (Quốc tế)</li>
+                <li>Đánh giá toàn diện: nguy cơ thần kinh (AAP) + nguy cơ lâm sàng (NICE)</li>
+            </ul>
+        </div>
+
+        <div class="ref-link" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859"
+               target="_blank" rel="noopener">
+                <i class="fas fa-external-link-alt"></i>
+                Phác đồ AAP 2022
+            </a>
+            <a href="https://www.nice.org.uk/guidance/cg98"
+               target="_blank" rel="noopener" style="color: #059669;">
+                <i class="fas fa-external-link-alt"></i>
+                NICE CG98 Guideline
+            </a>
+        </div>
+    </div>
+}

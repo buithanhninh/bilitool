@@ -1,11 +1,12 @@
 @* Component hiển thị thanh ngưỡng bilirubin *@
+@inject BiliTool.Vn.Web.Services.TranslationService T
 <div class="nguong-bar">
     <span class="nguong-label">@Label</span>
     <div class="bar-container position-relative">
         <div class="bar-fill @CssClass" style="width: @PhanTramStr(Value)%"></div>
         @if (CurrentBili.HasValue)
         {
-            <div class="current-dot" style="left: @PhanTramStr(CurrentBili.Value)%;" title="Hiện tại: @CurrentBili.Value.ToString("F1") mg/dL"></div>
+            <div class="current-dot" style="left: @PhanTramStr(CurrentBili.Value)%;" title="@T["Current"]: @CurrentBili.Value.ToString("F1") mg/dL"></div>
         }
     </div>
     <span class="nguong-value">@Value.ToString("F1")</span>

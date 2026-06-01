@@ -564,7 +564,7 @@
 
     private async Task XoaBenhNhan(Guid id)
     {
-        var ok = await JS.InvokeAsync<bool>("confirm", "Xóa hồ sơ của bé? Toàn bộ lịch sử xét nghiệm sẽ bị xóa vĩnh viễn.");
+        var ok = await JS.InvokeAsync<bool>("confirm", T["Confirm_DeleteBaby"] ?? "Xóa hồ sơ của bé? Toàn bộ lịch sử xét nghiệm sẽ bị xóa vĩnh viễn.");
         if (!ok) return;
         var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
         await Mediator.Send(new XoaBenhNhanCommand(id, userId));
@@ -576,7 +576,7 @@
 
     private async Task XoaXetNghiem(Guid xetNghiemId)
     {
-        var ok = await JS.InvokeAsync<bool>("confirm", "Xóa lần xét nghiệm này?");
+        var ok = await JS.InvokeAsync<bool>("confirm", T["Confirm_DeleteTest"] ?? "Xóa lần xét nghiệm này?");
         if (!ok || benhNhanChon == null) return;
         var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
         await Mediator.Send(new XoaXetNghiemCommand(xetNghiemId, userId));
