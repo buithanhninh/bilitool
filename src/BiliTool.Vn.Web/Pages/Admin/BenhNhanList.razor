@@ -1,0 +1,121 @@
+@page "/admin/benh-nhan"
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.DTOs
+@using MediatR
+@inject IMediator Mediator
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject NavigationManager NavManager
+
+<PageTitle>Quản lý Bệnh nhi — BiliTool.Vn Admin</PageTitle>
+
+@if (isLoading)
+{
+    <div class="text-center my-4"><i class="fas fa-spinner fa-spin fa-2x"></i> Đang tải...</div>
+}
+else if (patients != null)
+{
+    <div class="admin-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom:0;">
+                    <i class="fas fa-procedures text-info"></i> Quản trị Bệnh Nhi Lâm sàng
+                </h2>
+                <div class="text-muted mt-1">Audit toàn bộ hồ sơ xét nghiệm lâm sàng trên hệ thống</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/admin/thong-ke/benh-nhan" class="btn btn-primary shadow-sm">
+                    <i class="fas fa-chart-bar"></i> Thống kê Lâm sàng
+                </a>
+                <a href="/admin" class="btn btn-light shadow-sm border"><i class="fas fa-arrow-left"></i> Về Dashboard</a>
+            </div>
+        </div>
+
+        <div class="alert" style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 12px; font-weight: 500; padding: 14px 20px; margin-bottom: 16px;">
+            <i class="fas fa-shield-alt me-2 text-primary"></i> <strong>Chế độ Admin Audit:</strong> Hiển thị đầy đủ thông tin bệnh nhi và bác sĩ điều trị. Dữ liệu chỉ được phép truy cập bởi Quản trị viên.
+        </div>
+
+        <div class="premium-table-container">
+            <div class="table-responsive">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Định danh Bệnh nhi</th>
+                            <th>Bác sĩ Điều trị</th>
+                            <th>Chỉ số lâm sàng</th>
+                            <th>Mật độ Kiểm tra</th>
+                            <th>Ngày cấp hồ sơ</th>
+                            <th style="width: 140px;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in patients)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div style="width: 40px; height: 40px; border-radius: 10px; background: #e0f2fe; color: var(--admin-secondary); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">
+                                            <i class="fas fa-baby"></i>
+                                        </div>
+                                        <div>
+                                    <div style="font-weight: 600; color: var(--admin-text-main);">@p.HoTenBenhNhan</div>
+                                            <div style="font-size: 0.8rem; color: var(--admin-text-muted);">
+                                                Sinh: @p.NgayGioSinh.ToString("dd/MM/yyyy HH:mm")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div><i class="fas fa-user-md text-primary"></i> <strong>@p.TenBacSi</strong></div>
+                                    <div style="font-size:0.75rem; color:var(--admin-text-muted);">@p.EmailBacSi</div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column gap-1">
+                                        <span style="font-size: 0.85rem;"><i class="far fa-calendar-check text-muted"></i> Tuổi thai: <strong>@p.TuoiThaiTuan tuần</strong></span>
+                                        @if (p.CoNguyCoThanKinh)
+                                        {
+                                            <span class="admin-badge badge-danger" style="margin-top: 4px; align-self: flex-start;"><i class="fas fa-exclamation-triangle me-1"></i> Có rủi ro TK</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="admin-badge badge-success" style="margin-top: 4px; align-self: flex-start;"><i class="fas fa-check me-1"></i> Bình thường</span>
+                                        }
+                                    </div>
+                                </td>
+                                <td><span class="admin-badge badge-neutral"><i class="fas fa-vial text-warning me-1"></i> @p.SoLanXetNghiem lần đo</span></td>
+                                <td><span class="text-muted"><i class="far fa-clock"></i> @p.NgayTao.ToString("dd/MM/yyyy HH:mm")</span></td>
+                                <td>
+                                    <a href="/admin/benh-nhan/@p.Id" class="btn btn-sm btn-light border text-primary w-100">
+                                        <i class="fas fa-microscope"></i> Audit Chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<BenhNhanAdminDto>? patients;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NguoiDung.DaDangNhap)
+        {
+            NavManager.NavigateTo("/admin/login", forceLoad: true);
+            return;
+        }
+
+        if (!NguoiDung.LaQuanTriVien)
+        {
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        patients = await Mediator.Send(new GetDanhSachBenhNhanAdminQuery());
+        isLoading = false;
+    }
+}

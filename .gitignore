@@ -1,0 +1,37 @@
+## Visual Studio & VS Code
+.vs/
+.vscode/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+AppBundle/
+**/bin/
+**/obj/
+**/publish/
+
+## User Secrets & Local Environment Variables
+.env
+.env.local
+appsettings.Development.json
+appsettings.Local.json
+
+## Logs and Backups
+logs/
+backups/
+*.log
+*.sql
+*.sql.gz
+*.txt.log
+latest_log_tail.txt
+build_errors.txt
+build_final.txt
+build_out*.txt
+errors*.txt
+
+## OS files
+.DS_Store
+Thumbs.db

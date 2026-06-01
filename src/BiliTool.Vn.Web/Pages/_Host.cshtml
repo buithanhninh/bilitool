@@ -1,0 +1,105 @@
+@page "/"
+@using System.Globalization
+@{
+    var currentLang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower() ?? "vi";
+}
+<!DOCTYPE html>
+<html lang="@currentLang">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <base href="~/" />
+
+    <!-- HeadOutlet: cho phép các trang Blazor inject PageTitle + HeadContent động -->
+    <component type="typeof(Microsoft.AspNetCore.Components.Web.HeadOutlet)"
+               render-mode="ServerPrerendered" />
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- App CSS -->
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="css/bilitool.css" rel="stylesheet" />
+    <link href="css/admin-premium.css" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1a6b9a" />
+</head>
+<body>
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <div id="blazor-error-ui" class="blazor-error-ui-custom">
+        <span><i class="fas fa-exclamation-circle text-warning"></i> Đã xảy ra lỗi hệ thống.</span>
+        <a href="" class="reload btn btn-sm btn-outline-warning ms-2">Tải lại trang</a>
+        <a class="dismiss ms-2" style="cursor:pointer;"><i class="fas fa-times"></i></a>
+    </div>
+
+    <!-- Custom Reconnect UI -->
+    <div id="components-reconnect-modal" class="components-reconnect-hide my-reconnect-modal">
+        <div class="show">
+            <div class="reconnect-box shadow-lg">
+                <i class="fas fa-wifi fa-beat fa-2x text-primary mb-2"></i>
+                <h5 class="mb-1 text-dark">Đang kết nối lại...</h5>
+                <p class="text-muted small mb-0">Đường truyền mạng không ổn định, vui lòng chờ.</p>
+            </div>
+        </div>
+        <div class="failed">
+            <div class="reconnect-box shadow-lg border-danger border border-2">
+                <i class="fas fa-satellite-dish fa-2x text-danger mb-2"></i>
+                <h5 class="mb-1 text-danger">Mất kết nối máy chủ</h5>
+                <p class="text-muted small mb-0">Đang tự động tải lại trang...</p>
+            </div>
+        </div>
+        <div class="rejected">
+            <div class="reconnect-box shadow-lg border-warning border border-2">
+                <i class="fas fa-stopwatch fa-2x text-warning mb-2"></i>
+                <h5 class="mb-1 text-warning">Phiên làm việc hết hạn</h5>
+                <p class="text-muted small mb-0">Đang tự động tải lại trang...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+
+    <!-- JS Interop -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+    <script src="js/bilitool-interop.js?v=@DateTime.Now.Ticks" defer></script>
+    <script src="js/admin-charts.js?v=@DateTime.Now.Ticks" defer></script>
+
+    <script src="_framework/blazor.server.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            reconnectionOptions: {
+                maxRetries: 30, // Thử lại rất nhiều lần trước khi bỏ cuộc (khoảng 1 phút)
+                retryIntervalMilliseconds: 2000
+            }
+        }).then(() => {
+            // Observer to watch for failed/rejected states and auto reload
+            const reconnectModal = document.getElementById('components-reconnect-modal');
+            if (reconnectModal) {
+                const observer = new MutationObserver(function(mutations) {
+                    const classList = reconnectModal.classList;
+                    if (classList.contains('failed') || classList.contains('rejected')) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500); // Reload sau 1.5s để user kịp đọc thông báo
+                    }
+                });
+                observer.observe(reconnectModal, { attributes: true, attributeFilter: ['class'] });
+            }
+        });
+    </script>
+</body>
+</html>

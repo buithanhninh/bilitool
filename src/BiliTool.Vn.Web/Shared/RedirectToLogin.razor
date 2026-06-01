@@ -1,0 +1,9 @@
+@inject NavigationManager NavManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Chuyển về trang chủ - app hỗ trợ cả ẩn danh lẫn đăng nhập
+        NavManager.NavigateTo("/");
+    }
+}

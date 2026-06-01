@@ -1,0 +1,334 @@
+@page "/admin/nhat-ky"
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.DTOs
+@using MediatR
+@using System.Text.Json
+@inject IMediator Mediator
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject NavigationManager NavManager
+
+<PageTitle>Nhật ký tính toán - Quản trị</PageTitle>
+
+<div class="admin-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom:0;">
+                <i class="fas fa-history text-success"></i> Nhật ký hệ thống
+            </h2>
+            <div class="text-muted mt-1">Lịch sử tính toán chi tiết của tất cả người dùng (bao gồm ẩn danh)</div>
+        </div>
+        <a href="/admin" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Trở về
+        </a>
+    </div>
+
+    <div class="admin-card mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control" placeholder="Tìm theo IP, Email, Tên bác sĩ..." 
+                           @bind="searchKeyword" @bind:event="oninput" @onkeyup="HandleSearch" />
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn btn-primary" @onclick="LoadData">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-spinner fa-spin fa-3x text-primary mb-3"></i>
+            <p>Đang tải dữ liệu nhật ký...</p>
+        </div>
+    }
+    else if (data == null || !data.Items.Any())
+    {
+        <div class="text-center py-5 bg-white rounded shadow-sm border">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Không tìm thấy bản ghi nào.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm rounded border bg-white">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:180px;">Thời gian</th>
+                        <th>Người dùng / IP</th>
+                        <th>Bệnh nhi</th>
+                        <th>Chỉ định AAP</th>
+                        <th class="text-end">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in data.Items)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.NgayTinhToan.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</strong>
+                                <div class="text-muted" style="font-size:0.8rem;">Cách đây @GetTimeAgo(item.NgayTinhToan)</div>
+                            </td>
+                            <td>
+                                @if (item.LaAnDanh || string.IsNullOrEmpty(item.NguoiDungId))
+                                {
+                                    <span class="badge bg-secondary mb-1"><i class="fas fa-user-secret"></i> Ẩn danh</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary mb-1"><i class="fas fa-user-md"></i> @item.NguoiDungTen</span>
+                                    <div style="font-size: 0.85rem;" class="text-muted">@item.NguoiDungEmail</div>
+                                }
+                                <div style="font-size:0.8rem; margin-top:2px;" class="text-muted">
+                                    <i class="fas fa-network-wired"></i> @(string.IsNullOrEmpty(item.DiaChiIP) ? "IP không rõ" : item.DiaChiIP)
+                                </div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-clock text-info"></i> Tuổi: <strong>@item.TuoiGio giờ</strong> / @item.TuoiThaiTuan tuần</div>
+                                <div><i class="fas fa-flask text-warning"></i> Bili: <strong>@item.BilirubinMgDl mg/dL</strong></div>
+                                @if (item.CoNguyCoThanKinh)
+                                {
+                                    <div class="text-danger" style="font-size:0.8rem;"><i class="fas fa-exclamation-triangle"></i> Nguy cơ thần kinh</div>
+                                }
+                            </td>
+                            <td>
+                                @if (item.MucDoNguyHiem.Contains("bình thường", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge bg-success">Bình thường</span>
+                                }
+                                else if (item.MucDoNguyHiem.Contains("thay máu", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge bg-danger">Thay máu</span>
+                                }
+                                else if (item.MucDoNguyHiem.Contains("chiếu đèn", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge bg-warning text-dark">Chiếu đèn</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.MucDoNguyHiem</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-info" @onclick="() => ShowDetails(item)">
+                                    <i class="fas fa-eye"></i> Chi tiết
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="text-muted">
+                Hiển thị trang @data.CurrentPage / @data.TotalPages (Tổng @data.TotalItems bản ghi)
+            </div>
+            <ul class="pagination mb-0">
+                <li class="page-item @(data.CurrentPage == 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => ChangePage(data.CurrentPage - 1)">Trước</button>
+                </li>
+                @for (int i = 1; i <= data.TotalPages; i++)
+                {
+                    var pageNum = i;
+                    if (pageNum == 1 || pageNum == data.TotalPages || (pageNum >= data.CurrentPage - 2 && pageNum <= data.CurrentPage + 2))
+                    {
+                        <li class="page-item @(pageNum == data.CurrentPage ? "active" : "")">
+                            <button class="page-link" @onclick="() => ChangePage(pageNum)">@pageNum</button>
+                        </li>
+                    }
+                    else if (pageNum == data.CurrentPage - 3 || pageNum == data.CurrentPage + 3)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+                <li class="page-item @(data.CurrentPage == data.TotalPages ? "disabled" : "")">
+                    <button class="page-link" @onclick="() => ChangePage(data.CurrentPage + 1)">Sau</button>
+                </li>
+            </ul>
+        </div>
+    }
+</div>
+
+@if (selectedItem != null)
+{
+    <div class="modal-overlay" style="display:block;" @onclick="CloseDetails">
+        <div class="modal-card modal-card-lg" style="max-width: 800px;" @onclick:stopPropagation="true">
+            <div class="modal-header bg-light">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-file-invoice-dollar fa-2x text-primary me-3"></i>
+                    <div>
+                        <h4 class="mb-0">Chi tiết Hồ sơ Tính toán</h4>
+                        <div class="text-muted" style="font-size:0.9rem;">ID: @selectedItem.Id</div>
+                    </div>
+                </div>
+                <button class="btn-close" @onclick="CloseDetails"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-primary border-bottom pb-2">Thông tin truy cập</h6>
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td class="text-muted" style="width:40%;">Thời gian:</td>
+                                    <td><strong>@selectedItem.NgayTinhToan.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Địa chỉ IP:</td>
+                                    <td>@selectedItem.DiaChiIP</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Thiết bị:</td>
+                                    <td style="word-break: break-all; font-size:0.85rem;">@selectedItem.ThietBi</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Tài khoản:</td>
+                                    <td>
+                                        @if (selectedItem.LaAnDanh)
+                                        {
+                                            <span class="badge bg-secondary">Ẩn danh</span>
+                                        }
+                                        else
+                                        {
+                                            <strong>@selectedItem.NguoiDungTen</strong> <br/>
+                                            <small class="text-muted">@selectedItem.NguoiDungEmail</small>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary border-bottom pb-2">Kết quả phân tích</h6>
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td class="text-muted" style="width:50%;">Ngưỡng chiếu đèn:</td>
+                                    <td><strong>@selectedItem.NguongChieuDen</strong> mg/dL</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Ngưỡng thay máu:</td>
+                                    <td><strong class="text-danger">@selectedItem.NguongThayCuuMau</strong> mg/dL</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">Mức độ rủi ro:</td>
+                                    <td>
+                                        <span class="badge @(selectedItem.MucDoNguyHiem.Contains("thay máu", StringComparison.OrdinalIgnoreCase) ? "bg-danger" : 
+                                                            selectedItem.MucDoNguyHiem.Contains("chiếu đèn", StringComparison.OrdinalIgnoreCase) ? "bg-warning text-dark" : "bg-success")">
+                                            @selectedItem.MucDoNguyHiem
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h6 class="text-primary border-bottom pb-2">Payload (Raw Request)</h6>
+                <div class="bg-dark text-light p-3 rounded" style="max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;">
+                    <pre class="mb-0">@FormatJson(selectedItem.ChiTietYeuCauJson)</pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="CloseDetails">Đóng</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private PagedResultDto<NhatKyTinhToanAdminDto>? data;
+    private bool isLoading = true;
+    private string searchKeyword = "";
+    private int currentPage = 1;
+    private System.Timers.Timer? searchTimer;
+    private NhatKyTinhToanAdminDto? selectedItem;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NguoiDung.DaDangNhap || !NguoiDung.LaQuanTriVien)
+        {
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        searchTimer = new System.Timers.Timer(500);
+        searchTimer.Elapsed += async (s, e) =>
+        {
+            currentPage = 1;
+            await InvokeAsync(LoadData);
+        };
+        searchTimer.AutoReset = false;
+
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            data = await Mediator.Send(new GetNhatKyTinhToanQuery(currentPage, 20, searchKeyword));
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void HandleSearch(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
+    {
+        searchTimer?.Stop();
+        searchTimer?.Start();
+    }
+
+    private async Task ChangePage(int page)
+    {
+        if (page < 1 || page > (data?.TotalPages ?? 1)) return;
+        currentPage = page;
+        await LoadData();
+    }
+
+    private string GetTimeAgo(DateTime time)
+    {
+        var diff = DateTime.UtcNow - time;
+        if (diff.TotalMinutes < 1) return "Vừa xong";
+        if (diff.TotalHours < 1) return $"{(int)diff.TotalMinutes} phút";
+        if (diff.TotalDays < 1) return $"{(int)diff.TotalHours} giờ";
+        return $"{(int)diff.TotalDays} ngày";
+    }
+
+    private void ShowDetails(NhatKyTinhToanAdminDto item)
+    {
+        selectedItem = item;
+    }
+
+    private void CloseDetails()
+    {
+        selectedItem = null;
+    }
+
+    private string FormatJson(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return "No data";
+        try
+        {
+            var parsedJson = JsonDocument.Parse(json);
+            return JsonSerializer.Serialize(parsedJson, new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch
+        {
+            return json;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+@* Component hiển thị thanh ngưỡng bilirubin *@
+<div class="nguong-bar">
+    <span class="nguong-label">@Label</span>
+    <div class="bar-container position-relative">
+        <div class="bar-fill @CssClass" style="width: @PhanTramStr(Value)%"></div>
+        @if (CurrentBili.HasValue)
+        {
+            <div class="current-dot" style="left: @PhanTramStr(CurrentBili.Value)%;" title="Hiện tại: @CurrentBili.Value.ToString("F1") mg/dL"></div>
+        }
+    </div>
+    <span class="nguong-value">@Value.ToString("F1")</span>
+</div>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public decimal Value { get; set; }
+    [Parameter] public string CssClass { get; set; } = "";
+    [Parameter] public decimal? CurrentBili { get; set; }
+
+    private double PhanTram(decimal val)
+    {
+        const decimal min = 5m, max = 30m;
+        var pct = (double)((val - min) / (max - min) * 100);
+        return Math.Max(2, Math.Min(98, pct));
+    }
+
+    private string PhanTramStr(decimal val)
+    {
+        return PhanTram(val).ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+    }
+}

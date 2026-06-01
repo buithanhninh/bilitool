@@ -1,0 +1,187 @@
+@using BiliTool.Vn.Application.DTOs
+@using System.Globalization
+<div class="bili-nomogram-container">
+    <div class="bili-nomogram-header">
+        <div class="nomogram-title">
+            BiliGraph Thresholds
+        </div>
+        <div class="nomogram-subtitle">
+            @KetQua.BilirubinMgDl.ToString("F1") mg/dL @@ @KetQua.TuoiGio giờ | Tuổi thai: @KetQua.TuoiThaiTuan tuần | Nguy cơ TK: @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")
+        </div>
+        <div class="nomogram-legend">
+            <span class="legend-item"><span class="legend-color pt-color"></span> Chiếu đèn</span>
+            <span class="legend-item"><span class="legend-color esc-color"></span> Chiếu tích cực</span>
+            <span class="legend-item"><span class="legend-color et-color"></span> Thay máu</span>
+            <span class="legend-item"><span class="legend-diamond">◆</span> Bệnh nhi</span>
+        </div>
+    </div>
+
+    <div class="bili-nomogram-svg-wrapper">
+        <svg viewBox="0 0 @width @height" preserveAspectRatio="xMidYMid meet" class="bili-nomogram-svg">
+            <!-- Grid lines -->
+            @for (int i = 0; i <= MaxY; i += 6)
+            {
+                <line x1="@PaddingLeft" y1="@(GetY(i).ToString(CultureInfo.InvariantCulture))" x2="@(width - PaddingRight)" y2="@(GetY(i).ToString(CultureInfo.InvariantCulture))" class="grid-line" />
+                @((MarkupString)FormattableString.Invariant($"<text x='{PaddingLeft - 10}' y='{GetY(i) + 4}' class='axis-label y-axis'>{i}</text>"))
+            }
+            
+            @{ int xStep = MaxX > 168 ? 48 : 24; }
+            @for (int i = 0; i <= MaxX; i += xStep)
+            {
+                <line x1="@(GetX(i).ToString(CultureInfo.InvariantCulture))" y1="@PaddingTop" x2="@(GetX(i).ToString(CultureInfo.InvariantCulture))" y2="@(height - PaddingBottom)" class="grid-line" />
+                @((MarkupString)FormattableString.Invariant($"<text x='{GetX(i)}' y='{height - PaddingBottom + 15}' class='axis-label x-axis'>{i}</text>"))
+            }
+
+            <!-- Axis labels -->
+            @((MarkupString)FormattableString.Invariant($"<text x='15' y='{height / 2}' transform='rotate(-90 15 {height / 2})' class='axis-title'>Bilirubin (mg/dL)</text>"))
+            @((MarkupString)FormattableString.Invariant($"<text x='{width / 2}' y='{height - 5}' class='axis-title'>Tuổi (giờ)</text>"))
+
+            @if (KetQua.ChartData != null && KetQua.ChartData.Any())
+            {
+                <!-- Lines -->
+                <polyline points="@GetPoints(d => d.Phototherapy)" class="line-pt" />
+                <polyline points="@GetPoints(d => d.Escalation)" class="line-esc" />
+                <polyline points="@GetPoints(d => d.Exchange)" class="line-et" />
+            }
+
+            <!-- Current Patient Point -->
+            <polygon points="@GetDiamondPoints(KetQua.TuoiGio, (double)KetQua.BilirubinMgDl)" class="patient-point" />
+        </svg>
+    </div>
+</div>
+
+<style>
+    .bili-nomogram-container {
+        background-color: #1e293b;
+        border-radius: 8px;
+        padding: 16px;
+        color: white;
+        margin-top: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .bili-nomogram-header {
+        text-align: center;
+        margin-bottom: 16px;
+    }
+    .nomogram-title {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    .nomogram-subtitle {
+        font-size: 0.85rem;
+        color: #cbd5e1;
+        margin-top: 4px;
+        margin-bottom: 12px;
+    }
+    .nomogram-legend {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        font-size: 0.85rem;
+    }
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .legend-color {
+        width: 24px;
+        height: 4px;
+        display: inline-block;
+    }
+    .pt-color { background-color: #3b82f6; }
+    .esc-color { background-color: #f59e0b; }
+    .et-color { background-color: #ef4444; }
+    .legend-diamond {
+        color: #22c55e;
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+
+    .bili-nomogram-svg-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .bili-nomogram-svg {
+        width: 100%;
+        max-width: 800px;
+        height: auto;
+    }
+    .grid-line {
+        stroke: #334155;
+        stroke-width: 1;
+    }
+    .axis-label {
+        fill: #94a3b8;
+        font-size: 10px;
+    }
+    .y-axis { text-anchor: end; }
+    .x-axis { text-anchor: middle; }
+    .axis-title {
+        fill: #cbd5e1;
+        font-size: 12px;
+        font-weight: 500;
+        text-anchor: middle;
+    }
+    .line-pt {
+        fill: none;
+        stroke: #3b82f6;
+        stroke-width: 2;
+    }
+    .line-esc {
+        fill: none;
+        stroke: #f59e0b;
+        stroke-width: 2;
+    }
+    .line-et {
+        fill: none;
+        stroke: #ef4444;
+        stroke-width: 2;
+    }
+    .patient-point {
+        fill: none;
+        stroke: #22c55e;
+        stroke-width: 2;
+    }
+</style>
+
+@code {
+    [Parameter] public KetQuaTinhToanDto KetQua { get; set; }
+
+    private int width = 800;
+    private int height = 400;
+    private int PaddingLeft = 50;
+    private int PaddingRight = 20;
+    private int PaddingTop = 20;
+    private int PaddingBottom = 40;
+
+    private int MaxX => KetQua.ChartData?.Any() == true ? (int)KetQua.ChartData.Max(d => d.Hour) : 336;
+    private int MaxY = 30; // 30 mg/dL is standard max
+
+    private double GetX(double hour)
+    {
+        if (MaxX == 0) return PaddingLeft;
+        return PaddingLeft + (hour / MaxX) * (width - PaddingLeft - PaddingRight);
+    }
+
+    private double GetY(double bili)
+    {
+        return height - PaddingBottom - (bili / MaxY) * (height - PaddingTop - PaddingBottom);
+    }
+
+    private string GetPoints(Func<ChartDataPoint, decimal> selector)
+    {
+        if (KetQua.ChartData == null) return "";
+        var pts = KetQua.ChartData.Select(d => FormattableString.Invariant($"{GetX(d.Hour)},{GetY((double)selector(d))}")).ToList();
+        return string.Join(" ", pts);
+    }
+
+    private string GetDiamondPoints(double x, double y)
+    {
+        double cx = GetX(x);
+        double cy = GetY(y);
+        double size = 6;
+        return FormattableString.Invariant($"{cx},{cy - size} {cx + size},{cy} {cx},{cy + size} {cx - size},{cy}");
+    }
+}

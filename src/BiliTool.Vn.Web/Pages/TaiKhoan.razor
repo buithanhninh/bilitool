@@ -1,0 +1,318 @@
+@page "/tai-khoan"
+@using BiliTool.Vn.Web.Services
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.Commands
+@using BiliTool.Vn.Application.DTOs
+@using MediatR
+@inject NguoiDungHienTaiService NguoiDung
+@inject IMediator Mediator
+@inject NavigationManager NavManager
+
+<PageTitle>Quản lý tài khoản - BiliTool.Vn</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="profile-wrapper">
+            <div class="profile-header">
+                <div class="profile-cover"></div>
+                <div class="profile-info-block">
+                    <div class="profile-avatar-large">
+                        @if (!string.IsNullOrEmpty(NguoiDung.AvatarUrl))
+                        {
+                            <img src="@NguoiDung.AvatarUrl" alt="Avatar" referrerpolicy="no-referrer" />
+                        }
+                        else
+                        {
+                            <div class="avatar-text">@NguoiDung.ChuCaiDau</div>
+                        }
+                    </div>
+                    <div class="profile-text">
+                        <h1>@(string.IsNullOrEmpty(HoSoForm.HoTen) ? NguoiDung.TenHienThi : HoSoForm.HoTen)</h1>
+                        <p><i class="fab fa-google"></i> Xác thực thông qua Google</p>
+                        <span class="user-email">@NguoiDung.Email</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="profile-tabs">
+                <button class="ptab @(TabActive == "thongke" ? "ptab-active" : "")" 
+                        @onclick='() => TabActive = "thongke"'>
+                    <i class="fas fa-chart-pie"></i> Thống kê
+                </button>
+                <button class="ptab @(TabActive == "hoso" ? "ptab-active" : "")" 
+                        @onclick='() => TabActive = "hoso"'>
+                    <i class="fas fa-id-card"></i> Hồ sơ cá nhân
+                </button>
+            </div>
+
+            <!-- Tab: Thống kê -->
+            @if (TabActive == "thongke")
+            {
+                <div class="profile-body">
+                    @if (IsLoading)
+                    {
+                        <div class="loading-state">
+                            <i class="fas fa-circle-notch fa-spin"></i> Đang tải dữ liệu...
+                        </div>
+                    }
+                    else
+                    {
+                        @if (ThongBaoLoi != null)
+                        {
+                            <div class="alert-info-soft">
+                                <i class="fas fa-database"></i> @ThongBaoLoi
+                            </div>
+                        }
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="mc-icon bg-blue-light text-primary">
+                                    <i class="fas fa-notes-medical"></i>
+                                </div>
+                                <div class="mc-content">
+                                    <span class="mc-value">@(ThongBaoLoi != null ? "--" : TongSoCa.ToString())</span>
+                                    <span class="mc-label">Số ca lâm sàng (Phiên làm việc)</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="mc-icon" style="background:#e8f5e9; color:#27ae60;">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="mc-content">
+                                    <span class="mc-value">@(ThongBaoLoi != null ? "--" : TongSoLanTinh.ToString())</span>
+                                    <span class="mc-label">Tổng số phép tính đã thực hiện</span>
+                                </div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="mc-icon" style="background:#fdf2f1; color:#c0392b;">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="mc-content">
+                                    <span class="mc-value">Truy cập</span>
+                                    <a href="/lich-su" class="mc-link">Xem lại lịch sử <i class="fas fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Tab: Hồ sơ cá nhân -->
+            @if (TabActive == "hoso")
+            {
+                <div class="profile-body">
+                    @if (LuuThanhCong)
+                    {
+                        <div class="alert-success-soft">
+                            <i class="fas fa-check-circle"></i> Hồ sơ đã được lưu thành công!
+                        </div>
+                    }
+                    @if (LuuThatBai)
+                    {
+                        <div class="alert-info-soft">
+                            <i class="fas fa-exclamation-triangle"></i> Không thể lưu hồ sơ. Vui lòng thử lại sau.
+                        </div>
+                    }
+
+                    <div class="profile-form">
+                        <div class="form-section-title">
+                            <i class="fas fa-user-edit"></i> Thông tin cá nhân
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group-vn">
+                                <label class="form-label-vn">Họ và tên đầy đủ <span class="text-danger">*</span></label>
+                                <input class="form-input-vn" type="text" @bind="HoSoForm.HoTen" placeholder="Vd: Nguyễn Thị Phương Mai" />
+                            </div>
+                            <div class="form-group-vn">
+                                <label class="form-label-vn">Email (từ Google)</label>
+                                <input class="form-input-vn" type="email" value="@NguoiDung.Email" disabled />
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group-vn">
+                                <label class="form-label-vn">Chức danh / Học vị</label>
+                                <input class="form-input-vn" type="text" @bind="HoSoForm.ChucDanh" placeholder="Vd: ThS. BS., BS. CKII, TS. BS." />
+                            </div>
+                            <div class="form-group-vn">
+                                <label class="form-label-vn">Ngày sinh</label>
+                                <input class="form-input-vn" type="text"
+                                       value="@NgaySinhStr"
+                                       @onchange="OnNgaySinhChange"
+                                       placeholder="dd/mm/yyyy"
+                                       maxlength="10" />
+                                @if (NgaySinhLoi != null)
+                                {
+                                    <small class="text-danger">@NgaySinhLoi</small>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group-vn">
+                                <label class="form-label-vn">Số điện thoại</label>
+                                <input class="form-input-vn" type="tel" @bind="HoSoForm.SoDienThoai" placeholder="0912 345 678" />
+                            </div>
+                            <div class="form-group-vn">
+                                <label class="form-label-vn">Chuyên khoa</label>
+                                <input class="form-input-vn" type="text" @bind="HoSoForm.ChuyenKhoa" placeholder="Vd: Nhi khoa, Sơ sinh, Hô hấp..." />
+                            </div>
+                        </div>
+
+                        <div class="form-group-vn">
+                            <label class="form-label-vn">Đơn vị công tác</label>
+                            <input class="form-input-vn" type="text" @bind="HoSoForm.DonViCongTac" placeholder="Vd: Khoa Nội Nhi tổng hợp – Bệnh viện E, Hà Nội" />
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary btn-save-profile" @onclick="LuuHoSo" disabled="@DangLuu">
+                                @if (DangLuu)
+                                {
+                                    <i class="fas fa-circle-notch fa-spin"></i>
+                                    <span>Đang lưu...</span>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-save"></i>
+                                    <span>Lưu thông tin</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="profile-actions">
+                <a href="/dang-xuat" class="btn btn-danger btn-logout-large">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất tài khoản
+                </a>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <BiliTool.Vn.Web.Shared.RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private bool IsLoading = true;
+    private int TongSoCa = 0;
+    private int TongSoLanTinh = 0;
+    private string? ThongBaoLoi = null;
+    private string TabActive = "thongke";
+    private bool DangLuu = false;
+    private bool LuuThanhCong = false;
+    private bool LuuThatBai = false;
+
+    private HoSoNguoiDungDto HoSoForm = new();
+    private string NgaySinhStr = "";
+    private string? NgaySinhLoi = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (NguoiDung.DaDangNhap && !string.IsNullOrEmpty(NguoiDung.Id))
+            {
+                // Load thống kê
+                var thongKe = await Mediator.Send(new ThongKeNguoiDungQuery(NguoiDung.Id));
+                TongSoCa = thongKe.TongSoCa;
+                TongSoLanTinh = thongKe.TongSoLanTinhToan;
+
+                // Load hồ sơ cá nhân
+                var hoSo = await Mediator.Send(new LayHoSoNguoiDungQuery(NguoiDung.Id));
+                if (hoSo != null)
+                {
+                    HoSoForm = hoSo;
+                    // Chuyển DateTime? sang chuỗi dd/MM/yyyy để hiển thị
+                    NgaySinhStr = HoSoForm.NgaySinh.HasValue
+                        ? HoSoForm.NgaySinh.Value.ToString("dd/MM/yyyy")
+                        : "";
+                }
+                else
+                {
+                    // Prefill từ Google
+                    HoSoForm = new HoSoNguoiDungDto
+                    {
+                        Id = NguoiDung.Id,
+                        HoTen = NguoiDung.TenHienThi ?? ""
+                    };
+                }
+            }
+        }
+        catch (Exception)
+        {
+            ThongBaoLoi = "Không thể kết nối cơ sở dữ liệu. Số liệu thống kê tạm thời chưa hiển thị.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task LuuHoSo()
+    {
+        if (string.IsNullOrWhiteSpace(HoSoForm.HoTen)) return;
+
+        // Parse ngày sinh từ chuỗi dd/MM/yyyy
+        NgaySinhLoi = null;
+        if (!string.IsNullOrWhiteSpace(NgaySinhStr))
+        {
+            if (DateTime.TryParseExact(NgaySinhStr.Trim(), "dd/MM/yyyy",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out var parsedDate))
+            {
+                HoSoForm.NgaySinh = parsedDate;
+            }
+            else
+            {
+                NgaySinhLoi = "Vui lòng nhập đúng định dạng dd/mm/yyyy (ví dụ: 15/03/1990)";
+                return;
+            }
+        }
+        else
+        {
+            HoSoForm.NgaySinh = null;
+        }
+
+        DangLuu = true;
+        LuuThanhCong = false;
+        LuuThatBai = false;
+
+        try
+        {
+            HoSoForm.Id = NguoiDung.Id!;
+            var ok = await Mediator.Send(new LuuHoSoNguoiDungCommand(HoSoForm));
+            LuuThanhCong = ok;
+        }
+        catch
+        {
+            LuuThatBai = true;
+        }
+        finally
+        {
+            DangLuu = false;
+            StateHasChanged();
+        }
+    }
+
+    private void OnNgaySinhChange(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString() ?? "";
+        if (!string.IsNullOrWhiteSpace(input))
+        {
+            var digits = new string(input.Where(char.IsDigit).ToArray());
+            if (digits.Length == 8 && !input.Contains('/'))
+                NgaySinhStr = $"{digits[..2]}/{digits[2..4]}/{digits[4..]}";
+            else
+                NgaySinhStr = input;
+        }
+        else
+        {
+            NgaySinhStr = "";
+        }
+        NgaySinhLoi = null;
+    }
+}

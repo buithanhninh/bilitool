@@ -1,0 +1,634 @@
+@page "/xu-huong"
+@using BiliTool.Vn.Application.Commands
+@using BiliTool.Vn.Application.DTOs
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Web.Services
+@using MediatR
+@inject NguoiDungHienTaiService NguoiDung
+@inject IMediator Mediator
+@inject IJSRuntime JS
+@inject BiliTool.Vn.Web.Services.TranslationService T
+
+<PageTitle>@T["Menu_Trend"]</PageTitle>
+
+<HeadContent>
+    <meta name="robots" content="noindex, nofollow" />
+</HeadContent>
+
+<div class="guide-wrapper">
+    <div class="guide-header">
+        <i class="fas fa-chart-line"></i>
+        <div>
+            <h1>Theo dõi bé sơ sinh</h1>
+            <p>Quản lý hồ sơ và theo dõi diễn tiến Bilirubin từng bệnh nhi theo thời gian</p>
+        </div>
+    </div>
+
+    <div class="guide-content" style="padding: 0;">
+
+    @if (!NguoiDung.DaDangNhap)
+    {
+        <!-- Auth gate -->
+        <div class="xh-auth-gate">
+            <div class="auth-gate-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h2>Đăng nhập để sử dụng tính năng này</h2>
+            <p>Tính năng theo dõi hồ sơ yêu cầu đăng nhập bằng tài khoản Google để lưu trữ và bảo mật dữ liệu.</p>
+            <ul class="auth-benefits">
+                <li><i class="fas fa-check-circle"></i> Lưu hồ sơ nhiều em bé</li>
+                <li><i class="fas fa-check-circle"></i> Theo dõi xu hướng Bilirubin theo thời gian</li>
+                <li><i class="fas fa-check-circle"></i> Cập nhật chỉ số mới trong vài giây</li>
+                <li><i class="fas fa-check-circle"></i> Dữ liệu chỉ hiển thị với bạn, bảo mật tuyệt đối</li>
+            </ul>
+            <a href="/dang-nhap" class="btn-google-login">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+                Đăng nhập với Google
+            </a>
+        </div>
+    }
+    @if (NguoiDung.DaDangNhap)
+    {
+        <div class="benh-nhan-layout">
+
+            <!-- ── Cột trái: Danh sách bé ── -->
+            <div class="bn-sidebar">
+                <div class="bn-sidebar-header">
+                    <span><i class="fas fa-users"></i> Danh sách đang theo dõi</span>
+                    <button class="btn-them-bn" @onclick="MoModalTaoBenhNhan" title="Thêm hồ sơ bé mới">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                @if (dangTai)
+                {
+                    <div class="bn-loading"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>
+                }
+                else if (!dsBenhNhan.Any())
+                {
+                    <div class="bn-empty">
+                        <i class="fas fa-user-plus"></i>
+                        <p>Chưa có hồ sơ nào.</p>
+                        <button class="btn-them-bn-empty" @onclick="MoModalTaoBenhNhan">
+                            <i class="fas fa-plus"></i> Thêm hồ sơ đầu tiên
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="bn-list">
+                        @foreach (var bn in dsBenhNhan)
+                        {
+                            <button class="bn-item @(benhNhanChon?.Id == bn.Id ? "active" : "")"
+                                    @onclick="() => ChonBenhNhan(bn)">
+                                <div class="bn-item-avatar">
+                                    @(bn.HoTenBenhNhan.Length > 0 ? bn.HoTenBenhNhan[0].ToString().ToUpper() : "?")
+                                </div>
+                                <div class="bn-item-info">
+                                    <strong>@bn.HoTenBenhNhan</strong> <small class="text-muted">(@bn.MaBenhNhan)</small>
+                                    <span><i class="fas fa-clock" style="font-size:0.7rem;"></i> @FormatTuoiHienTai(bn.TuoiHienTaiGio)</span>
+                                    @if (bn.LanDoGanNhat != null)
+                                    {
+                                        <small class="bili-badge @GetMucDoClass(bn.LanDoGanNhat.MucDoNguyHiem)">
+                                            @bn.LanDoGanNhat.BilirubinMgDl.ToString("F1") mg/dL
+                                        </small>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-muted">Chưa có xét nghiệm</small>
+                                    }
+                                </div>
+                                @if (benhNhanChon?.Id == bn.Id)
+                                {
+                                    <i class="fas fa-chevron-right" style="color:var(--primary); margin-left:auto; font-size:0.75rem;"></i>
+                                }
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- ── Cột phải: Chi tiết ── -->
+            <div class="bn-detail">
+                @if (benhNhanChon == null)
+                {
+                    <div class="bn-no-select">
+                        <div class="bn-no-select-icon"><i class="fas fa-user-md"></i></div>
+                        <h3>Chọn bé để theo dõi</h3>
+                        <p>Chọn một bé từ danh sách bên trái để xem chi tiết và cập nhật chỉ số Bilirubin.</p>
+                        <button class="btn-primary-vn" style="margin-top:8px;" @onclick="MoModalTaoBenhNhan">
+                            <i class="fas fa-plus"></i> Thêm hồ sơ bé mới
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <!-- Thông tin của bé -->
+                    <div class="bn-detail-header">
+                        <div class="bn-detail-avatar-wrap">
+                            <div class="bn-detail-avatar">
+                                @(benhNhanChon.HoTenBenhNhan[0].ToString().ToUpper())
+                            </div>
+                        </div>
+                        <div class="bn-detail-info">
+                            <h2>@benhNhanChon.HoTenBenhNhan <small style="font-size: 1rem; color: #6c757d;">#@benhNhanChon.MaBenhNhan</small></h2>
+                            <div class="bn-detail-tags">
+                                <span class="tag-info"><i class="fas fa-birthday-cake"></i> Sinh: @benhNhanChon.NgayGioSinh.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</span>
+                                <span class="tag-info"><i class="fas fa-baby"></i> @benhNhanChon.TuoiThaiTuan tuần</span>
+                                <span class="tag-info @(benhNhanChon.TuoiHienTaiGio > 168 ? "text-muted" : "text-primary")">
+                                    <i class="fas fa-clock"></i> @FormatTuoiHienTai(benhNhanChon.TuoiHienTaiGio)
+                                </span>
+                                @if (benhNhanChon.CoNguyCoThanKinh)
+                                {
+                                    <span class="badge-nguycotk"><i class="fas fa-exclamation-triangle"></i> Có NCTK</span>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(benhNhanChon.GhiChu))
+                            {
+                                <p class="bn-ghi-chu"><i class="fas fa-sticky-note"></i> @benhNhanChon.GhiChu</p>
+                            }
+                        </div>
+                        <button class="btn-xoa-bn" @onclick="() => XoaBenhNhan(benhNhanChon.Id)"
+                                title="Xóa hồ sơ">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </div>
+
+                    <!-- Form nhập xét nghiệm mới -->
+                    <div class="xn-form-card">
+                        <div class="xn-form-title">
+                            <i class="fas fa-vial"></i> Thêm kết quả xét nghiệm mới
+                        </div>
+                        <div class="xn-form-fields">
+                            <div class="form-group-vn">
+                                <label class="label-vn">
+                                    <i class="fas fa-tint" style="color:var(--danger);"></i>
+                                    Bilirubin toàn phần (mg/dL) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" step="0.1" min="0" max="50"
+                                       class="input-vn"
+                                       @bind="bilirubinMoi"
+                                       placeholder="Ví dụ: 13.5" />
+                            </div>
+                            <div class="form-group-vn">
+                                <label class="label-vn">
+                                    <i class="fas fa-clock" style="color:var(--primary);"></i>
+                                    Thời gian lấy mẫu
+                                    <button class="btn-link-inline" @onclick="ToggleTungChonThoiGian"
+                                            type="button">
+                                        @(tuyChinh ? "↩ Dùng thời gian hiện tại" : "✏ Nhập khác")
+                                    </button>
+                                </label>
+                                @if (!tuyChinh)
+                                {
+                                    <div class="input-readonly-display">
+                                        <i class="fas fa-clock text-primary"></i>
+                                        <span>Tự động: <strong>@DateTime.Now.ToString("HH:mm — dd/MM/yyyy")</strong></span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <input type="datetime-local"
+                                           class="input-vn"
+                                           @bind="thoiGianTuyChinhStr" />
+                                    <small class="text-muted">Dùng khi nhập kết quả muộn sau thời điểm lấy mẫu thực tế</small>
+                                }
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(thongBaoLoi))
+                        {
+                            <div class="alert-error-vn"><i class="fas fa-exclamation-circle"></i> @thongBaoLoi</div>
+                        }
+                        <div style="display:flex; gap:12px; align-items:center; margin-top:4px;">
+                            <button class="btn-primary-vn" style="min-width:160px;" @onclick="ThemXetNghiemMoi" disabled="@dangLuu">
+                                @if (dangLuu)
+                                {
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span> Đang lưu...</span>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span> Lưu kết quả</span>
+                                }
+                            </button>
+                            @if (thongBaoOK)
+                            {
+                                <span class="text-success" style="font-size:0.85rem;"><i class="fas fa-check-circle"></i> Đã lưu thành công!</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Biểu đồ xu hướng -->
+                    @if (benhNhanChon.DsXetNghiem.Any())
+                    {
+                        <div class="section-divider">
+                            <span><i class="fas fa-chart-line"></i> Biểu đồ xu hướng</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="bilirubinBenhNhanChart"></canvas>
+                        </div>
+
+                        <!-- Bảng lịch sử -->
+                        <div class="section-divider">
+                            <span><i class="fas fa-history"></i> Lịch sử xét nghiệm (@benhNhanChon.DsXetNghiem.Count lần đo)</span>
+                        </div>
+                        <div class="xn-history-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Thời gian lấy mẫu</th>
+                                        <th>Giờ tuổi</th>
+                                        <th>Bilirubin (mg/dL)</th>
+                                        <th>Mức độ</th>
+                                        <th style="width:40px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var xn in benhNhanChon.DsXetNghiem.OrderByDescending(x => x.ThoiGianLayMau))
+                                    {
+                                        <tr>
+                                            <td><i class="fas fa-calendar-alt text-muted" style="font-size:0.75rem;margin-right:4px;"></i>@xn.ThoiGianLayMau.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</td>
+                                            <td><strong>@xn.TuoiGioTuDong.ToString("F0")</strong> giờ</td>
+                                            <td>
+                                                <span class="bili-value">@xn.BilirubinMgDl.ToString("F1")</span>
+                                                <small class="text-muted"> mg/dL</small>
+                                            </td>
+                                            <td>
+                                                <span class="muc-do-badge-sm @GetMucDoClass(xn.MucDoNguyHiem)">
+                                                    @GetTranslatedMucDo(xn.MucDoNguyHiem)
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn-icon-danger" @onclick="() => XoaXetNghiem(xn.Id)"
+                                                        title="Xóa xét nghiệm này">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="xh-empty-chart">
+                            <i class="fas fa-chart-area"></i>
+                            <p>Chưa có xét nghiệm nào. Nhập kết quả đầu tiên ở trên để bắt đầu theo dõi xu hướng!</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    </div>
+</div>
+
+<!-- ══ MODAL: Tạo bệnh nhân mới ════════════════════════════════════ -->
+@if (hienModal)
+{
+    <div class="modal-overlay" @onclick="DongModal">
+        <div class="modal-card modal-card-lg" @onclick:stopPropagation="true">
+            <div class="modal-header">
+                <div class="modal-header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div>
+                    <h3>Thêm hồ sơ mới</h3>
+                    <p>Điền thông tin để tạo hồ sơ theo dõi bệnh nhi</p>
+                </div>
+                <button class="modal-close" @onclick="DongModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group-vn">
+                    <label class="label-vn">
+                        <i class="fas fa-user text-primary" style="font-size:0.8rem;"></i>
+                        Họ và tên bé <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="input-vn" @bind="formTao.HoTenBenhNhan"
+                           placeholder="Ví dụ: Nguyễn Văn A" autofocus />
+                </div>
+
+                <div class="form-group-vn" style="margin-top:16px;">
+                    <label class="label-vn">
+                        <i class="fas fa-id-card text-primary" style="font-size:0.8rem;"></i>
+                        Mã Bệnh Nhi (tùy chọn)
+                    </label>
+                    <input type="text" class="input-vn" @bind="formTao.MaBenhNhan"
+                           placeholder="Bỏ trống để tự động tạo" />
+                </div>
+
+                <div class="form-row-2" style="margin-top:16px;">
+                    <div class="form-group-vn">
+                        <label class="label-vn">
+                            <i class="fas fa-calendar-alt text-primary" style="font-size:0.8rem;"></i>
+                            Ngày giờ sinh <span class="text-danger">*</span>
+                        </label>
+                        <input type="datetime-local" class="input-vn" @bind="ngayGioSinhInput" />
+                        <small class="text-muted" style="display:block;margin-top:4px;">
+                            <i class="fas fa-info-circle"></i> Mốc gốc để tính "Giờ tuổi" tự động
+                        </small>
+                    </div>
+                    <div class="form-group-vn">
+                        <label class="label-vn">
+                            <i class="fas fa-baby text-primary" style="font-size:0.8rem;"></i>
+                            Tuổi thai lúc sinh (tuần)
+                        </label>
+                        <select class="select-vn" @bind="formTao.TuoiThaiTuan">
+                            <option value="35">35 tuần</option>
+                            <option value="36">36 tuần</option>
+                            <option value="37">37 tuần</option>
+                            <option value="38">38 tuần</option>
+                            <option value="39">39 tuần</option>
+                            <option value="40">40 tuần (đủ tháng)</option>
+                            <option value="41">41 tuần</option>
+                            <option value="42">42 tuần</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- PHẦN: Yếu tố nguy cơ thần kinh -->
+                <div class="form-section" style="margin-top:20px;">
+                    <h3 class="section-label">
+                        <i class="fas fa-brain" style="color:var(--warning);"></i>
+                        Yếu tố nguy cơ thần kinh
+                        <span class="optional-badge">Tùy chọn</span>
+                    </h3>
+                    <div class="nguyen-co-grid">
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="formTao.BenhTanHuyetMienDichHoacThieuG6PD" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Bệnh tan huyết miễn dịch hoặc thiếu G6PD</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="formTao.NhiemKhuanHuyetHoacNghiNgo" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Nhiễm khuẩn huyết (hoặc nghi ngờ)</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="formTao.AlbuminThapDuoi3gDl" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Albumin huyết thanh &lt; 3.0 g/dL</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="formTao.TinhTrangLamSangKhongOnDinh" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Tình trạng lâm sàng không ổn định</span>
+                        </label>
+                    </div>
+
+                    <div class="etcoc-row" style="margin-top:12px;">
+                        <label>
+                            ETCOc
+                            <span class="tooltip-icon" title="End-tidal carbon monoxide (hiệu chỉnh): Phản ánh mức độ tan huyết">
+                                <i class="fas fa-question-circle"></i>
+                            </span>
+                        </label>
+                        <div class="input-with-unit">
+                            <input type="number" class="form-control" step="0.1" min="0" max="10"
+                                   placeholder="0.0" @bind="formTao.ETCOcPpm" />
+                            <span class="unit-badge">ppm</span>
+                        </div>
+                    </div>
+                    @if (formTao.ETCOcPpm.HasValue && formTao.ETCOcPpm.Value > 1.7m)
+                    {
+                        <div class="etcoc-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            ETCOc &gt; 1.7 ppm — Nguy cơ tan huyết tăng
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group-vn" style="margin-top:16px;">
+                    <label class="label-vn">
+                        <i class="fas fa-sticky-note text-muted" style="font-size:0.8rem;"></i>
+                        Ghi chú (tùy chọn)
+                    </label>
+                    <textarea class="input-vn" rows="2" @bind="formTao.GhiChu"
+                              placeholder="Ghi chú thêm về bé, hoàn cảnh lâm sàng..."></textarea>
+                </div>
+
+                @if (!string.IsNullOrEmpty(thongBaoLoiModal))
+                {
+                    <div class="alert-error-vn" style="margin-top:12px;">
+                        <i class="fas fa-exclamation-circle"></i> @thongBaoLoiModal
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary-vn" @onclick="DongModal">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button class="btn-primary-vn" @onclick="TaoBenhNhanMoi" disabled="@dangLuu">
+                    @if (dangLuu)
+                    {
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span> Đang tạo...</span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-save"></i>
+                        <span> Tạo hồ sơ</span>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool dangTai = true;
+    private bool dangLuu = false;
+    private bool thongBaoOK = false;
+    private List<HoSoBenhNhanDto> dsBenhNhan = new();
+    private HoSoBenhNhanDto? benhNhanChon;
+
+    // Form nhập xét nghiệm
+    private decimal bilirubinMoi = 0;
+    private bool tuyChinh = false;
+    private DateTime thoiGianTuyChinhStr = DateTime.Now;
+    private string thongBaoLoi = string.Empty;
+
+    // Modal tạo hồ sơ
+    private bool hienModal = false;
+    private TaoBenhNhanDto formTao = new();
+    private DateTime ngayGioSinhInput = DateTime.Now;
+    private string thongBaoLoiModal = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (NguoiDung.DaDangNhap)
+            await TaiDsBenhNhan();
+        dangTai = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        if (benhNhanChon?.DsXetNghiem.Any() == true)
+            await VeBieuDo();
+    }
+
+    private async Task TaiDsBenhNhan()
+    {
+        var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+        dsBenhNhan = await Mediator.Send(new LayDsBenhNhanQuery(userId));
+    }
+
+    private async Task ChonBenhNhan(HoSoBenhNhanDto bn)
+    {
+        var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+        var chiTiet = await Mediator.Send(new LayChiTietBenhNhanQuery(bn.Id, userId));
+        benhNhanChon = chiTiet;
+        bilirubinMoi = 0;
+        thongBaoLoi = string.Empty;
+        thongBaoOK = false;
+        tuyChinh = false;
+        StateHasChanged();
+
+        if (benhNhanChon?.DsXetNghiem.Any() == true)
+        {
+            await Task.Delay(150);
+            await VeBieuDo();
+        }
+    }
+
+    private async Task ThemXetNghiemMoi()
+    {
+        thongBaoLoi = string.Empty;
+        thongBaoOK = false;
+
+        if (benhNhanChon == null) return;
+        if (bilirubinMoi <= 0 || bilirubinMoi > 50)
+        {
+            thongBaoLoi = "Giá trị Bilirubin không hợp lệ (0 – 50 mg/dL).";
+            return;
+        }
+
+        dangLuu = true;
+        try
+        {
+            var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+            var dto = new ThemXetNghiemDto
+            {
+                BenhNhanId = benhNhanChon.Id,
+                BilirubinMgDl = bilirubinMoi,
+                ThoiGianLayMauTuyChon = tuyChinh ? thoiGianTuyChinhStr : null
+            };
+            await Mediator.Send(new ThemXetNghiemCommand(userId, dto));
+            bilirubinMoi = 0;
+            tuyChinh = false;
+            thongBaoOK = true;
+            await ChonBenhNhan(benhNhanChon);
+
+            // Xóa thông báo OK sau 3 giây
+            _ = Task.Delay(3000).ContinueWith(_ => { thongBaoOK = false; InvokeAsync(StateHasChanged); });
+        }
+        catch (Exception ex) { thongBaoLoi = ex.Message; }
+        finally { dangLuu = false; }
+    }
+
+    private void MoModalTaoBenhNhan()
+    {
+        formTao = new TaoBenhNhanDto { TuoiThaiTuan = 40 };
+        ngayGioSinhInput = DateTime.Now;
+        thongBaoLoiModal = string.Empty;
+        hienModal = true;
+    }
+
+    private void DongModal() => hienModal = false;
+
+    private async Task TaoBenhNhanMoi()
+    {
+        thongBaoLoiModal = string.Empty;
+        if (string.IsNullOrWhiteSpace(formTao.HoTenBenhNhan))
+        {
+            thongBaoLoiModal = "Vui lòng nhập họ tên bé.";
+            return;
+        }
+
+        dangLuu = true;
+        try
+        {
+            var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+            formTao.NgayGioSinhStr = ngayGioSinhInput.ToString("dd/MM/yyyy HH:mm");
+            var bn = await Mediator.Send(new TaoBenhNhanCommand(userId, formTao));
+            dsBenhNhan.Insert(0, bn);
+            hienModal = false;
+            await ChonBenhNhan(bn);
+        }
+        catch (Exception ex) { thongBaoLoiModal = ex.Message; }
+        finally { dangLuu = false; }
+    }
+
+    private async Task XoaBenhNhan(Guid id)
+    {
+        var ok = await JS.InvokeAsync<bool>("confirm", "Xóa hồ sơ của bé? Toàn bộ lịch sử xét nghiệm sẽ bị xóa vĩnh viễn.");
+        if (!ok) return;
+        var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+        await Mediator.Send(new XoaBenhNhanCommand(id, userId));
+        
+        if (benhNhanChon?.Id == id) benhNhanChon = null;
+        await TaiDsBenhNhan();
+        StateHasChanged();
+    }
+
+    private async Task XoaXetNghiem(Guid xetNghiemId)
+    {
+        var ok = await JS.InvokeAsync<bool>("confirm", "Xóa lần xét nghiệm này?");
+        if (!ok || benhNhanChon == null) return;
+        var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+        await Mediator.Send(new XoaXetNghiemCommand(xetNghiemId, userId));
+        await ChonBenhNhan(benhNhanChon);
+    }
+
+    private async Task VeBieuDo()
+    {
+        if (benhNhanChon?.DsXetNghiem.Any() != true) return;
+        var sorted = benhNhanChon.DsXetNghiem.OrderBy(x => x.ThoiGianLayMau).ToList();
+        var labels = sorted.Select(x => $"{x.TuoiGioTuDong:F0}h").ToArray();
+        var values = sorted.Select(x => (double)x.BilirubinMgDl).ToArray();
+        var cd = sorted.Select(x => x.NguongChieuDen.HasValue ? (double)x.NguongChieuDen.Value : (double?)null).ToArray();
+        var tm = sorted.Select(x => x.NguongThayCuuMau.HasValue ? (double)x.NguongThayCuuMau.Value : (double?)null).ToArray();
+        await JS.InvokeVoidAsync("bilitool.initXuHuongChart", "bilirubinBenhNhanChart", labels, values, cd, tm);
+    }
+
+    private void ToggleTungChonThoiGian()
+    {
+        tuyChinh = !tuyChinh;
+        if (tuyChinh) thoiGianTuyChinhStr = DateTime.Now;
+    }
+
+    private static string FormatTuoiHienTai(double gio) =>
+        gio < 24 ? $"{gio:F0} giờ tuổi" :
+        gio < 168 ? $"{gio / 24:F1} ngày tuổi" :
+        "Đã ra viện";
+
+    private string GetTranslatedMucDo(string? mucDo)
+    {
+        if (string.IsNullOrEmpty(mucDo)) return "";
+        var translated = T[$"MucDo_{mucDo}"];
+        return translated == $"MucDo_{mucDo}" ? mucDo : translated;
+    }
+
+    private static string GetMucDoClass(string? mucDo) => mucDo switch
+    {
+        "BinhThuong" => "text-success",
+        "CanTheoDoiSat" => "text-warning",
+        "CanChieuDen" => "text-orange",
+        "CanChieuDenTichCuc" => "text-danger",
+        "CanXemXetThayMau" => "text-danger fw-bold",
+        "KhanCapThayCuuMau" => "text-danger fw-bold",
+        // Fallback cho dữ liệu cũ
+        "Bình thường" => "text-success",
+        "Cần theo dõi sát" => "text-warning",
+        "Cần chiếu đèn" => "text-orange",
+        "Cần chiếu đèn tích cực" => "text-danger",
+        "Cân nhắc thay máu" => "text-danger fw-bold",
+        "KHẨN CẤP - Thay máu" => "text-danger fw-bold",
+        _ => "text-muted"
+    };
+}

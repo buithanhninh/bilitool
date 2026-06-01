@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # ── Ứng dụng BiliTool.Vn (Blazor Server) ──────────────────
+  bilitool-web:
+    image: bilitool-vn:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: bilitool-vn-app
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=bilitool_vn;Username=bilitool;Password=${DB_PASSWORD}
+      - Authentication__Google__ClientId=${GOOGLE_CLIENT_ID}
+      - Authentication__Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - bilitool-network
+    volumes:
+      - ./logs:/app/logs
+
+  # ── PostgreSQL Database ────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: bilitool-vn-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bilitool_vn
+      POSTGRES_USER: bilitool
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=vi_VN.UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bilitool -d bilitool_vn"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bilitool-network
+
+  # ── Auto Backup Database ───────────────────────────────────
+  pg-backups:
+    image: prodrigestivill/postgres-backup-local
+    container_name: bilitool-vn-backup
+    restart: always
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=bilitool_vn
+      - POSTGRES_USER=bilitool
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - SCHEDULE=@daily
+      - BACKUP_KEEP_DAYS=7
+      - BACKUP_KEEP_WEEKS=4
+      - BACKUP_KEEP_MONTHS=6
+      - HEALTHCHECK_PORT=8080
+    volumes:
+      - ./backups:/backups
+    depends_on:
+      - postgres
+    networks:
+      - bilitool-network
+
+  # ── Nginx Reverse Proxy ────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: bilitool-vn-nginx
+    restart: unless-stopped
+    ports:
+      - "8888:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - bilitool-web
+    networks:
+      - bilitool-network
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  bilitool-network:
+    driver: bridge

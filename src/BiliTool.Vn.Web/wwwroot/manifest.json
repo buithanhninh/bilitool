@@ -1,0 +1,17 @@
+{
+  "name": "BiliTool.Vn - Máy Tính Bilirubin Sơ Sinh",
+  "short_name": "BiliTool",
+  "description": "Công cụ y khoa tính toán ngưỡng bilirubin sơ sinh theo phác đồ AAP 2022 & NICE CG98. Miễn phí, chính xác, tiếng Việt.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#1a6b9a",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

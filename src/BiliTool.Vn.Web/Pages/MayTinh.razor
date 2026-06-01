@@ -1,0 +1,731 @@
+@page "/"
+@page "/may-tinh"
+@using BiliTool.Vn.Application.Commands
+@using BiliTool.Vn.Application.DTOs
+@using BiliTool.Vn.Domain.Enums
+@using MediatR
+@inject IMediator Mediator
+@inject IToastService Toast
+@inject IJSRuntime JS
+@inject BiliTool.Vn.Web.Services.PhienLamViecService PhienLamViec
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject BiliTool.Vn.Web.Services.TranslationService T
+
+<PageTitle>Máy Tính Bilirubin Sơ Sinh Online — Ngưỡng Chiếu Đèn & Thay Máu | AAP 2022 + NICE CG98 | BiliTool.Vn</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Công cụ y khoa trực tuyến miễn phí tính toán ngưỡng bilirubin sơ sinh (vàng da sơ sinh) theo phác đồ AAP 2022 và NICE CG98. Xác định chỉ định chiếu đèn, chiếu đèn tích cực, thay máu chính xác theo tuổi thai và yếu tố nguy cơ thần kinh." />
+    <meta name="keywords" content="máy tính bilirubin, vàng da sơ sinh, bilirubin sơ sinh, ngưỡng chiếu đèn, ngưỡng thay máu, AAP 2022, NICE CG98, phototherapy, neonatal jaundice calculator, exchange transfusion, bilitool" />
+    <link rel="canonical" href="https://bilitool.vn/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="BiliTool.Vn — Máy Tính Bilirubin Sơ Sinh Online (AAP 2022 + NICE CG98)" />
+    <meta property="og:description" content="Tính toán ngưỡng chiếu đèn và thay máu cho trẻ sơ sinh bị vàng da. Miễn phí, chính xác, tiếng Việt. Phác đồ AAP 2022 + NICE CG98." />
+    <meta property="og:url" content="https://bilitool.vn/" />
+    <meta property="og:site_name" content="BiliTool.Vn" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BiliTool.Vn — Máy Tính Bilirubin Sơ Sinh" />
+    <meta name="twitter:description" content="Công cụ y khoa tính ngưỡng bilirubin sơ sinh theo AAP 2022 và NICE CG98. Miễn phí, chính xác." />
+    <meta name="twitter:image" content="https://bilitool.vn/images/og-bilitool.png" />
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": ["SoftwareApplication", "MedicalWebPage"],
+        "name": "BiliTool.Vn - Máy Tính Bilirubin Sơ Sinh",
+        "url": "https://bilitool.vn",
+        "description": "Công cụ y khoa trực tuyến tính toán ngưỡng bilirubin sơ sinh theo phác đồ AAP 2022 và NICE CG98",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Web",
+        "offers": { "@@type": "Offer", "price": "0", "priceCurrency": "VND" },
+        "inLanguage": ["vi", "en", "fr"],
+        "about": {
+            "@@type": "MedicalCondition",
+            "name": "Neonatal Jaundice",
+            "alternateName": "Vàng da sơ sinh"
+        },
+        "citation": [
+            "Kemper AR, et al. Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation. Pediatrics. 2022;150(3):e2022058859",
+            "NICE Clinical Guideline CG98: Jaundice in newborn babies under 28 days. Updated October 2023"
+        ]
+    }
+    </script>
+</HeadContent>
+
+<div class="may-tinh-wrapper">
+    <!-- CỘT TRÁI: Form nhập liệu -->
+    <div class="panel-nhap-lieu">
+        <div class="card-form">
+            <div class="card-form-header">
+                <i class="fas fa-baby"></i>
+                <h1>@T["NeonatalInfo"]</h1>
+                <button class="btn-reset" @onclick="DatLai" title="@T["Reset"]">
+                    <i class="fas fa-redo-alt"></i> @T["Reset"]
+                </button>
+            </div>
+
+            <EditForm Model="@model" OnValidSubmit="TinhToan">
+                <DataAnnotationsValidator />
+
+                <!-- PHẦN 1: Thời gian -->
+                <div class="form-section">
+                    <h2 class="section-label">
+                        <span class="section-badge">1</span>
+                        @T["TimeInfo"]
+                    </h2>
+
+                    <div class="input-mode-toggle">
+                        <button type="button"
+                                class="@GetToggleClass(true)"
+                                @onclick="ChonNhapNgayGio">
+                            <i class="fas fa-calendar-alt"></i> @T["InputDateTime"]
+                        </button>
+                        <button type="button"
+                                class="@GetToggleClass(false)"
+                                @onclick="ChonNhapTuoiGio">
+                            <i class="fas fa-clock"></i> @T["InputAgeHours"]
+                        </button>
+                    </div>
+
+                    @if (dungNgayGio)
+                    {
+                        <div class="datetime-grid">
+                            <div class="form-group">
+                                <label>@T["BirthDate"] <span class="required">*</span></label>
+                                <input type="text" class="form-control" placeholder="dd/mm/yyyy" maxlength="10" @bind="NgaySinhStr" />
+                            </div>
+                            <div class="form-group">
+                                <label>@T["BirthTime"] <span class="required">*</span></label>
+                                <input type="text" class="form-control" placeholder="HH:mm" @bind="GioSinhStr" />
+                            </div>
+                            <div class="form-group">
+                                <label>@T["SampleDate"] <span class="required">*</span></label>
+                                <input type="text" class="form-control" placeholder="dd/mm/yyyy" maxlength="10" @bind="NgayLayMauStr" />
+                            </div>
+                            <div class="form-group">
+                                <label>@T["SampleTime"] <span class="required">*</span></label>
+                                <input type="text" class="form-control" placeholder="HH:mm" @bind="GioLayMauStr" />
+                            </div>
+                        </div>
+                        @if (TuoiTinhDuoc().HasValue)
+                        {
+                            <div class="tuoi-tinh-duoc">
+                                <i class="fas fa-info-circle"></i>
+                                @T["AgeCalculated"]: <strong>@TuoiTinhDuoc() @T["Hours"]</strong>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label>@T["AgeSampleHours"] <span class="required">*</span></label>
+                            <div class="input-with-unit">
+                                <input type="number" class="form-control" min="1" max="672"
+                                       placeholder="1 – 672"
+                                       @bind="model.TuoiTheoGio" />
+                                <span class="unit-badge">@T["Hours"]</span>
+                            </div>
+                            <small class="form-hint" style="color: #6b7280; margin-top: 4px;">
+                                <i class="fas fa-info-circle"></i>
+                                Tối đa 672 giờ (28 ngày) — theo phạm vi NICE CG98
+                            </small>
+                        </div>
+                    }
+                </div>
+
+                <!-- PHẦN 2: Bilirubin -->
+                <div class="form-section">
+                    <h2 class="section-label">
+                        <span class="section-badge">2</span>
+                        @T["TotalBilirubin"]
+                    </h2>
+                    <div class="bilirubin-row">
+                        <div class="form-group flex-1">
+                            <label>@T["Value"] <span class="required">*</span></label>
+                            <input type="number" class="form-control" step="0.1" min="0"
+                                   placeholder="@T["EnterValue"]"
+                                   @bind="model.TongBilirubin" />
+                        </div>
+                        <div class="form-group w-auto">
+                            <label>@T["Unit"]</label>
+                            <select class="form-control" @bind="donViDoStr">
+                                <option value="MgDl">mg/dL (Mỹ)</option>
+                                <option value="UmolL">μmol/L (Quốc tế)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PHẦN 3: Tuổi thai -->
+                <div class="form-section">
+                    <h2 class="section-label">
+                        <span class="section-badge">3</span>
+                        @T["GestationalAge"]
+                    </h2>
+                    <div class="form-group">
+                        <label>@T["GestAgeBirth"] <span class="required">*</span></label>
+                        <select class="form-control" @bind="model.TuoiThaiTuan">
+                            <option value="0">@T["SelectGestAge"]</option>
+                            @for (int i = 45; i >= 35; i--)
+                            {
+                                var t = i;
+                                var label = t >= 38 ? T["WeeksTerm"] : t == 37 ? T["WeeksNearTerm"] : T["WeeksLatePreterm"];
+                                <option value="@t">@t @label</option>
+                            }
+                        </select>
+                        <small class="form-hint">
+                            <i class="fas fa-info-circle"></i>
+                            AAP 2022 & NICE CG98: áp dụng cho trẻ ≥ 35 tuần tuổi thai
+                        </small>
+                    </div>
+                </div>
+
+                <!-- PHẦN 4: Yếu tố nguy cơ -->
+                <div class="form-section">
+                    <h2 class="section-label">
+                        <span class="section-badge">4</span>
+                        @T["NeuroRiskFactors"]
+                        <span class="optional-badge">@T["Optional"]</span>
+                    </h2>
+
+                    <h5 style="font-size: 0.9rem; color: #555; margin-bottom: 8px;"><i class="fas fa-brain"></i> Nguy cơ thần kinh (AAP 2022)</h5>
+                    <div class="nguyen-co-grid mb-3">
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.BenhTanHuyetMienDichHoacThieuG6PD" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">@T["Risk_Hemolytic"]</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.NhiemKhuanHuyetHoacNghiNgo" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">@T["Risk_Sepsis"]</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.AlbuminThapDuoi3gDl" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">@T["Risk_Albumin"]</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.TinhTrangLamSangKhongOnDinh" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">@T["Risk_Unstable"]</span>
+                        </label>
+                    </div>
+
+                    <h5 style="font-size: 0.9rem; color: #555; margin-bottom: 8px;"><i class="fas fa-notes-medical"></i> Nguy cơ lâm sàng (NICE CG98)</h5>
+                    <div class="nguyen-co-grid mb-3">
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.AnhChiBiVangDaCanChieuDen" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Anh/chị ruột từng chiếu đèn</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.MeBuMeHoanToan" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Mẹ dự định bú mẹ hoàn toàn</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.VangDaTrong24hDau" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Vàng da xuất hiện trong 24h đầu</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.BenhTanHuyetRh" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Bệnh tan huyết Rh</span>
+                        </label>
+                        <label class="checkbox-vn">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.BenhTanHuyetABO" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label">Bệnh tan huyết ABO</span>
+                        </label>
+                        <label class="checkbox-vn" style="grid-column: 1 / -1;">
+                            <input type="checkbox" @bind="model.YeuToNguyCo.DauHieuBenhNaoBilirubinCap" />
+                            <span class="checkbox-box"></span>
+                            <span class="checkbox-label text-danger fw-bold">Dấu hiệu bệnh não bilirubin cấp tính</span>
+                        </label>
+                    </div>
+
+                    <div class="etcoc-row">
+                        <label>
+                            ETCOc
+                        </label>
+                        <div class="input-with-unit">
+                            <input type="number" class="form-control" step="0.1" min="0" max="10"
+                                   placeholder="ppm" @bind="etcoc" />
+                            <span class="unit-badge">ppm</span>
+                        </div>
+                    </div>
+                    @if (etcoc.HasValue && etcoc.Value > 1.7m)
+                    {
+                        <div class="etcoc-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            ETCOc &gt; 1.7 ppm — @T["ETCOc_Warning"]
+                        </div>
+                    }
+                </div>
+
+                <!-- PHẦN 5: Trạng thái điều trị -->
+                <div class="form-section">
+                    <h3 class="section-label">
+                        <span class="section-badge">5</span>
+                        Trạng thái chiếu đèn
+                    </h3>
+                    <div class="form-group mb-0">
+                        <select class="form-control" @bind="model.TrangThaiChieuDen">
+                            <option value="@TrangThaiChieuDen.KhongChieuDen">Không chiếu đèn</option>
+                            <option value="@TrangThaiChieuDen.DangChieuDen">Đang chiếu đèn tiêu chuẩn</option>
+                            <option value="@TrangThaiChieuDen.DangChieuDenTichCuc">Đang chiếu đèn tích cực</option>
+                            <option value="@TrangThaiChieuDen.DaDungChieuDen">Đã dừng chiếu đèn (kiểm tra rebound)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Nút tính toán -->
+                <div class="form-section">
+                    <button type="submit" class="btn-calculate" disabled="@dangTinhToan">
+                        @if (dangTinhToan)
+                        {
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>@T["Calculating"]</span>
+                        }
+                        else
+                        {
+                            <i class="fas fa-calculator"></i>
+                            <span>@T["Btn_Calculate"]</span>
+                        }
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <!-- CỘT PHẢI: Kết quả -->
+    <div class="panel-ket-qua">
+        @if (ketQua != null)
+        {
+            <KetQuaPanel KetQua="ketQua" OnSaoChep="SaoChepBaoCao" OnIn="InBaoCao" OnTaoHoSo="MoModalTaoHoSo" />
+        }
+        else
+        {
+            <HuongDanAapPanel />
+        }
+    </div>
+</div>
+
+<!-- ══ MODAL: Tạo bệnh nhân mới từ Máy Tính ════════════════════════════════════ -->
+@if (hienModalTaoBe)
+{
+    <div class="modal-overlay" @onclick="DongModalTaoBe">
+        <div class="modal-card modal-card-lg" @onclick:stopPropagation="true">
+            <div class="modal-header">
+                <div class="modal-header-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div>
+                    <h3>Tạo hồ sơ trẻ sơ sinh</h3>
+                    <p>Hệ thống tự động sử dụng kết quả vừa tính toán</p>
+                </div>
+                <button class="modal-close" @onclick="DongModalTaoBe"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group-vn">
+                    <label class="label-vn">
+                        <i class="fas fa-user text-primary" style="font-size:0.8rem;"></i>
+                        Họ và tên bé <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="input-vn" @bind="formTao.HoTenBenhNhan" placeholder="Ví dụ: Nguyễn Văn A" autofocus />
+                </div>
+
+                <div class="form-group-vn" style="margin-top:16px;">
+                    <label class="label-vn">
+                        <i class="fas fa-id-card text-primary" style="font-size:0.8rem;"></i>
+                        Mã Bệnh Nhi (tùy chọn)
+                    </label>
+                    <input type="text" class="input-vn" @bind="formTao.MaBenhNhan" placeholder="Bỏ trống để tự động tạo" />
+                </div>
+
+                <div class="form-group-vn" style="margin-top:16px; background:#f8f9fa; padding:12px; border-radius:8px;">
+                    <label class="label-vn"><i class="fas fa-info-circle text-primary"></i> Thông tin được trích xuất tự động</label>
+                    <div style="font-size:0.9rem; margin-top:8px;">
+                        <div><strong>Ngày giờ sinh:</strong> @ngayGioSinhModal.ToString("HH:mm dd/MM/yyyy")</div>
+                        <div><strong>Tuổi thai:</strong> @model.TuoiThaiTuan tuần</div>
+                        <div><strong>Mức Bilirubin:</strong> @model.TongBilirubin @(donViDoStr == "UmolL" ? "μmol/L" : "mg/dL")</div>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(thongBaoLoiModal))
+                {
+                    <div class="alert-error-vn" style="margin-top:12px;">
+                        <i class="fas fa-exclamation-circle"></i> @thongBaoLoiModal
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary-vn" @onclick="DongModalTaoBe">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button class="btn-primary-vn" @onclick="TaoHoSoTre" disabled="@dangLuuHoSo">
+                    @if (dangLuuHoSo)
+                    {
+                        <i class="fas fa-spinner fa-spin"></i><span> Đang lưu...</span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-save"></i><span> Xác nhận lưu</span>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private YeuCauTinhToanBilirubinDto model = new()
+    {
+        YeuToNguyCo = new YeuToNguyCoThanKinhDto()
+    };
+
+    // ── Deep Link Integration (HIS/EMR) ────────────────────
+
+    [SupplyParameterFromQuery(Name = "ngaysinh")]
+    public string? QueryNgaySinh { get; set; }
+
+    [SupplyParameterFromQuery(Name = "giosinh")]
+    public string? QueryGioSinh { get; set; }
+
+    [SupplyParameterFromQuery(Name = "ngaymau")]
+    public string? QueryNgayMau { get; set; }
+
+    [SupplyParameterFromQuery(Name = "giomau")]
+    public string? QueryGioMau { get; set; }
+
+    [SupplyParameterFromQuery(Name = "bili")]
+    public decimal? QueryBili { get; set; }
+
+    [SupplyParameterFromQuery(Name = "donvi")]
+    public string? QueryDonVi { get; set; }
+
+    [SupplyParameterFromQuery(Name = "tuoithai")]
+    public int? QueryTuoiThai { get; set; }
+
+    [SupplyParameterFromQuery(Name = "autocalc")]
+    public bool? QueryAutoCalc { get; set; }
+
+    protected override void OnInitialized()
+    {
+        bool hasQuery = false;
+
+        if (!string.IsNullOrEmpty(QueryNgaySinh)) { NgaySinhStr = QueryNgaySinh; hasQuery = true; }
+        if (!string.IsNullOrEmpty(QueryGioSinh)) { GioSinhStr = QueryGioSinh; hasQuery = true; }
+        if (!string.IsNullOrEmpty(QueryNgayMau)) { NgayLayMauStr = QueryNgayMau; hasQuery = true; }
+        if (!string.IsNullOrEmpty(QueryGioMau)) { GioLayMauStr = QueryGioMau; hasQuery = true; }
+        
+        if (QueryBili.HasValue) { model.TongBilirubin = QueryBili.Value; hasQuery = true; }
+        if (QueryTuoiThai.HasValue) { model.TuoiThaiTuan = QueryTuoiThai.Value; hasQuery = true; }
+        if (!string.IsNullOrEmpty(QueryDonVi))
+        {
+            if (QueryDonVi.Equals("MgDl", StringComparison.OrdinalIgnoreCase)) donViDoStr = "MgDl";
+            else if (QueryDonVi.Equals("UmolL", StringComparison.OrdinalIgnoreCase)) donViDoStr = "UmolL";
+            hasQuery = true;
+        }
+
+        // Auto tính toán nếu có cờ
+        if (hasQuery && QueryAutoCalc == true)
+        {
+            TinhToan();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && QueryAutoCalc == true)
+        {
+            await TinhToan();
+            StateHasChanged();
+        }
+    }
+
+    private KetQuaTinhToanDto? ketQua;
+    private bool dangTinhToan;
+    private bool dungNgayGio = true;
+    private decimal? etcoc;
+    private string donViDoStr = "MgDl";
+
+    // ── Input Properties ─────────────────────────────────────
+
+    private string _gioSinhStr = "08:00";
+    private string GioSinhStr
+    {
+        get => _gioSinhStr;
+        set => _gioSinhStr = FormatTime(value);
+    }
+
+    private string _gioLayMauStr = "16:00";
+    private string GioLayMauStr
+    {
+        get => _gioLayMauStr;
+        set => _gioLayMauStr = FormatTime(value);
+    }
+
+    private string _ngaySinhStr = "";
+    private string NgaySinhStr
+    {
+        get => _ngaySinhStr;
+        set
+        {
+            _ngaySinhStr = FormatDate(value);
+            if (DateTime.TryParseExact(_ngaySinhStr, new[] { "dd/MM/yyyy", "d/M/yyyy", "dd/M/yyyy", "d/MM/yyyy" }, null, System.Globalization.DateTimeStyles.None, out var d))
+                model.NgaySinh = d;
+            else
+                model.NgaySinh = null;
+        }
+    }
+
+    private string _ngayLayMauStr = "";
+    private string NgayLayMauStr
+    {
+        get => _ngayLayMauStr;
+        set
+        {
+            _ngayLayMauStr = FormatDate(value);
+            if (DateTime.TryParseExact(_ngayLayMauStr, new[] { "dd/MM/yyyy", "d/M/yyyy", "dd/M/yyyy", "d/MM/yyyy" }, null, System.Globalization.DateTimeStyles.None, out var d))
+                model.NgayLayMau = d;
+            else
+                model.NgayLayMau = null;
+        }
+    }
+
+    // ── Formatting Helpers ─────────────────────────────────────
+
+    private string FormatDate(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return "";
+        var digits = new string(input.Where(char.IsDigit).ToArray());
+        if (digits.Length == 8 && !input.Contains('/'))
+            return $"{digits[..2]}/{digits[2..4]}/{digits[4..]}";
+        return input;
+    }
+
+    private string FormatTime(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return "";
+        var digits = new string(input.Where(char.IsDigit).ToArray());
+        if (digits.Length == 4 && !input.Contains(':'))
+            return $"{digits[..2]}:{digits[2..]}";
+        if (digits.Length == 3 && !input.Contains(':'))
+            return $"0{digits[..1]}:{digits[1..]}";
+        return input;
+    }
+
+    // ── Helpers ──────────────────────────────────────────────
+
+    private TimeSpan LayGioSinh()
+    {
+        if (TimeSpan.TryParse(GioSinhStr, out var t)) return t;
+        return TimeSpan.FromHours(8);
+    }
+
+    private TimeSpan LayGioLayMau()
+    {
+        if (TimeSpan.TryParse(GioLayMauStr, out var t)) return t;
+        return TimeSpan.FromHours(16);
+    }
+
+    private int? TuoiTinhDuoc()
+    {
+        if (model.NgaySinh.HasValue && model.NgayLayMau.HasValue)
+        {
+            var sinh = model.NgaySinh.Value.Date.Add(LayGioSinh());
+            var lay  = model.NgayLayMau.Value.Date.Add(LayGioLayMau());
+            var diff = (int)(lay - sinh).TotalHours;
+            return diff > 0 ? diff : null;
+        }
+        return null;
+    }
+
+    private string GetToggleClass(bool isNgayGio) =>
+        isNgayGio == dungNgayGio ? "toggle-btn active" : "toggle-btn";
+
+    private string GetConversionText() =>
+        donViDoStr == "MgDl"
+            ? $"≈ {Math.Round(model.TongBilirubin * 17.1m, 0)} μmol/L"
+            : $"≈ {Math.Round(model.TongBilirubin / 17.1m, 1)} mg/dL";
+
+    // ── Event Handlers ────────────────────────────────────────
+
+    private void ChonNhapNgayGio()
+    {
+        dungNgayGio = true;
+        model.TuoiTheoGio = null;
+    }
+
+    private void ChonNhapTuoiGio()
+    {
+        dungNgayGio = false;
+        model.NgaySinh = null;
+        model.NgayLayMau = null;
+    }
+
+    private void DatLai()
+    {
+        model = new() { YeuToNguyCo = new YeuToNguyCoThanKinhDto() };
+        ketQua = null;
+        etcoc = null;
+        NgaySinhStr = "";
+        NgayLayMauStr = "";
+        GioSinhStr = "08:00";
+        GioLayMauStr = "16:00";
+        donViDoStr = "MgDl";
+        dungNgayGio = true;
+    }
+
+    private async Task TinhToan()
+    {
+        dangTinhToan = true;
+        try
+        {
+            model.YeuToNguyCo.ETCOcPpm = etcoc;
+            model.DonViDo = donViDoStr == "UmolL" ? DonViDo.UmolL : DonViDo.MgDl;
+
+            if (dungNgayGio)
+            {
+                model.GioSinh    = LayGioSinh();
+                model.GioLayMau  = LayGioLayMau();
+            }
+
+            var cmd = new TinhToanBilirubinCommand(model);
+            ketQua = await Mediator.Send(cmd);
+            Toast.ShowSuccess("Tính toán thành công!");
+
+            // Lưu lịch sử
+            try 
+            {
+                var phienId = await PhienLamViec.LayHoacTaoPhienAsync();
+                await Mediator.Send(new LuuLichSuCommand(phienId, model, ketQua));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Không thể lưu lịch sử: {ex.Message}");
+            }
+        }
+        catch (BiliTool.Vn.Application.LoiXacThucException ex)
+        {
+            var loi = string.Join("; ", ex.LoiXacThuc.Values.SelectMany(v => v));
+            Toast.ShowError(loi);
+        }
+        catch (Exception ex)
+        {
+            Toast.ShowError($"Lỗi: {ex.Message}");
+        }
+        finally
+        {
+            dangTinhToan = false;
+        }
+    }
+
+    private async Task SaoChepBaoCao(string textBaoCao)
+    {
+        if (!string.IsNullOrEmpty(textBaoCao))
+        {
+            await JS.InvokeVoidAsync("bilitool.copyToClipboard", textBaoCao);
+            Toast.ShowSuccess(T["ReportCopied"] ?? "Đã sao chép báo cáo vào clipboard!");
+        }
+    }
+
+    private async Task InBaoCao() =>
+        await JS.InvokeVoidAsync("bilitool.exportKetQuaPdf");
+
+    // ── Tạo hồ sơ trẻ từ Máy Tính ────────────────────────────
+
+    private bool hienModalTaoBe = false;
+    private TaoBenhNhanDto formTao = new();
+    private DateTime ngayGioSinhModal = DateTime.Now;
+    private string thongBaoLoiModal = string.Empty;
+    private bool dangLuuHoSo = false;
+
+    private void MoModalTaoHoSo()
+    {
+        if (!NguoiDung.DaDangNhap)
+        {
+            Toast.ShowWarning("Vui lòng đăng nhập để lưu trữ dữ liệu bệnh nhi!");
+            return;
+        }
+
+        formTao = new TaoBenhNhanDto
+        {
+            TuoiThaiTuan = model.TuoiThaiTuan,
+            BenhTanHuyetMienDichHoacThieuG6PD = model.YeuToNguyCo.BenhTanHuyetMienDichHoacThieuG6PD,
+            NhiemKhuanHuyetHoacNghiNgo = model.YeuToNguyCo.NhiemKhuanHuyetHoacNghiNgo,
+            AlbuminThapDuoi3gDl = model.YeuToNguyCo.AlbuminThapDuoi3gDl,
+            TinhTrangLamSangKhongOnDinh = model.YeuToNguyCo.TinhTrangLamSangKhongOnDinh,
+            ETCOcPpm = model.YeuToNguyCo.ETCOcPpm,
+            AnhChiBiVangDaCanChieuDen = model.YeuToNguyCo.AnhChiBiVangDaCanChieuDen,
+            MeBuMeHoanToan = model.YeuToNguyCo.MeBuMeHoanToan,
+            VangDaTrong24hDau = model.YeuToNguyCo.VangDaTrong24hDau,
+            BenhTanHuyetRh = model.YeuToNguyCo.BenhTanHuyetRh,
+            BenhTanHuyetABO = model.YeuToNguyCo.BenhTanHuyetABO
+        };
+
+        if (dungNgayGio && model.NgaySinh.HasValue)
+        {
+            ngayGioSinhModal = model.NgaySinh.Value.Date.Add(LayGioSinh());
+        }
+        else if (model.TuoiTheoGio.HasValue)
+        {
+            ngayGioSinhModal = DateTime.Now.AddHours(-model.TuoiTheoGio.Value);
+        }
+
+        thongBaoLoiModal = string.Empty;
+        hienModalTaoBe = true;
+    }
+
+    private void DongModalTaoBe() => hienModalTaoBe = false;
+
+    private async Task TaoHoSoTre()
+    {
+        thongBaoLoiModal = string.Empty;
+        if (string.IsNullOrWhiteSpace(formTao.HoTenBenhNhan))
+        {
+            thongBaoLoiModal = "Vui lòng nhập họ tên bé.";
+            return;
+        }
+
+        dangLuuHoSo = true;
+        try
+        {
+            var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+            formTao.NgayGioSinhStr = ngayGioSinhModal.ToString("dd/MM/yyyy HH:mm");
+            
+            var bn = await Mediator.Send(new TaoBenhNhanCommand(userId, formTao));
+
+            var thoiGianLayMauThucTe = DateTime.Now;
+            if (dungNgayGio && model.NgayLayMau.HasValue)
+            {
+                thoiGianLayMauThucTe = model.NgayLayMau.Value.Date.Add(LayGioLayMau());
+            }
+            
+            var xnDto = new ThemXetNghiemDto
+            {
+                BenhNhanId = bn.Id,
+                BilirubinMgDl = donViDoStr == "UmolL" ? Math.Round(model.TongBilirubin / 17.1m, 2) : model.TongBilirubin,
+                ThoiGianLayMauTuyChon = thoiGianLayMauThucTe
+            };
+            await Mediator.Send(new ThemXetNghiemCommand(userId, xnDto));
+
+            hienModalTaoBe = false;
+            Toast.ShowSuccess("Lưu thành công! Bạn có thể xem hồ sơ ở phần báo cáo.");
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            thongBaoLoiModal = ex.Message;
+        }
+        finally
+        {
+            dangLuuHoSo = false;
+        }
+    }
+}

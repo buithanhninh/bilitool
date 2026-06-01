@@ -1,0 +1,314 @@
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject BiliTool.Vn.Web.Services.TranslationService T
+@inject IJSRuntime JS
+
+<div class="bilitool-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar @(sidebarCollapsed ? "collapsed" : "mobile-open")" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-baby"></i>
+                <div>
+                    <span class="logo-name">BiliTool.Vn</span>
+                    <span class="logo-tagline">Phiên bản 1.1</span>
+                </div>
+            </a>
+            <button class="sidebar-toggle" @onclick="ToggleSidebar" aria-label="Ẩn/hiện menu">
+                <i class="fas @(sidebarCollapsed ? "fa-bars" : "fa-times")"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-nav">
+            <NavLink class="nav-link-vn" href="/" Match="NavLinkMatch.All">
+                <i class="fas fa-calculator"></i>
+                <span>@T["Menu_Calculator"]</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/xu-huong">
+                <i class="fas fa-chart-line"></i>
+                <span>@T["Menu_Trend"]</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/huong-dan">
+                <i class="fas fa-book-medical"></i>
+                <span>@T["Menu_Guidelines"]</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/lich-su">
+                <i class="fas fa-history"></i>
+                <span>@T["Menu_History"]</span>
+            </NavLink>
+
+            @if (NguoiDung.LaQuanTriVien)
+            {
+                <div class="nav-divider"></div>
+                <NavLink class="nav-link-vn" href="/admin" Match="NavLinkMatch.Prefix" style="background-color: #2b3954; color: #60a5fa !important;">
+                    <i class="fas fa-shield-alt text-warning"></i>
+                    <span class="text-warning font-weight-bold">@T["Menu_Admin"]</span>
+                </NavLink>
+            }
+
+            <div class="nav-divider"></div>
+
+            <NavLink class="nav-link-vn" href="/tich-hop-his">
+                <i class="fas fa-hospital-alt"></i>
+                <span>@T["Menu_HisIntegration"]</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/gioi-thieu">
+                <i class="fas fa-info-circle"></i>
+                <span>@T["Menu_Intro"]</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/mien-tru-trach-nhiem">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Miễn trừ trách nhiệm</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/cau-hoi-thuong-gap">
+                <i class="fas fa-question-circle"></i>
+                <span>FAQ</span>
+            </NavLink>
+
+            <NavLink class="nav-link-vn" href="/lien-he">
+                <i class="fas fa-headset"></i>
+                <span>Liên hệ</span>
+            </NavLink>
+        </div>
+
+        <!-- Language Selector Redesign -->
+        <div class="nav-item-vn px-3 py-3" style="border-top: 1px solid rgba(255,255,255,0.1); position: relative;">
+            @if (!sidebarCollapsed)
+            {
+                <button class="btn w-100 text-start d-flex justify-content-between align-items-center lang-dropdown-btn" 
+                        type="button" 
+                        @onclick="ToggleLangDropdown"
+                        @onfocusout="HideLangDropdownDelay">
+                    <span><i class="fas fa-globe me-2" style="color: #5dade2;"></i> <span style="color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 500;">@T["Language_Select"]</span></span>
+                    <span class="ms-auto">
+                        @(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName switch {
+                            "vi" => "🇻🇳",
+                            "en" => "🇬🇧",
+                            "fr" => "🇫🇷",
+                            _ => "🇻🇳"
+                        })
+                    </span>
+                </button>
+                
+                @if (showLangDropdown)
+                {
+                    <ul class="dropdown-menu show w-100 shadow-lg" style="position: absolute; bottom: 100%; left: 0; margin-bottom: 8px; background: #1a2a3a; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 4px; z-index: 1050;">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2 lang-item" href="javascript:void(0)" @onclick='() => ChangeLanguageByCode("vi")'>
+                                <span class="me-2" style="font-size:1.1rem">🇻🇳</span> Tiếng Việt
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2 lang-item" href="javascript:void(0)" @onclick='() => ChangeLanguageByCode("en")'>
+                                <span class="me-2" style="font-size:1.1rem">🇬🇧</span> English
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2 lang-item" href="javascript:void(0)" @onclick='() => ChangeLanguageByCode("fr")'>
+                                <span class="me-2" style="font-size:1.1rem">🇫🇷</span> Français
+                            </a>
+                        </li>
+                    </ul>
+                }
+            }
+            else
+            {
+                <!-- Collapsed -->
+                <div class="text-center w-100" @onclick="ToggleSidebar" style="cursor:pointer; padding: 4px 0;" title="@T["Language_Select"]">
+                    <i class="fas fa-globe fa-lg" style="color: #5dade2;"></i>
+                </div>
+            }
+        </div>
+        
+        <style>
+            .lang-dropdown-btn {
+                background: rgba(255,255,255,0.05); 
+                border: 1px solid rgba(255,255,255,0.1); 
+                border-radius: 8px; 
+                padding: 8px 12px;
+                transition: all 0.2s;
+            }
+            .lang-dropdown-btn:hover, .lang-dropdown-btn:focus {
+                background: rgba(255,255,255,0.1);
+                border-color: rgba(255,255,255,0.2);
+            }
+            .lang-item {
+                color: rgba(255,255,255,0.85); 
+                font-size: 0.85rem;
+                border-radius: 6px;
+                transition: all 0.2s;
+            }
+            .lang-item:hover {
+                background-color: rgba(255,255,255,0.1);
+                color: white;
+            }
+        </style>
+
+        <!-- Trạng thái đăng nhập -->
+        <div class="sidebar-user">
+            <AuthorizeView>
+                <Authorized>
+                    <!-- Đã đăng nhập: hiện avatar + tên + nút đăng xuất -->
+                    <div class="user-card">
+                        <a href="/tai-khoan" class="user-avatar-wrap" title="Hồ sơ tài khoản" style="text-decoration:none; display:block;">
+                            @if (!string.IsNullOrEmpty(NguoiDung.AvatarUrl))
+                            {
+                                <img src="@NguoiDung.AvatarUrl"
+                                     alt="@NguoiDung.TenHienThi"
+                                     class="user-avatar-img"
+                                     referrerpolicy="no-referrer" />
+                            }
+                            else
+                            {
+                                <div class="user-avatar-fallback">
+                                    @NguoiDung.ChuCaiDau
+                                </div>
+                            }
+                            <div class="user-status-dot"></div>
+                        </a>
+                        <a href="/tai-khoan" class="user-info-text" style="text-decoration:none; display:flex; flex-direction:column; flex:1;">
+                            <span class="user-name-display">@NguoiDung.TenRutGon</span>
+                            <span class="user-email-display">@NguoiDung.Email</span>
+                        </a>
+                        <a href="/dang-xuat" class="user-logout-btn" title="Đăng xuất">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <!-- Chưa đăng nhập -->
+                    <div class="login-prompt">
+                        <a href="/dang-nhap" class="btn-login-google" id="btnDangNhapGoogle">
+                            <svg class="google-icon" width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;width:18px;height:18px;">
+                                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            </svg>
+                            <span>Đăng nhập với Google</span>
+                        </a>
+                        <div class="anon-divider">
+                            <span>hoặc</span>
+                        </div>
+                        <p class="anon-note">
+                            <i class="fas fa-user-secret"></i>
+                            Dùng ẩn danh (không lưu lịch sử)
+                        </p>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </nav>
+
+    <!-- Overlay for mobile -->
+    @if (!sidebarCollapsed)
+    {
+        <div class="sidebar-overlay" @onclick="ToggleSidebar"></div>
+    }
+
+    <!-- Nội dung chính -->
+    <main class="main-content @(sidebarCollapsed ? "collapsed" : "")">
+        <!-- Thanh điều hướng trên mobile -->
+        <div class="mobile-header">
+            <button class="mobile-menu-btn" @onclick="ToggleSidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="/" class="mobile-logo" style="text-decoration: none;">
+                <i class="fas fa-baby"></i>
+                <span>BiliTool.Vn</span>
+            </a>
+            <!-- Auth trên mobile -->
+            <div class="mobile-auth">
+                <AuthorizeView>
+                    <Authorized>
+                        @if (!string.IsNullOrEmpty(NguoiDung.AvatarUrl))
+                        {
+                            <img src="@NguoiDung.AvatarUrl"
+                                 alt="avatar"
+                                 class="mobile-avatar"
+                                 referrerpolicy="no-referrer" />
+                        }
+                        else
+                        {
+                            <div class="mobile-avatar-fallback">@NguoiDung.ChuCaiDau</div>
+                        }
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="/dang-nhap" class="mobile-login-btn" title="Đăng nhập">
+                            <i class="fab fa-google"></i>
+                        </a>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
+
+        <!-- Nội dung trang -->
+        <div class="page-content">
+            <Blazored.Toast.BlazoredToasts />
+            @Body
+        </div>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-content d-flex justify-content-between align-items-center w-100 px-3">
+                <span class="footer-copy">© 2026 BiliTool.Vn — Công cụ hỗ trợ lâm sàng, không thay thế phán đoán y khoa.</span>
+                <div class="footer-links" style="gap: 15px; display: flex;">
+                    <a href="/chinh-sach-bao-mat" class="text-muted text-decoration-none">Chính sách Quyền riêng tư</a>
+                    <span class="footer-ref">
+                        Phác đồ: <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859" target="_blank" rel="noopener">AAP CPG 2022</a>
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <BiliTool.Vn.Web.Shared.CookieConsent />
+</div>
+
+@code {
+    private bool sidebarCollapsed = false;
+    private bool showLangDropdown = false;
+
+    private void ToggleSidebar() => sidebarCollapsed = !sidebarCollapsed;
+
+    private void ToggleLangDropdown() => showLangDropdown = !showLangDropdown;
+
+    private async Task HideLangDropdownDelay()
+    {
+        // Trì hoãn 1 chút để click event của dropdown-item chạy trước khi dropdown đóng
+        await Task.Delay(200);
+        showLangDropdown = false;
+        StateHasChanged();
+    }
+
+    private async Task ChangeLanguageByCode(string culture)
+    {
+        showLangDropdown = false;
+        if (!string.IsNullOrEmpty(culture))
+        {
+            var cookieValue = $"c={culture}|uic={culture}";
+            var script = $"document.cookie = '.AspNetCore.Culture={cookieValue}; path=/; max-age=31536000'; window.location.reload();";
+            await JS.InvokeVoidAsync("eval", script);
+        }
+    }
+
+    private string GetFlagSvg(string langCode) => langCode switch
+    {
+        "vi" => "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZGEyNTFkIi8+PHBvbHlnb24gZmlsbD0iI2ZmY2QwMCIgcG9pbnRzPSIxNSw0IDExLjQ3LDE0Ljg1IDIwLjcxLDguMTUgOS4yOSw4LjE1IDE4LjUzLDE0Ljg1Ii8+PC9zdmc+",
+        "en" => "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MCAzMCI+PGNsaXBQYXRoIGlkPSJzIj48cGF0aCBkPSJNMAswdjMwaDYwdi0zMHoiLz48L2NsaXBQYXRoPjxjbGlwUGF0aCBpZD0idCI+PHBhdGggZD0iTTMwLDE1aDMwdjE1enYxNWgtMzB6aC0zMHYtMTV6di0xNWgzMHoiLz48L2NsaXBQYXRoPjxnIGNsaXAtcGF0aD0idXJsKCNzKSI+PHBhdGggZD0iTTAsMHYzMGg2MHYtMzB6IiBmaWxsPSIjMDEyMTY5Ii8+PHBhdGggZD0iTTAsMEw2MCwzME02MCwwTDAsMzAiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHBhdGggZD0iTTAsMEw2MCwzME02MCwwTDAsMzAiIGNsaXAtcGF0aD0idXJsKCN0KSIgc3Ryb2tlPSIjQzgxMDJFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNMzAsMHYzME0wLDE1aDYwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNMzAsMHYzME0wLDE1aDYwIiBzdHJva2U9IiNDODEwMkUiIHN0cm9rZS13aWR0aD0iNiIvPjwvZz48L3N2Zz4=",
+        "fr" => "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzIDIiPjxyZWN0IHdpZHRoPSIzIiBoZWlnaHQ9IjIiIGZpbGw9IiNFRDI5MzkiLz48cmVjdCB3aWR0aD0iMiIgaGVpZ2h0PSIyIiBmaWxsPSIjZmZmIi8+PHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMiIgZmlsbD0iIzAwMjM5NSIvPjwvc3ZnPg==",
+        _ => "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjY2NjIi8+PC9zdmc+"
+    };
+
+    private string GetFlagSvgMode(string langCode)
+    {
+        return GetFlagSvg(langCode);
+    }
+}

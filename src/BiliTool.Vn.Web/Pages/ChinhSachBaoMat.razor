@@ -1,0 +1,73 @@
+@page "/chinh-sach-bao-mat"
+@inject BiliTool.Vn.Web.Services.TranslationService TranslationService
+@inject IJSRuntime JS
+
+<PageTitle>@T("Privacy_Policy") - BiliTool.Vn</PageTitle>
+
+<HeadContent>
+    <meta name="description" content="Chính sách quyền riêng tư và bảo mật thông tin của BiliTool.Vn. Chúng tôi cam kết bảo vệ dữ liệu cá nhân và hồ sơ bệnh nhi." />
+    <meta property="og:title" content="Chính sách Quyền riêng tư - BiliTool.Vn" />
+    <link rel="canonical" href="https://bilitool.vn/chinh-sach-bao-mat" />
+</HeadContent>
+
+<div class="privacy-container container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <i class="fas fa-shield-alt text-primary mb-3" style="font-size: 3rem;"></i>
+                        <h1 class="fw-bold mb-2">Chính Sách Quyền Riêng Tư</h1>
+                        <p class="text-muted">Cập nhật lần cuối: 01/06/2026</p>
+                    </div>
+
+                    <div class="privacy-content">
+                        <h4 class="fw-bold text-primary mb-3 mt-4">1. Mục đích thu thập dữ liệu</h4>
+                        <p>BiliTool.Vn thu thập thông tin để cung cấp trải nghiệm sử dụng phần mềm ổn định và cá nhân hóa. Các thông tin được thu thập bao gồm:</p>
+                        <ul>
+                            <li><strong>Thông tin tài khoản:</strong> Địa chỉ Email, Họ và tên, và Ảnh đại diện (được cung cấp tự động bởi Google khi bạn sử dụng chức năng Đăng nhập bằng Google).</li>
+                            <li><strong>Dữ liệu y khoa:</strong> Các thông tin về trẻ sơ sinh (như tên, ngày sinh, tuổi thai, mức Bilirubin) do bạn tự nguyện nhập vào hệ thống để phục vụ tính toán phác đồ.</li>
+                            <li><strong>Dữ liệu kỹ thuật:</strong> Địa chỉ IP, loại trình duyệt (UserAgent) và phiên đăng nhập (Cookies) để duy trì trạng thái đăng nhập và ghi nhận lịch sử tính toán tạm thời.</li>
+                        </ul>
+
+                        <h4 class="fw-bold text-primary mb-3 mt-4">2. Bảo vệ dữ liệu cá nhân</h4>
+                        <p>Chúng tôi cam kết sử dụng các tiêu chuẩn mã hóa cơ sở dữ liệu hiện đại để bảo vệ thông tin cá nhân của bạn và bệnh nhi. Dữ liệu y khoa chỉ có thể truy cập bởi chính tài khoản đã tạo ra hồ sơ đó.</p>
+                        <p>Chúng tôi <strong>không bao giờ</strong> bán, cho thuê hoặc chia sẻ thông tin cá nhân của bạn với bất kỳ bên thứ ba nào vì mục đích quảng cáo thương mại.</p>
+
+                        <h4 class="fw-bold text-primary mb-3 mt-4">3. Quyền của người dùng</h4>
+                        <p>Với tư cách là người dùng của BiliTool.Vn, bạn có quyền:</p>
+                        <ul>
+                            <li>Chủ động chỉnh sửa hoặc cập nhật thông tin cá nhân trong mục Quản lý Tài khoản.</li>
+                            <li>Yêu cầu xóa toàn bộ dữ liệu tài khoản và hồ sơ bệnh nhi liên quan khỏi hệ thống của chúng tôi.</li>
+                            <li>Sử dụng hệ thống ở chế độ "Ẩn danh" (không cần đăng nhập) nếu không muốn lưu trữ dài hạn dữ liệu tính toán.</li>
+                        </ul>
+
+                        <h4 class="fw-bold text-primary mb-3 mt-4">4. Chính sách sử dụng Cookies</h4>
+                        <p>Chúng tôi sử dụng Cookies để nhận diện người dùng, duy trì trạng thái đăng nhập và lưu trữ tùy chọn ngôn ngữ hiển thị. Khi tiếp tục sử dụng website, bạn đồng ý với việc chúng tôi lưu trữ Cookies trên trình duyệt của bạn.</p>
+
+                        <h4 class="fw-bold text-primary mb-3 mt-4">5. Liên hệ</h4>
+                        <p>Nếu bạn có bất kỳ câu hỏi nào liên quan đến bảo mật hoặc muốn yêu cầu xóa dữ liệu, vui lòng liên hệ với ban quản trị thông qua địa chỉ Email hỗ trợ hoặc qua trang <a href="/lien-he">Liên Hệ</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .privacy-container {
+        font-family: 'Inter', sans-serif;
+    }
+    .privacy-content h4 {
+        border-bottom: 2px solid rgba(var(--bs-primary-rgb), 0.1);
+        padding-bottom: 0.5rem;
+    }
+    .privacy-content p, .privacy-content li {
+        line-height: 1.7;
+        color: #4a5568;
+    }
+</style>
+
+@code {
+    private string T(string key) => TranslationService[key];
+}

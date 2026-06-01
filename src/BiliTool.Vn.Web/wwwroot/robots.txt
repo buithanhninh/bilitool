@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+Allow: /may-tinh
+Allow: /huong-dan
+Allow: /gioi-thieu
+Allow: /cau-hoi-thuong-gap
+Allow: /tich-hop-his
+Allow: /lien-he
+Allow: /mien-tru-trach-nhiem
+
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /lich-su
+Disallow: /tai-khoan
+Disallow: /xu-huong
+Disallow: /dang-nhap
+Disallow: /dang-ky
+Disallow: /dang-xuat
+Disallow: /quen-mat-khau
+Disallow: /dat-lai-mat-khau
+Disallow: /xac-thuc-otp
+Disallow: /_blazor
+Disallow: /_framework
+
+Sitemap: https://bilitool.vn/sitemap.xml

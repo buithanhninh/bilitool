@@ -1,0 +1,413 @@
+/* ============================================================
+   BiliTool.Vn - Design System
+   Font: Be Vietnam Pro | Palette: Medical Blue
+   ============================================================ */
+
+/* ── CSS Variables ── */
+:root {
+  --primary: #1a6b9a;
+  --primary-dark: #155a83;
+  --primary-light: #e8f4f9;
+  --accent: #2ecc71;
+  --accent-dark: #27ae60;
+
+  --danger: #e74c3c;
+  --danger-dark: #c0392b;
+  --warning: #f39c12;
+  --warning-light: #fef9e7;
+  --success: #27ae60;
+  --success-light: #eafaf1;
+  --info: #3498db;
+
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f5;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 70px;
+  --header-height: 60px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-primary: 0 4px 15px rgba(26,107,154,0.25);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  --transition: all 0.25s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 15px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Be Vietnam Pro', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--primary-dark); text-decoration: underline; }
+
+/* ── Layout ── */
+.bilitool-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-width);
+  background: linear-gradient(180deg, #1a2a3a 0%, #1a3a5a 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-logo .fa-baby {
+  font-size: 1.8rem;
+  color: #5dade2;
+}
+
+.logo-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  display: block;
+}
+
+.logo-tagline {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+  display: block;
+}
+
+.sidebar-toggle {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.sidebar-toggle:hover { background: rgba(255,255,255,0.2); }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 8px;
+  overflow-y: auto;
+}
+
+.nav-link-vn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  color: rgba(255,255,255,0.75);
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: var(--transition-fast);
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.nav-link-vn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link-vn.active {
+  background: linear-gradient(135deg, var(--primary), #2980b9);
+  color: white;
+  box-shadow: var(--shadow-primary);
+}
+
+.nav-link-vn i { width: 20px; text-align: center; font-size: 1rem; }
+.nav-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 8px 12px; }
+
+/* User section */
+.sidebar-user {
+  padding: 12px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.user-info { display: flex; align-items: center; gap: 10px; }
+
+.user-avatar {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+
+.user-name { font-size: 0.8rem; color: white; font-weight: 600; display: block; }
+.user-logout { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+.user-logout:hover { color: white; text-decoration: none; }
+
+.login-prompt { text-align: center; }
+
+.btn-login-sidebar {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: white; color: var(--gray-800);
+  padding: 8px 16px; border-radius: var(--radius-md);
+  font-size: 0.8rem; font-weight: 600;
+  transition: var(--transition-fast);
+  margin-bottom: 8px;
+}
+
+.btn-login-sidebar:hover { background: var(--gray-100); text-decoration: none; }
+.btn-login-sidebar .fab { color: #ea4335; }
+
+.anon-note {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+  margin: 0;
+}
+
+/* ── MAIN CONTENT ── */
+.main-content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed { width: var(--sidebar-collapsed-width); }
+.sidebar.collapsed .sidebar-header { justify-content: center; padding: 20px 0; }
+.sidebar.collapsed .logo-name,
+.sidebar.collapsed .logo-tagline,
+.sidebar.collapsed .nav-link-vn span,
+.sidebar.collapsed .user-info-text,
+.sidebar.collapsed .anon-note,
+.sidebar.collapsed .anon-divider,
+.sidebar.collapsed .btn-login-google span {
+  display: none;
+}
+.sidebar.collapsed .sidebar-logo { gap: 0; }
+
+.main-content.collapsed { margin-left: var(--sidebar-collapsed-width); }
+
+.mobile-header {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: white;
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-menu-btn {
+  background: none; border: none; font-size: 1.2rem;
+  cursor: pointer; color: var(--gray-700); padding: 4px;
+}
+
+.mobile-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; color: var(--primary); font-size: 1rem;
+}
+
+.page-content { flex: 1; padding: 24px; }
+
+/* ── FOOTER ── */
+.site-footer {
+  background: white;
+  border-top: 1px solid var(--gray-200);
+  padding: 12px 24px;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--gray-600);
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ── BUTTONS ── */
+.btn-primary-vn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--primary); color: white;
+  padding: 10px 20px; border-radius: var(--radius-md);
+  font-weight: 600; font-size: 0.875rem;
+  border: none; cursor: pointer;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-primary);
+}
+
+.btn-primary-vn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(26,107,154,0.3);
+  text-decoration: none;
+  color: white;
+}
+
+/* ── LOADING SPLASH ── */
+.loading-splash {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e8f4f9, #f8f9fa);
+}
+
+.loading-logo { text-align: center; }
+.loading-logo h2 { color: var(--primary); font-size: 1.5rem; margin-top: 12px; }
+.loading-logo p { color: var(--gray-500); font-size: 0.9rem; margin-top: 4px; }
+
+/* ── UTILITIES ── */
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-primary { color: var(--primary) !important; }
+.fw-bold { font-weight: 700; }
+.required { color: var(--danger); }
+.optional-badge {
+  font-size: 0.7rem; font-weight: 400;
+  background: var(--gray-200); color: var(--gray-600);
+  padding: 2px 6px; border-radius: 20px;
+  margin-left: 8px; vertical-align: middle;
+}
+
+/* ── BLAZOR ERRORS ── */
+#blazor-error-ui {
+  background: var(--danger);
+  bottom: 0;
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, .3);
+  color: white;
+  display: none;
+  left: 0;
+  padding: 12px 20px;
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+  font-size: 0.875rem;
+}
+
+#blazor-error-ui .dismiss { cursor: pointer; float: right; font-weight: 600; }
+#blazor-error-ui .reload { color: white; text-decoration: underline; }
+
+/* ── 404 NOT FOUND ── */
+.not-found-container {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.not-found-icon {
+  font-size: 4rem;
+  color: var(--gray-400);
+  margin-bottom: 24px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  /* Default open: when sidebarCollapsed is false */
+  .sidebar { transform: translateX(0); width: var(--sidebar-width) !important; }
+  
+  /* Collapsed: when sidebarCollapsed is true, push it completely off screen */
+  .sidebar.collapsed { transform: translateX(-100%); }
+  
+  /* On mobile, main content should never have margins */
+  .main-content, .main-content.collapsed { margin-left: 0 !important; }
+  
+  .mobile-header { display: flex; }
+  .page-content { padding: 16px; }
+}
+
+/* ── CUSTOM RECONNECT MODAL ── */
+.my-reconnect-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.components-reconnect-hide {
+    display: none !important;
+}
+
+.my-reconnect-modal > div {
+    display: none;
+}
+
+.my-reconnect-modal.components-reconnect-show > .show {
+    display: block;
+}
+
+.my-reconnect-modal.components-reconnect-failed > .failed {
+    display: block;
+}
+
+.my-reconnect-modal.components-reconnect-rejected > .rejected {
+    display: block;
+}
+
+.reconnect-box {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    min-width: 300px;
+}
+
+/* Tinh chỉnh UI lỗi gốc để không đè màn hình */
+.blazor-error-ui-custom {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    border-top: 2px solid #ffeeba;
+}

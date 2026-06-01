@@ -1,0 +1,281 @@
+@page "/admin/benh-nhan/{BenhNhanId:guid}"
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.DTOs
+@using BiliTool.Vn.Domain.Enums
+@using MediatR
+@inject IMediator Mediator
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
+
+<PageTitle>Chi tiết Bệnh Nhi lâm sàng</PageTitle>
+
+@if (hs == null)
+{
+    <div class="text-center" style="margin: 60px;">
+        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i> 
+        <div class="mt-2 text-muted">Đang tải hồ sơ Bệnh nhi...</div>
+    </div>
+}
+else
+{
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a href="/admin/benh-nhan" class="btn btn-sm btn-light border mb-2"><i class="fas fa-arrow-left"></i> Danh sách Bệnh nhi</a>
+                <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom:0;">
+                    Hồ sơ: @MaskName(hs.HoTenBenhNhan)
+                </h2>
+            </div>
+            <div class="text-end">
+                <div class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-clock"></i> Cập nhật mới nhất</div>
+                @if (hs.DsXetNghiem.Any())
+                {
+                    <div style="font-weight: 600; color: var(--admin-primary);">@hs.DsXetNghiem.First().ThoiGianLayMau.ToString("dd/MM/yyyy HH:mm")</div>
+                }
+                else
+                {
+                    <div style="font-weight: 600;">Chưa có xét nghiệm</div>
+                }
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Left Info Panel -->
+            <div class="col-md-4">
+                <div class="admin-card h-100">
+                    <h6 class="text-muted fw-bold mb-3 text-uppercase" style="font-size: 0.75rem;">Y Lệnh Cốt Lõi</h6>
+                    <div class="d-flex flex-column gap-3 mb-4">
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <span class="text-muted">Định danh (Mã hóa):</span>
+                            <span class="fw-bold">@MaskName(hs.HoTenBenhNhan)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <span class="text-muted">Ngày sinh:</span>
+                            <span class="fw-bold">@hs.NgayGioSinh.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <span class="text-muted">Tuổi thai:</span>
+                            <span class="fw-bold text-primary">@hs.TuoiThaiTuan tuần</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <span class="text-muted">Nguy cơ thần kinh (AAP):</span>
+                            @if (hs.CoNguyCoThanKinh)
+                            {
+                                <span class="admin-badge badge-danger">CÓ NGUY CƠ</span>
+                            }
+                            else
+                            {
+                                <span class="admin-badge badge-success">BÌNH THƯỜNG</span>
+                            }
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                            <span class="text-muted">Nguy cơ lâm sàng (NICE):</span>
+                            @if (hs.AnhChiBiVangDaCanChieuDen || hs.MeBuMeHoanToan || hs.VangDaTrong24hDau || hs.BenhTanHuyetRh || hs.BenhTanHuyetABO)
+                            {
+                                <span class="admin-badge badge-warning">CÓ NGUY CƠ</span>
+                            }
+                            else
+                            {
+                                <span class="admin-badge badge-success">BÌNH THƯỜNG</span>
+                            }
+                        </div>
+                        @if (hs.LaVangDaKeoDai)
+                        {
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                <span class="text-muted">Cảnh báo:</span>
+                                <span class="admin-badge badge-danger">VÀNG DA KÉO DÀI</span>
+                            </div>
+                        }
+                    </div>
+
+                    @if(hs.DsXetNghiem.Any())
+                    {
+                        var maxBilirubin = hs.DsXetNghiem.Max(x => x.BilirubinMgDl);
+                        var latest = hs.DsXetNghiem.First();
+                        <div class="p-3 rounded mt-auto" style="background: var(--admin-primary-light); border: 1px dashed var(--admin-primary);">
+                            <div style="font-size: 0.85rem; color: var(--admin-primary); font-weight: 600;">CHỈ SỐ CAO NHẤT (Đỉnh điểm)</div>
+                            <h3 class="mb-0 text-primary fw-bold">@maxBilirubin <small style="font-size:1rem; font-weight:normal;">mg/dL</small></h3>
+                            <div class="mt-2 text-danger" style="font-size: 0.8rem;"><i class="fas fa-exclamation-circle"></i> Chỉ định gần nhất: <strong>@latest.MucDoNguyHiem</strong></div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right AAP Chart -->
+            <div class="col-md-8">
+                <div class="admin-card h-100">
+                    <div class="kpi-title mb-3 d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-chart-line"></i> Phác đồ Theo Dõi (AAP 2022 & NICE CG98 kết hợp)</span>
+                        <div class="d-flex gap-2">
+                            <span style="font-size:0.75rem; color:#f59e0b;"><i class="fas fa-circle"></i> Ngưỡng Chiếu đèn</span>
+                            <span style="font-size:0.75rem; color:#ef4444;"><i class="fas fa-circle"></i> Ngưỡng Thay máu</span>
+                            <span style="font-size:0.75rem; color:#4338ca;"><i class="fas fa-circle"></i> Thực tế</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        @if (!hs.DsXetNghiem.Any())
+                        {
+                            <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                                Bệnh nhi hiện chưa có lịch sử xét nghiệm để vẽ biểu đồ AAP.
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="height: 100%; min-height: 350px;">
+                                <!-- The Chart JS will attach here -->
+                                <canvas id="ketQuaBieuDoNomogramAdmin" style="width:100%; height:100%"></canvas>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline / Testing History Table -->
+        <div class="admin-card">
+            <div class="kpi-title mb-3"><i class="fas fa-vial"></i> Dữ liệu Xét nghiệm Thô (Raw Data)</div>
+            
+            <div class="premium-table-container mt-2">
+                <div class="table-responsive">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Thời gian lấy mẫu (UTC)</th>
+                                <th>Giờ tuổi tự động</th>
+                                <th>Bilirubin (mg/dL)</th>
+                                <th>Chỉ định (Hệ thống AAP/NICE)</th>
+                                <th>Ngưỡng C.Đèn / T.Máu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!hs.DsXetNghiem.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">Chưa có kết quả xét nghiệm.</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                int i = hs.DsXetNghiem.Count;
+                                foreach (var x in hs.DsXetNghiem)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@x.ThoiGianLayMau.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td><strong>@x.TuoiGioTuDong.ToString("0.0")</strong> h</td>
+                                        <td><span class="text-primary fw-bold" style="font-size: 1.1rem;">@x.BilirubinMgDl.ToString("0.0")</span></td>
+                                        <td>
+                                            @if (x.MucDoNguyHiem.Contains("Chiếu đèn") || x.MucDoNguyHiem.Contains("chiếu đèn"))
+                                            {
+                                                <span class="admin-badge badge-warning">@x.MucDoNguyHiem</span>
+                                            }
+                                            else if (x.MucDoNguyHiem.Contains("Thay máu") || x.MucDoNguyHiem.Contains("thay máu"))
+                                            {
+                                                <span class="admin-badge badge-danger">@x.MucDoNguyHiem</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="admin-badge badge-success">@x.MucDoNguyHiem</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @(x.NguongChieuDen?.ToString("0") ?? "-") / @(x.NguongThayCuuMau?.ToString("0") ?? "-")
+                                        </td>
+                                    </tr>
+                                    i--;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid BenhNhanId { get; set; }
+
+    private HoSoBenhNhanDto? hs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NguoiDung.DaDangNhap)
+        {
+            NavManager.NavigateTo("/admin/login", forceLoad: true);
+            return;
+        }
+
+        if (!NguoiDung.LaQuanTriVien)
+        {
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        hs = await Mediator.Send(new LayChiTietBenhNhanAdminQuery(BenhNhanId));
+        if (hs == null)
+        {
+            NavManager.NavigateTo("/admin/benh-nhan");
+        }
+    }
+
+    private bool chartsRendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (hs != null && hs.DsXetNghiem.Any() && !chartsRendered)
+        {
+            chartsRendered = true;
+            await VeBieuDoNomogram();
+        }
+    }
+
+    private string MaskName(string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName)) return "Không rõ";
+        var parts = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length <= 1) return fullName;
+
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (parts[i].Length > 1)
+            {
+                parts[i] = parts[i][0] + new string('*', parts[i].Length - 1);
+            }
+        }
+        return string.Join(" ", parts);
+    }
+
+    private async Task VeBieuDoNomogram()
+    {
+        if (hs == null || !hs.DsXetNghiem.Any()) return;
+
+        // Draw AAP lines similar to BiliTool main site logic
+        List<double> arrayNguongChieuDen = new();
+        List<double> arrayNguongThayMau = new();
+        List<double> listKetQuaBilirubin = new();
+        List<double> listThoiGian = new();
+
+        // Sort ascending by time
+        var sorted = hs.DsXetNghiem.OrderBy(x => x.ThoiGianLayMau).ToList();
+
+        foreach (var x in sorted)
+        {
+            listThoiGian.Add(Math.Round(x.TuoiGioTuDong, 1));
+            arrayNguongChieuDen.Add((double)(x.NguongChieuDen ?? 0));
+            arrayNguongThayMau.Add((double)(x.NguongThayCuuMau ?? 0));
+            listKetQuaBilirubin.Add((double)x.BilirubinMgDl);
+        }
+
+        string chartId = "ketQuaBieuDoNomogramAdmin";
+
+        if (listThoiGian.Count > 0)
+        {
+            await JS.InvokeVoidAsync("drawMultyLineChartNomogram", chartId, listThoiGian, arrayNguongChieuDen, arrayNguongThayMau, listKetQuaBilirubin);
+        }
+    }
+}

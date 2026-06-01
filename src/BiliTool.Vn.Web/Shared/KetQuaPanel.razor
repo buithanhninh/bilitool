@@ -1,0 +1,316 @@
+@using BiliTool.Vn.Application.DTOs
+
+<div class="ket-qua-card" style="border-left: 6px solid @KetQua.MauNguyHiem;">
+    <div class="ket-qua-header" style="background: @LayMauNen(); justify-content: right;">
+        <span class="thoi-gian-tinh">@KetQua.ThoiGianTinhToan.ToString("HH:mm dd/MM/yyyy")</span>
+    </div>
+
+    <div class="ket-qua-body" id="ket-qua-pdf">
+        <!-- Badge To Rõ Ràng -->
+        <div class="muc-do-badge-huge" style="background: @KetQua.MauNguyHiem; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2;">
+            <div>
+                <i class="fas @LayIconMucDo()"></i>
+                @T[$"MucDo_{KetQua.MucDoNguyHiemEnum}"].ToString().ToUpper()
+            </div>
+            <div style="font-size: 0.85rem; margin-top: 6px; font-weight: 500; opacity: 0.9; text-transform: none;">
+                (Phiên giải theo phác đồ: @(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98"))
+            </div>
+        </div>
+
+        <!-- Thông số tóm tắt -->
+        <div class="thong-so-row mt-3">
+            <div class="thong-so-item">
+                <span class="ts-label">Tuổi</span>
+                <span class="ts-value">@KetQua.TuoiGio giờ</span>
+            </div>
+            <div class="thong-so-item">
+                <span class="ts-label">Tuổi thai</span>
+                <span class="ts-value">@KetQua.TuoiThaiTuan tuần</span>
+            </div>
+            <div class="thong-so-item">
+                <span class="ts-label">Bilirubin</span>
+                <span class="ts-value">
+                    @KetQua.BilirubinMgDl.ToString("F1") mg/dL
+                    <small>(@KetQua.BilirubinUmolL μmol/L)</small>
+                </span>
+            </div>
+            <div class="thong-so-item">
+                <span class="ts-label">Nguy cơ TK</span>
+                <span class="ts-value @(KetQua.CoNguyCoThanKinh ? "text-danger" : "text-success")">
+                    @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")
+                </span>
+            </div>
+        </div>
+
+        <!-- Thanh ngưỡng (được thay thế bằng Biểu đồ Nomogram) -->
+        <BiliNomogramChart KetQua="@KetQua" />
+
+        <!-- Khoảng cách -->
+        <div class="khoang-cach-grid">
+            <div class="khoang-cach-item @(KetQua.CanChieuDenNgay ? "alert-style" : "")">
+                <span>Đến ngưỡng chiếu đèn</span>
+                <strong class="@LayClassKhoangCach(KetQua.KhoangCachDenNguongChieuDen)">
+                    @FormatKhoangCach(KetQua.KhoangCachDenNguongChieuDen)
+                </strong>
+            </div>
+            <div class="khoang-cach-item @(KetQua.CanXemXetThayCuuMau ? "alert-style" : "")">
+                <span>Đến ngưỡng thay máu</span>
+                <strong class="@LayClassKhoangCach(KetQua.KhoangCachDenNguongThayCuuMau)">
+                    @FormatKhoangCach(KetQua.KhoangCachDenNguongThayCuuMau)
+                </strong>
+            </div>
+        </div>
+
+        <!-- Khuyến nghị -->
+        <div class="khuyen-nghi-box" style="border-color: @KetQua.MauNguyHiem;">
+            <div class="khuyen-nghi-title">
+                <i class="fas fa-stethoscope"></i>
+                @T["CalcBili_Recommendation"]
+            </div>
+            
+            <p class="khuyen-nghi-chinh">
+                @if (KetQua.TuoiGio < 12)
+                {
+                    <strong class="text-danger">@T["Warning_Under12h"]</strong><br/>
+                }
+                @GetKhuyenNghiChinh()
+            </p>
+            
+            <div class="theo-doi-tiep">
+                <i class="fas fa-calendar-check"></i>
+                <strong>@T["CalcBili_FollowUp"]:</strong> @GetTheoDoiTiepTheo()
+            </div>
+            
+            <div class="tai-kham-badge">
+                <i class="fas fa-clock"></i>
+                @T["FW_" + KetQua.ThoiGianTaiKhamEnum.ToString()]
+            </div>
+        </div>
+
+        <!-- ══════ NICE CG98: Cảnh báo Kernicterus ══════ -->
+        @if (KetQua.NguyCoKernicterus)
+        {
+            <div class="nice-alert nice-alert-danger">
+                <div class="nice-alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div>
+                    <strong>⚠️ NGUY CƠ KERNICTERUS (NICE CG98 §1.5.1)</strong>
+                    <ul class="mb-0 mt-1">
+                        @foreach (var lyDo in KetQua.LyDoNguyCoKernicterus)
+                        {
+                            <li>@lyDo</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+        <!-- ══════ NICE CG98: IVIG ══════ -->
+        @if (KetQua.CanIVIG)
+        {
+            <div class="nice-alert nice-alert-warning">
+                <div class="nice-alert-icon"><i class="fas fa-syringe"></i></div>
+                <div>
+                    <strong>Chỉ định IVIG (NICE CG98 §1.8.1)</strong>
+                    <p class="mb-0 mt-1">@KetQua.MoTaIVIG</p>
+                </div>
+            </div>
+        }
+
+        <!-- ══════ NICE CG98: Vàng da kéo dài ══════ -->
+        @if (KetQua.LaVangDaKeoDai)
+        {
+            <div class="nice-alert nice-alert-info">
+                <div class="nice-alert-icon"><i class="fas fa-hourglass-half"></i></div>
+                <div>
+                    <strong>Vàng da kéo dài (NICE CG98 §1.7.1)</strong>
+                    <p class="mb-0 mt-1">@KetQua.CanhBaoVangDaKeoDai</p>
+                </div>
+            </div>
+        }
+
+        <!-- ══════ NICE CG98: Dừng chiếu đèn / Rebound ══════ -->
+        @if (KetQua.CoTheDungChieuDen)
+        {
+            <div class="nice-alert nice-alert-success">
+                <div class="nice-alert-icon"><i class="fas fa-stop-circle"></i></div>
+                <div>
+                    <strong>Có thể dừng chiếu đèn (NICE CG98 §1.4.5)</strong>
+                    <p class="mb-0 mt-1">Bilirubin đã giảm dưới ngưỡng chiếu đèn - 50 µmol/L. Kiểm tra rebound 12-18h sau dừng (§1.4.6).</p>
+                </div>
+            </div>
+        }
+        @if (KetQua.CanKiemTraRebound)
+        {
+            <div class="nice-alert nice-alert-warning">
+                <div class="nice-alert-icon"><i class="fas fa-redo"></i></div>
+                <div>
+                    <strong>Kiểm tra Rebound (NICE CG98 §1.4.6)</strong>
+                    <p class="mb-0 mt-1">Cần đo lại bilirubin huyết thanh 12-18h sau khi dừng chiếu đèn.</p>
+                </div>
+            </div>
+        }
+
+        <!-- ══════ Ngưỡng tham chiếu NICE CG98 ══════ -->
+        <div class="nice-thresholds-box">
+            <div class="nice-thresholds-title">
+                <i class="fas fa-book-medical"></i> Ngưỡng tham chiếu NICE CG98 (µmol/L)
+            </div>
+            <div class="nice-thresholds-grid">
+                <div class="nice-th-item">
+                    <span class="nice-th-label">Chiếu đèn</span>
+                    <span class="nice-th-value">@KetQua.NguongChieuDen_NICE_UmolL µmol/L</span>
+                    <span class="nice-th-sub">≈ @KetQua.NguongChieuDen_NICE_MgDl mg/dL</span>
+                </div>
+                <div class="nice-th-item">
+                    <span class="nice-th-label">Thay máu</span>
+                    <span class="nice-th-value">@KetQua.NguongThayCuuMau_NICE_UmolL µmol/L</span>
+                    <span class="nice-th-sub">≈ @KetQua.NguongThayCuuMau_NICE_MgDl mg/dL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════ Lịch đo lặp NICE ══════ -->
+        @if (!string.IsNullOrEmpty(KetQua.LichDoLapNICE))
+        {
+            <div class="nice-repeat-box">
+                <i class="fas fa-vial"></i>
+                <span>@KetQua.LichDoLapNICE</span>
+                @if (KetQua.GioDoLapTiepTheo.HasValue)
+                {
+                    <span class="nice-repeat-badge">@KetQua.GioDoLapTiepTheo h</span>
+                }
+            </div>
+        }
+
+        <!-- ══════ Chú thích nguồn tham chiếu ══════ -->
+        <div class="nice-references">
+            <div class="nice-ref-title"><i class="fas fa-info-circle"></i> Nguồn tham chiếu</div>
+            <div class="nice-ref-badge">
+                Phác đồ quyết định: <strong>@(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")</strong>
+            </div>
+            <ul class="nice-ref-list">
+                @foreach (var ct in KetQua.ChuThichThamChieu)
+                {
+                    <li>@ct</li>
+                }
+            </ul>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-buttons">
+            <button class="btn-primary-vn" @onclick="OnTaoHoSoClicked" style="grid-column: 1 / -1; margin-bottom: 8px;">
+                <i class="fas fa-user-plus"></i> Tạo hồ sơ trẻ
+            </button>
+            <button class="btn-copy" @onclick="HandleSaoChep">
+                <i class="fas fa-copy"></i> Sao chép báo cáo
+            </button>
+            <button class="btn-print text-white bg-primary bg-gradient" style="border: none;" @onclick="OnIn">
+                <i class="fas fa-file-pdf"></i> Xuất file PDF
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public KetQuaTinhToanDto KetQua { get; set; } = default!;
+    [Parameter] public EventCallback<string> OnSaoChep { get; set; }
+    [Parameter] public EventCallback OnIn { get; set; }
+    [Parameter] public EventCallback OnTaoHoSo { get; set; }
+    @inject BiliTool.Vn.Web.Services.TranslationService T
+    @inject IJSRuntime JS
+
+    private async Task HandleSaoChep()
+    {
+        var text = XuatVanBanBaoCao();
+        if (OnSaoChep.HasDelegate)
+        {
+            await OnSaoChep.InvokeAsync(text);
+        }
+    }
+
+    private async Task OnTaoHoSoClicked()
+    {
+        if (OnTaoHoSo.HasDelegate)
+        {
+            await OnTaoHoSo.InvokeAsync();
+        }
+    }
+
+    private string LayMauNen() => KetQua.MauNguyHiem switch
+    {
+        "#27ae60" => "#eafaf1",
+        "#f39c12" => "#fef9e7",
+        "#e67e22" => "#fef5e7",
+        _ => "#fdecea"
+    };
+
+    private string LayIconMucDo() => KetQua.MucDoNguyHiemEnum.ToString() switch
+    {
+        "BinhThuong" => "fa-check-circle",
+        "CanTheoDoiSat" => "fa-eye",
+        "CanChieuDen" => "fa-sun",
+        "CanChieuDenTichCuc" => "fa-bolt",
+        "CanXemXetThayMau" => "fa-tint",
+        "KhanCapThayCuuMau" => "fa-exclamation-triangle",
+        _ => "fa-question-circle"
+    };
+
+    private string LayClassKhoangCach(decimal d) =>
+        d < 0 ? "text-danger fw-bold" :
+        d < 2 ? "text-warning fw-bold" :
+        "text-success";
+
+    private string FormatKhoangCach(decimal d) =>
+        d < 0
+            ? $"Đã vượt {Math.Abs(d):F1} mg/dL"
+            : $"Còn {d:F1} mg/dL";
+
+    private string GetKhuyenNghiChinh()
+    {
+        var e = KetQua.MucDoNguyHiemEnum.ToString();
+        var baseStr = string.Format(T[$"Rec_{e}"], KetQua.BilirubinMgDl, KetQua.NguongChieuDen);
+        if (e == "CanTheoDoiSat")
+        {
+            baseStr += " " + (KetQua.CoNguyCoThanKinh ? T["Rec_CanTheoDoiSat_Risk"] : T["Rec_CanTheoDoiSat_NoRisk"]);
+        }
+        return baseStr;
+    }
+
+    private string GetTheoDoiTiepTheo()
+    {
+        return T["FW_" + KetQua.ThoiGianTaiKhamEnum.ToString()];
+    }
+
+    public string XuatVanBanBaoCao()
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"=== {T["CalcBili_ReportHeader"]} ===");
+        sb.AppendLine($"{T["SampleTime"]}: {KetQua.ThoiGianTinhToan:dd/MM/yyyy HH:mm}");
+        sb.AppendLine($"{T["GestationalAge"]}: {KetQua.TuoiThaiTuan} {T["WeeksTerm"].Split(' ')[0]}");
+        sb.AppendLine($"{T["AgeSampleHours"]}: {KetQua.TuoiGio:F1} {T["Hours"]}");
+        sb.AppendLine($"{T["TotalBilirubin"]}: {KetQua.BilirubinMgDl:F1} mg/dL ({KetQua.BilirubinUmolL:F0} μmol/L)");
+        sb.AppendLine($"{T["CalcBili_Risk"]}: {(KetQua.CoNguyCoThanKinh ? T["Yes"] : T["No"])}");
+        sb.AppendLine("--- AAP 2022 ---");
+        sb.AppendLine($"{T["CalcBili_ThresholdChieuDen"]}: {KetQua.NguongChieuDen:F1} mg/dL");
+        sb.AppendLine($"{T["CalcBili_ThresholdChieuDenTichCuc"]}: {KetQua.NguongChieuDenTichCuc:F1} mg/dL");
+        sb.AppendLine($"{T["CalcBili_ThresholdThayMau"]}: {KetQua.NguongThayCuuMau:F1} mg/dL");
+        sb.AppendLine("--- NICE CG98 ---");
+        sb.AppendLine($"Ngưỡng chiếu đèn NICE: {KetQua.NguongChieuDen_NICE_UmolL} µmol/L (≈{KetQua.NguongChieuDen_NICE_MgDl} mg/dL)");
+        sb.AppendLine($"Ngưỡng thay máu NICE: {KetQua.NguongThayCuuMau_NICE_UmolL} µmol/L (≈{KetQua.NguongThayCuuMau_NICE_MgDl} mg/dL)");
+        sb.AppendLine("---");
+        sb.AppendLine($"Phác đồ quyết định: {(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")}");
+        sb.AppendLine($"{T["CalcBili_Evaluation"]}: {T[$"MucDo_{KetQua.MucDoNguyHiemEnum}"]} (Nguồn: {(KetQua.PhacDoQuyetDinh == BiliTool.Vn.Domain.Enums.PhacDo.AAP2022 ? "AAP 2022" : "NICE CG98")})");
+        sb.AppendLine($"{T["CalcBili_Recommendation"]}: {GetKhuyenNghiChinh()}");
+        sb.AppendLine($"{T["CalcBili_FollowUp"]}: {GetTheoDoiTiepTheo()}");
+        if (KetQua.NguyCoKernicterus)
+            sb.AppendLine($"⚠️ NGUY CƠ KERNICTERUS: {string.Join("; ", KetQua.LyDoNguyCoKernicterus)}");
+        if (KetQua.CanIVIG)
+            sb.AppendLine($"💉 IVIG: {KetQua.MoTaIVIG}");
+        if (KetQua.LaVangDaKeoDai)
+            sb.AppendLine($"⏰ {KetQua.CanhBaoVangDaKeoDai}");
+        if (!string.IsNullOrEmpty(KetQua.LichDoLapNICE))
+            sb.AppendLine($"🔬 {KetQua.LichDoLapNICE}");
+        sb.AppendLine("=== BiliTool.Vn | AAP 2022 + NICE CG98 | bilitool.vn ===");
+        return sb.ToString();
+    }
+}

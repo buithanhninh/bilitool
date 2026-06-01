@@ -1,0 +1,308 @@
+@page "/admin/thong-ke/benh-nhan"
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.DTOs
+@using MediatR
+@inject IMediator Mediator
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
+
+<PageTitle>Thống kê Bệnh Nhi — BiliTool.Vn Admin</PageTitle>
+
+@if (data == null)
+{
+    <div class="text-center" style="margin: 80px;">
+        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+        <div class="mt-3 text-muted">Đang phân tích dữ liệu lâm sàng...</div>
+    </div>
+}
+else
+{
+    <div class="admin-container" style="max-width: 1600px;">
+
+        <!-- ── HEADER ──────────────────────────────────────────── -->
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <a href="/admin" class="btn btn-sm btn-light border px-2 py-1" style="font-size:0.78rem;">
+                        <i class="fas fa-arrow-left"></i> Dashboard
+                    </a>
+                    @if (data.BenhNhiCritical > 0)
+                    {
+                        <span class="admin-badge badge-danger" style="font-size:0.72rem; padding: 4px 10px;">
+                            <i class="fas fa-exclamation-triangle me-1"></i> @data.BenhNhiCritical ca cực kỳ rủi ro!
+                        </span>
+                    }
+                </div>
+                <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom: 2px; font-size:1.4rem;">
+                    <i class="fas fa-procedures" style="color:#0ea5e9;"></i> Thống kê Bệnh Nhi Lâm sàng
+                </h2>
+                <div class="text-muted" style="font-size:0.8rem;">Epidemiology &amp; Clinical Intelligence — 23 chỉ số y tế | Real-time @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+            <a href="/admin/benh-nhan" class="btn btn-sm btn-light border" style="font-size:0.8rem;">
+                <i class="fas fa-list"></i> Danh sách BN
+            </a>
+        </div>
+
+        <!-- ── KPI BAND: 10 chỉ số ── -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px;">
+            <!-- Col 1 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Tổng Bệnh nhi</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#0ea5e9;">@data.TongBenhNhi</div>
+                <div style="font-size:0.7rem; color:#10b981;">+@data.BenhNhiMoiThangNay tháng này</div>
+            </div>
+            <!-- Col 2 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Nguy cơ TK</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#ef4444;">@data.TiLeNguyCoThanKinh%</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">@data.TongCoNguyCoThanKinh / @data.TongBenhNhi ca</div>
+            </div>
+            <!-- Col 3 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Sinh non</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#f59e0b;">@data.TiLeSinhNon%</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">@data.TongSinhNon ca &lt;37 tuần</div>
+            </div>
+            <!-- Col 4 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Bili Đỉnh TB</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#4338ca;">@data.BilirubinDinhTrungBinh</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">± @data.BilirubinDinhStdDev mg/dL</div>
+            </div>
+            <!-- Col 5 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Bili Nặng</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#ef4444;">@data.TiLeBilirubinNang%</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">&gt;20 mg/dL</div>
+            </div>
+            <!-- Col 6 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Avg Lần đo/BN</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#10b981;">@data.AvgLanDoPerBenhNhi</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">Monitoring Intensity</div>
+            </div>
+            <!-- Col 7 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset; border-top: 3px solid #f59e0b;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Chiếu đèn</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#f59e0b;">@data.TongPhotoTherapy</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">@data.TiLePhotoTherapy% tổng XN</div>
+            </div>
+            <!-- Col 8 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset; border-top: 3px solid #ef4444;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Thay máu</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#ef4444;">@data.TongExchangeTransfusion</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">@data.TiLeExchangeTransfusion% tổng XN</div>
+            </div>
+            <!-- Col 9 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset; border-top: 3px solid #8b5cf6;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">Lost Follow-up</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#8b5cf6;">@data.BenhNhiLostFollowUp</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">@data.TiLeLostFollowUp% chỉ 1 lần đo</div>
+            </div>
+            <!-- Col 10 -->
+            <div class="admin-card text-center py-2 px-2" style="min-height: unset; border-top: 3px solid #0ea5e9;">
+                <div style="font-size:0.62rem; font-weight:700; text-transform:uppercase; color:var(--admin-text-muted); letter-spacing:.5px;">XN / BN avg</div>
+                <div style="font-size:1.9rem; font-weight:900; line-height:1.1; color:#0ea5e9;">@data.HeSoKhaiThacHeThong</div>
+                <div style="font-size:0.7rem; color:var(--admin-text-muted);">Hệ số khai thác HT</div>
+            </div>
+        </div>
+
+        <!-- ── SECTION A: Distribution Charts — 3 cột ─────────── -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-baby text-warning"></i> Phân bố Tuổi thai (GA)
+                    </div>
+                    <div style="height: 230px;"><canvas id="chartGADist"></canvas></div>
+                </div>
+            </div>
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-chart-pie" style="color:#10b981;"></i> Chỉ định AAP (All-time)
+                    </div>
+                    <div style="height: 230px;"><canvas id="chartAAPDist"></canvas></div>
+                </div>
+            </div>
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-chart-bar" style="color:#4338ca;"></i> Phân bố Bilirubin Đỉnh (mg/dL)
+                    </div>
+                    <div style="height: 230px;"><canvas id="chartBilirubinHistogram"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SECTION B: Time-series — 2 cột ─────────────────── -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-chart-area" style="color:#0ea5e9;"></i> Lượt Xét nghiệm / Ngày (30 ngày)
+                    </div>
+                    <div style="height: 180px;"><canvas id="chartXetNghiem30"></canvas></div>
+                </div>
+            </div>
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-chart-line" style="color:#f59e0b;"></i> Bilirubin TB / Ngày — Rolling Mean
+                    </div>
+                    <div style="height: 180px;"><canvas id="chartBilirubinMean30"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SECTION C: Hourly + First Measure — 2 cột ──────── -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 20px;">
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-clock" style="color:#ef4444;"></i> Heatmap: Giờ đo trong ngày (0–23h)
+                        <span class="ms-2" style="font-size:0.68rem; color:var(--admin-text-muted);">
+                            <span style="color:#ef4444;">■</span> Cao &nbsp;
+                            <span style="color:#f59e0b;">■</span> Trung bình &nbsp;
+                            <span style="color:#0ea5e9;">■</span> Thấp
+                        </span>
+                    </div>
+                    <div style="height: 170px;"><canvas id="chartHeatmapGio"></canvas></div>
+                </div>
+            </div>
+            <div>
+                <div class="admin-card h-100" style="padding: 16px;">
+                    <div class="kpi-title mb-2" style="font-size:0.8rem;">
+                        <i class="fas fa-hourglass-start" style="color:#8b5cf6;"></i> Giờ tuổi Lần đo Đầu tiên
+                    </div>
+                    <div style="height: 170px;"><canvas id="chartGioTuoiDauTien"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SECTION D: High Risk Table ──────────────────────── -->
+        <div class="admin-card" style="padding: 16px;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="kpi-title" style="font-size:0.85rem; margin-bottom:0;">
+                    <i class="fas fa-exclamation-triangle text-danger"></i> Top 5 Bệnh nhi Nguy cơ Cao Nhất
+                </div>
+                <span class="admin-badge badge-danger" style="font-size:0.65rem;">KHÔNG ẨN DANH — Admin Audit Mode</span>
+            </div>
+            <div class="table-responsive">
+                <table class="premium-table" style="font-size:0.82rem;">
+                    <thead>
+                        <tr>
+                            <th style="width:30px;">#</th>
+                            <th>Bệnh nhi</th>
+                            <th>Bác sĩ điều trị</th>
+                            <th>GA</th>
+                            <th>Nguy cơ TK</th>
+                            <th>Bili Max</th>
+                            <th>Số lần đo</th>
+                            <th>Thay máu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int idx = 1; }
+                        @foreach (var bn in data.Top5BenhNhiNguyCoNhat)
+                        {
+                            <tr style="@(bn.SoLanVuotNguongThayMau > 0 ? "background:#fef2f2;" : "")">
+                                <td><strong style="color:var(--admin-danger);">@idx</strong></td>
+                                <td>
+                                    <div style="font-weight:600;">@bn.HoTenBenhNhan</div>
+                                    <div style="font-size:0.72rem;color:var(--admin-text-muted);">Sinh: @bn.NgayGioSinh.ToString("dd/MM/yyyy HH:mm")</div>
+                                </td>
+                                <td>
+                                    <div>@bn.TenBacSi</div>
+                                    <div style="font-size:0.72rem;color:var(--admin-text-muted);">@bn.EmailBacSi</div>
+                                </td>
+                                <td><strong>@bn.TuoiThaiTuan</strong>w</td>
+                                <td>
+                                    @if (bn.CoNguyCoThanKinh)
+                                    {<span class="admin-badge badge-danger" style="font-size:0.7rem;"><i class="fas fa-brain"></i> Có</span>}
+                                    else
+                                    {<span class="admin-badge badge-success" style="font-size:0.7rem;">Không</span>}
+                                </td>
+                                <td>
+                                    <strong style="font-size:1.1rem;color:var(--admin-danger);">@bn.BilirubinMax</strong>
+                                    <span class="text-muted" style="font-size:0.7rem;"> mg/dL</span>
+                                </td>
+                                <td><span class="admin-badge badge-neutral" style="font-size:0.7rem;">@bn.SoLanXetNghiem lần</span></td>
+                                <td>
+                                    @if (bn.SoLanVuotNguongThayMau > 0)
+                                    {<span class="admin-badge badge-danger" style="font-size:0.7rem;">🚨 @bn.SoLanVuotNguongThayMau lần</span>}
+                                    else
+                                    {<span class="text-muted">—</span>}
+                                </td>
+                            </tr>
+                            idx++;
+                        }
+                        @if (!data.Top5BenhNhiNguyCoNhat.Any())
+                        {
+                            <tr><td colspan="8" class="text-center text-muted py-3">Chưa có dữ liệu xét nghiệm.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+}
+
+@code {
+    private ThongKeBenhNhanAdminDto? data;
+    private bool chartsRendered = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NguoiDung.DaDangNhap || !NguoiDung.LaQuanTriVien)
+        {
+            NavManager.NavigateTo("/admin/login", forceLoad: true);
+            return;
+        }
+        data = await Mediator.Send(new GetThongKeBenhNhanQuery());
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (data != null && !chartsRendered)
+        {
+            chartsRendered = true;
+            await RenderCharts();
+        }
+    }
+
+    private async Task RenderCharts()
+    {
+        if (data == null) return;
+
+        var gaColors = new[] { "#ef4444", "#f59e0b", "#0ea5e9", "#10b981" };
+        await JS.InvokeVoidAsync("adminCharts.renderPieChart", "chartGADist",
+            data.PhanBoTuoiThai.Select(x => x.NhanNhom).ToArray(),
+            data.PhanBoTuoiThai.Select(x => x.SoLuong).ToArray(), gaColors);
+
+        var aapColors = new[] { "#10b981", "#f59e0b", "#ef4444" };
+        await JS.InvokeVoidAsync("adminCharts.renderPieChart", "chartAAPDist",
+            data.PhanBoChiDinhAAP.Select(x => x.NhanNhom).ToArray(),
+            data.PhanBoChiDinhAAP.Select(x => x.SoLuong).ToArray(), aapColors);
+
+        await JS.InvokeVoidAsync("adminCharts.renderHistogram", "chartBilirubinHistogram",
+            data.PhanBoBilirubinDinh.Select(x => x.NhanNhom).ToArray(),
+            data.PhanBoBilirubinDinh.Select(x => x.SoLuong).ToArray(), "#4338ca");
+
+        await JS.InvokeVoidAsync("adminCharts.renderAreaChart", "chartXetNghiem30",
+            data.XetNghiem30Ngay.Select(x => x.Ngay).ToArray(),
+            data.XetNghiem30Ngay.Select(x => x.SoLuong).ToArray(), "#0ea5e9", "Lượt XN");
+
+        await JS.InvokeVoidAsync("adminCharts.renderAreaChart", "chartBilirubinMean30",
+            data.BilirubinTrungBinh30Ngay.Select(x => x.Ngay).ToArray(),
+            data.BilirubinTrungBinh30Ngay.Select(x => x.GiaTri).ToArray(), "#f59e0b", "Bili TB (mg/dL)");
+
+        await JS.InvokeVoidAsync("adminCharts.renderHourlyBar", "chartHeatmapGio", data.HeatmapGioTrongNgay);
+
+        await JS.InvokeVoidAsync("adminCharts.renderHistogram", "chartGioTuoiDauTien",
+            data.PhanBoGioTuoiLanDoDau.Select(x => x.NhanNhom).ToArray(),
+            data.PhanBoGioTuoiLanDoDau.Select(x => x.SoLuong).ToArray(), "#8b5cf6");
+    }
+}

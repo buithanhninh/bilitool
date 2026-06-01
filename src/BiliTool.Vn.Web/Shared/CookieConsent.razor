@@ -1,0 +1,180 @@
+@inject IJSRuntime JS
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage ProtectedLocalStorage
+
+@if (showBanner)
+{
+    <div class="cookie-consent-card">
+        <div class="cookie-content">
+            <div class="cookie-header">
+                <i class="fas fa-cookie-bite cookie-icon"></i>
+                <h3>Cookie & Quyền riêng tư</h3>
+            </div>
+            <p class="cookie-text">
+                BiliTool.Vn sử dụng cookie để mang lại trải nghiệm tối ưu nhất cho bạn. Khi tiếp tục sử dụng website, bạn đồng ý với 
+                <a href="/chinh-sach-bao-mat">Chính sách Quyền riêng tư</a> của chúng tôi.
+            </p>
+            <div class="cookie-actions">
+                <button class="btn-accept" @onclick="AcceptCookies">Đồng ý & Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .cookie-consent-card {
+        position: fixed;
+        bottom: 24px;
+        left: 24px;
+        width: 380px;
+        background: rgba(20, 32, 48, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        z-index: 10000;
+        animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        font-family: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+    }
+
+    .cookie-content {
+        padding: 24px;
+    }
+
+    .cookie-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        gap: 12px;
+    }
+
+    .cookie-icon {
+        font-size: 1.8rem;
+        color: #f39c12;
+        filter: drop-shadow(0 0 8px rgba(243, 156, 18, 0.4));
+    }
+
+    .cookie-header h3 {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .cookie-text {
+        font-size: 0.9rem;
+        line-height: 1.55;
+        color: #cbd5e1;
+        margin: 0 0 20px 0;
+    }
+
+    .cookie-text a {
+        color: #5dade2;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s;
+        border-bottom: 1px dashed rgba(93, 173, 226, 0.4);
+        padding-bottom: 2px;
+    }
+
+    .cookie-text a:hover {
+        color: #85c1e9;
+        border-bottom-style: solid;
+        border-bottom-color: #85c1e9;
+    }
+
+    .cookie-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-accept {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease-in-out;
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-accept:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.45);
+        background: linear-gradient(135deg, #4ea5e0, #2980b9);
+    }
+
+    .btn-accept:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(52, 152, 219, 0.25);
+    }
+
+    @@keyframes slideUpFade {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .cookie-consent-card {
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            width: auto;
+            border-radius: 12px;
+        }
+        .cookie-content {
+            padding: 20px;
+        }
+    }
+</style>
+
+@code {
+    private bool showBanner = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var result = await ProtectedLocalStorage.GetAsync<bool>("CookieConsentAccepted");
+                if (!result.Success || !result.Value)
+                {
+                    showBanner = true;
+                    StateHasChanged();
+                }
+            }
+            catch
+            {
+                // In case storage throws an error (e.g. crypto issue), default to showing it
+                showBanner = true;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task AcceptCookies()
+    {
+        try
+        {
+            await ProtectedLocalStorage.SetAsync("CookieConsentAccepted", true);
+            showBanner = false;
+            StateHasChanged();
+        }
+        catch
+        {
+            // Ignore if setting fails
+            showBanner = false;
+        }
+    }
+}

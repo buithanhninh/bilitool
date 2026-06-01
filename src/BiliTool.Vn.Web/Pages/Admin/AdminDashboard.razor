@@ -1,0 +1,157 @@
+@page "/admin"
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.DTOs
+@using MediatR
+@inject IMediator Mediator
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
+
+<PageTitle>Command Center — BiliTool.Vn</PageTitle>
+
+@if (thongKe == null || bieuDo == null)
+{
+    <div class="text-center" style="margin: 60px;">
+        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i> 
+        <div class="mt-2 text-muted">Đang phân tích dữ liệu hệ thống...</div>
+    </div>
+}
+else
+{
+    <div class="admin-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom:0;">
+                    <i class="fas fa-satellite-dish text-primary"></i> Tổng quan Hệ thống
+                </h2>
+                <div class="text-muted mt-1">Trung tâm kiểm soát dữ liệu lâm sàng BiliTool.Vn</div>
+            </div>
+            <div class="btn-group shadow-sm">
+                <a href="/admin/tai-khoan" class="btn btn-light border"><i class="fas fa-users-cog text-primary"></i> Bác sĩ</a>
+                <a href="/admin/benh-nhan" class="btn btn-light border"><i class="fas fa-procedures text-info"></i> Bệnh nhi</a>
+                <a href="/admin/nhat-ky" class="btn btn-light border"><i class="fas fa-history text-success"></i> Nhật ký tính toán</a>
+            </div>
+        </div>
+
+        <!-- KPIs with Sparklines -->
+        <div class="kpi-grid">
+            <!-- Tài khoản -->
+            <div class="admin-card">
+                <div class="kpi-card-header">
+                    <div>
+                        <div class="kpi-title">Tổng Y Bác sĩ</div>
+                        <div class="kpi-value">@thongKe.TongNguoiDung</div>
+                        <div class="text-success mt-1" style="font-size: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-arrow-trend-up"></i> +@thongKe.NguoiDungMoiTrongThang (30 ngày)
+                        </div>
+                    </div>
+                    <div class="kpi-icon primary"><i class="fas fa-user-md"></i></div>
+                </div>
+                <div class="sparkline-container">
+                    <canvas id="sparklineTaiKhoan"></canvas>
+                </div>
+            </div>
+
+            <!-- Bệnh nhi -->
+            <div class="admin-card">
+                <div class="kpi-card-header">
+                    <div>
+                        <div class="kpi-title">Tổng Bệnh Nhi</div>
+                        <div class="kpi-value">@thongKe.TongBenhNhan</div>
+                        <div class="text-info mt-1" style="font-size: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-arrow-trend-up"></i> +@thongKe.BenhNhanMoiTrongThang (30 ngày)
+                        </div>
+                    </div>
+                    <div class="kpi-icon secondary"><i class="fas fa-baby"></i></div>
+                </div>
+                <div class="sparkline-container">
+                    <canvas id="sparklineBenhNhan"></canvas>
+                </div>
+            </div>
+
+            <!-- Lượt tính toán -->
+            <div class="admin-card">
+                <div class="kpi-card-header">
+                    <div>
+                        <div class="kpi-title">Mật độ tương tác (AAP)</div>
+                        <div class="kpi-value">@thongKe.TongPhienTinhToan</div>
+                        <div class="text-success mt-1" style="font-size: 0.8rem; font-weight: 600;">
+                            <i class="fas fa-arrow-trend-up"></i> +@thongKe.PhienTinhToanTrongThang lượt (30 ngày)
+                        </div>
+                    </div>
+                    <div class="kpi-icon success"><i class="fas fa-calculator"></i></div>
+                </div>
+                <div class="sparkline-container">
+                    <canvas id="sparklineTinhToan"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Line/Bar Combo Chart -->
+            <div class="admin-card">
+                <div class="kpi-title mb-3"><i class="fas fa-chart-area"></i> Mức độ Tăng trưởng & Tương tác (30 Ngày)</div>
+                <div class="chart-wrapper">
+                    <canvas id="comboChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Donut Chart -->
+            <div class="admin-card">
+                <div class="kpi-title mb-3"><i class="fas fa-chart-pie"></i> Phân bổ Mức độ Rủi ro Lâm sàng (7 Ngày)</div>
+                <div class="chart-wrapper">
+                    <canvas id="donutChart"></canvas>
+                </div>
+                <div class="mt-4 text-center text-muted" style="font-size: 0.85rem;">
+                    * Trích xuất theo phác đồ chiếu đèn/thay máu AAP.
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private ThongKeHeThongDto? thongKe;
+    private ThongKeBieuDoAdminDto? bieuDo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NguoiDung.DaDangNhap)
+        {
+            NavManager.NavigateTo("/admin/login", forceLoad: true);
+            return;
+        }
+
+        if (!NguoiDung.LaQuanTriVien)
+        {
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        thongKe = await Mediator.Send(new GetThongKeHeThongQuery());
+        bieuDo = await Mediator.Send(new GetThongKeBieuDoAdminQuery());
+    }
+
+    private bool chartsRendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (bieuDo != null && !chartsRendered)
+        {
+            chartsRendered = true;
+            // Call JS Interop to render charts
+            await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineTaiKhoan", bieuDo.TaiKhoanMoi30Ngay.Select(x => x.SoLuong).ToArray(), "primary");
+            await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineBenhNhan", bieuDo.BenhNhanMoi30Ngay.Select(x => x.SoLuong).ToArray(), "secondary");
+            await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineTinhToan", bieuDo.LuotTinhToan30Ngay.Select(x => x.SoLuong).ToArray(), "success");
+
+            var labels = bieuDo.LuotTinhToan30Ngay.Select(x => x.Ngay).ToArray();
+            var lineData = bieuDo.TaiKhoanMoi30Ngay.Select(x => x.SoLuong).ToArray();
+            var barData = bieuDo.LuotTinhToan30Ngay.Select(x => x.SoLuong).ToArray();
+
+            await JS.InvokeVoidAsync("adminCharts.renderComboChart", "comboChart", labels, lineData, barData);
+
+            await JS.InvokeVoidAsync("adminCharts.renderDonutChart", "donutChart", bieuDo.TiLeBinhThuong, bieuDo.TiLeChieuDen, bieuDo.TiLeThayMau);
+        }
+    }
+}

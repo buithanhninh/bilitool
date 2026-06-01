@@ -1,0 +1,183 @@
+@page "/admin/tai-khoan/{Id}"
+@using BiliTool.Vn.Application.Queries
+@using BiliTool.Vn.Application.DTOs
+@using MediatR
+@inject IMediator Mediator
+@inject BiliTool.Vn.Web.Services.NguoiDungHienTaiService NguoiDung
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
+
+<PageTitle>Chi tiết Tài khoản — BiliTool.Vn Admin</PageTitle>
+
+@if (chiTiet == null)
+{
+    <div class="text-center" style="margin: 60px;">
+        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i> 
+        <div class="mt-2 text-muted">Đang tải hồ sơ bác sĩ...</div>
+    </div>
+}
+else
+{
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a href="/admin/tai-khoan" class="btn btn-sm btn-light border mb-2"><i class="fas fa-arrow-left"></i> Danh sách Tài khoản</a>
+                <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom:0;">
+                    Hồ sơ Y Bác sĩ
+                </h2>
+            </div>
+            @if (chiTiet.ThongTinChung.IsActive)
+            {
+                <span class="admin-badge badge-success px-4 py-2" style="font-size: 1rem;"><i class="fas fa-check-circle me-2"></i> Đang hoạt động</span>
+            }
+            else
+            {
+                <span class="admin-badge badge-danger px-4 py-2" style="font-size: 1rem;"><i class="fas fa-lock me-2"></i> Đã bị khóa</span>
+            }
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Left Info Panel -->
+            <div class="col-md-4">
+                <div class="admin-card h-100">
+                    <div class="patient-profile-header">
+                        <div class="patient-avatar-large">
+                            @(chiTiet.ThongTinChung.HoTen.Length > 0 ? chiTiet.ThongTinChung.HoTen[0].ToString().ToUpper() : "?")
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">@chiTiet.ThongTinChung.HoTen</h4>
+                            <div class="text-muted"><i class="fas fa-envelope"></i> @chiTiet.ThongTinChung.Email</div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="text-muted fw-bold mb-3 text-uppercase" style="font-size: 0.75rem;">Thông tin cá nhân</h6>
+                    <ul class="list-unstyled mb-4" style="line-height: 2;">
+                        <li><i class="fas fa-stethoscope text-primary me-2"></i> Chuyên khoa: <strong>@(chiTiet.ThongTinChung.ChuyenKhoa ?? "Không rõ")</strong></li>
+                        <li><i class="fas fa-hospital text-primary me-2"></i> Đơn vị công tác: <strong>@(chiTiet.ThongTinChung.DonViCongTac ?? "Không rõ")</strong></li>
+                        <li><i class="fas fa-phone text-primary me-2"></i> SĐT: <strong>@(chiTiet.ThongTinChung.SoDienThoai ?? "Chưa cung cấp")</strong></li>
+                    </ul>
+
+                    <h6 class="text-muted fw-bold mb-3 text-uppercase" style="font-size: 0.75rem;">Hoạt động hệ thống</h6>
+                    <ul class="list-unstyled" style="line-height: 2;">
+                        <li><i class="far fa-calendar-plus text-primary me-2"></i> Ngày đăng ký: <strong>@chiTiet.ThongTinChung.NgayTao.ToString("dd/MM/yyyy HH:mm")</strong></li>
+                        <li><i class="fas fa-sign-in-alt text-success me-2"></i> Đăng nhập cuối: <strong>@chiTiet.ThongTinChung.NgayDangNhapCuoi.ToString("dd/MM/yyyy HH:mm")</strong></li>
+                        <li><i class="fas fa-calculator text-info me-2"></i> Tổng số lượt tính toán: <strong class="text-primary">@chiTiet.ThongTinChung.TongPhienTinhToan</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Chart Panel -->
+            <div class="col-md-8">
+                <div class="admin-card h-100">
+                    <div class="kpi-title mb-3"><i class="fas fa-wave-square"></i> Mức độ Tương tác Hệ thống (Tính toán AAP - 30 Ngày)</div>
+                    <div class="chart-wrapper">
+                        <canvas id="tkHoatDongChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patients Portfolio -->
+        <div class="admin-card">
+            <div class="kpi-title mb-3 d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-procedures"></i> Portfolio Bệnh nhi đang quản lý (@chiTiet.DanhSachBenhNhan.Count)</span>
+            </div>
+            
+            <div class="premium-table-container mt-2">
+                <div class="table-responsive">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Bệnh nhi</th>
+                                <th>Tuổi thai</th>
+                                <th>Nguy cơ Thần kinh</th>
+                                <th>Lượt xét nghiệm</th>
+                                <th>Thời gian tạo</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!chiTiet.DanhSachBenhNhan.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">Bác sĩ chưa khởi tạo hồ sơ bệnh nhi nào.</td>
+                                </tr>
+                            }
+                            @foreach (var bn in chiTiet.DanhSachBenhNhan)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@bn.HoTenBenhNhan</strong><br/>
+                                        <small class="text-muted">Sinh: @bn.NgayGioSinh.ToString("dd/MM/yyyy")</small>
+                                    </td>
+                                    <td>@bn.TuoiThaiTuan tuần</td>
+                                    <td>
+                                        @if (bn.CoNguyCoThanKinh)
+                                        {
+                                            <span class="admin-badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Có rủi ro</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="admin-badge badge-neutral">Bình thường</span>
+                                        }
+                                    </td>
+                                    <td><span class="admin-badge badge-success">@bn.SoLanXetNghiem lần đo</span></td>
+                                    <td><span class="text-muted"><i class="far fa-clock"></i> @bn.NgayTao.ToString("dd/MM/yyyy HH:mm")</span></td>
+                                    <td>
+                                        <a href="/admin/benh-nhan/@bn.Id" class="btn btn-sm btn-light border text-primary">
+                                            <i class="fas fa-eye"></i> Xem biểu đồ AAP
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    private TaiKhoanDetailAdminDto? chiTiet;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!NguoiDung.DaDangNhap)
+        {
+            NavManager.NavigateTo("/admin/login", forceLoad: true);
+            return;
+        }
+
+        if (!NguoiDung.LaQuanTriVien)
+        {
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        chiTiet = await Mediator.Send(new LayChiTietTaiKhoanAdminQuery(Id));
+        if (chiTiet == null)
+        {
+            NavManager.NavigateTo("/admin/tai-khoan");
+        }
+    }
+
+    private bool chartsRendered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (chiTiet != null && !chartsRendered)
+        {
+            chartsRendered = true;
+            var labels = chiTiet.HoatDong30Ngay.Select(x => x.Ngay).ToArray();
+            var data = chiTiet.HoatDong30Ngay.Select(x => x.SoLuong).ToArray();
+            
+            // Reusing combo chart logic but as a line chart for individual interaction
+            await JS.InvokeVoidAsync("adminCharts.renderComboChart", "tkHoatDongChart", labels, data, data);
+        }
+    }
+}
