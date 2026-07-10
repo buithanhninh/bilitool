@@ -1,5 +1,18 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.5] - 2026-07-10
+
+### Changed
+- Expanded Vietnamese FAQ from short answers into detailed clinical explanations with checklists and caution notes.
+- Added FAQ topics for age-hour calculation, neurotoxicity risk factors, NICE CG98 clinical risk factors, direct evaluation triggers, normal-result interpretation, and dual AAP/NICE display rationale.
+- Restyled FAQ accordion with premium cards, clearer hierarchy, high-contrast text, structured bullet blocks, and clinical note callouts.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+
 ## [1.3.4] - 2026-07-10
 
 ### Changed
