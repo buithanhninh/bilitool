@@ -1,5 +1,19 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.2] - 2026-07-10
+
+### Changed
+- Refined result panel hierarchy with clearer clinical status, metric cards, threshold distance cards, and recommendation layout.
+- Redesigned BiliGraph nomogram with lighter academic chart surface, readable axes, legend chips, and emphasized patient marker.
+- Polished AAP/NICE guidance panel into structured premium cards for better scanning and professional presentation.
+- Bumped PWA shell cache and CSS query version so production browsers receive the newest UI immediately.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+
 ## [1.3.1] - 2026-07-10
 
 ### Added
