@@ -51,8 +51,8 @@
             }
 
             <!-- Axis labels -->
-            @((MarkupString)FormattableString.Invariant($"<text x='15' y='{height / 2}' transform='rotate(-90 15 {height / 2})' class='axis-title'>Bilirubin ({(DonVi == "UmolL" ? "μmol/L" : "mg/dL")})</text>"))
-            @((MarkupString)FormattableString.Invariant($"<text x='{width / 2}' y='{height - 5}' class='axis-title'>Tuổi (giờ)</text>"))
+            @((MarkupString)FormattableString.Invariant($"<text x='15' y='{height / 2}' transform='rotate(-90 15 {height / 2})' class='axis-title' fill='#4f5b66'>Bilirubin ({(DonVi == "UmolL" ? "μmol/L" : "mg/dL")})</text>"))
+            @((MarkupString)FormattableString.Invariant($"<text x='{width / 2}' y='{height - 5}' class='axis-title' fill='#4f5b66'>Tuổi (giờ)</text>"))
 
             @if (KetQua.ChartData != null && KetQua.ChartData.Any())
             {
