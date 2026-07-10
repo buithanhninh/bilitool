@@ -1,5 +1,21 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.10] - 2026-07-10
+
+### Changed
+- Added a new cache-safe Open Graph image URL `og-bilitool-1200x630.png` so crawlers and social platforms do not reuse the older immutable cached image.
+- Updated Open Graph, Twitter, JSON-LD, sitemap image, and service worker references to the new 1200×630 PNG asset.
+- Bumped cache/version metadata to `1.3.10`.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- SEO smoke test passed with versioned favicon/manifest, canonical, description, and JSON-LD.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- New Open Graph image URL returns HTTP 200 as `image/png` and is a valid 1200×630 PNG.
+- Vulnerability scan: no vulnerable NuGet packages.
+
 ## [1.3.9] - 2026-07-10
 
 ### Changed
