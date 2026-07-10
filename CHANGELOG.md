@@ -1,5 +1,21 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.8] - 2026-07-10
+
+### Changed
+- Added a real BiliTool.Vn favicon set, Apple touch icon, and PWA icon set so browser tabs and installed shortcuts show the correct software logo.
+- Standardized browser/PWA application names to `BiliTool.Vn` and added a default fallback title.
+- Updated manifest metadata, theme color, cache busting, and service worker precache entries for the new icon assets.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- Browser title, application name, favicon, Apple touch icon, and manifest smoke test passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- Favicon and PWA icon assets return HTTP 200 with correct image content types.
+- Vulnerability scan: no vulnerable NuGet packages.
+
 ## [1.3.7] - 2026-07-10
 
 ### Changed

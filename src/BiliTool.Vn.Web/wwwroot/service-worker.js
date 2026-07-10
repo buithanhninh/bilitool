@@ -1,8 +1,14 @@
-const CACHE_NAME = 'bilitool-vn-shell-v7';
+const CACHE_NAME = 'bilitool-vn-shell-v8';
 const STATIC_ASSETS = [
   '/',
   '/offline.html',
   '/manifest.json',
+  '/favicon.ico',
+  '/icons/favicon-16x16.png',
+  '/icons/favicon-32x32.png',
+  '/icons/apple-touch-icon.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
   '/css/site.css',
   '/css/bilitool.css',
   '/css/admin-premium.css',
