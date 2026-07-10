@@ -1,5 +1,18 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.3] - 2026-07-10
+
+### Changed
+- Reworked AAP/NICE risk-factor checkboxes into consistent card controls with hidden native inputs, clearer checked state, and responsive two-column layout.
+- Replaced remaining visible English labels in the calculator result/chart area with Vietnamese copy.
+- Bumped PWA shell cache and CSS query version so production browsers receive the newest UI immediately.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+
 ## [1.3.2] - 2026-07-10
 
 ### Changed

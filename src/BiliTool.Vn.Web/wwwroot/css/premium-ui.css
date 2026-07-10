@@ -297,6 +297,11 @@ body::after {
 
 .checkbox-vn,
 .checkbox-container-vn {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  min-height: 44px;
+  padding: 10px 12px !important;
   background: rgba(255,255,255,.62) !important;
   border: 1px solid rgba(15,23,42,.10) !important;
   border-radius: 16px !important;
@@ -313,7 +318,75 @@ body::after {
 
 .checkbox-box,
 .checkmark-vn {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 1px !important;
+  border: 2px solid rgba(100,116,139,.35) !important;
   border-radius: 7px !important;
+}
+
+.checkbox-container-vn input[type="checkbox"] {
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.checkbox-container-vn input[type="checkbox"]:checked + .checkmark-vn {
+  border-color: var(--premium-blue) !important;
+  background: linear-gradient(145deg, var(--premium-blue), var(--premium-teal)) !important;
+  box-shadow: 0 8px 18px rgba(15,95,143,.18);
+}
+
+.checkbox-container-vn input[type="checkbox"]:checked + .checkmark-vn::after {
+  content: "\2714";
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.checkbox-container-vn input[type="checkbox"]:focus-visible + .checkmark-vn,
+.checkbox-vn input[type="checkbox"]:focus-visible + .checkbox-box {
+  outline: 3px solid rgba(15,95,143,.32);
+  outline-offset: 2px;
+}
+
+.checkbox-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px !important;
+  margin: 10px 0 14px !important;
+}
+
+.checkbox-grid .checkbox-label,
+.nguyen-co-grid .checkbox-label {
+  color: var(--premium-ink-soft) !important;
+  font-size: .84rem !important;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.checkbox-grid .text-danger {
+  color: #b42318 !important;
+}
+
+.form-section h5 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px !important;
+  color: var(--premium-ink) !important;
+  font-size: .92rem !important;
+  font-weight: 900 !important;
+}
+
+.etcoc-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(15,23,42,.075);
 }
 
 .btn-calculate,
@@ -436,7 +509,7 @@ body::after {
 }
 
 .ket-qua-header::before {
-  content: "Clinical result";
+  content: "Kết quả lâm sàng";
   color: var(--premium-teal);
   font-size: .72rem;
   font-weight: 900;
@@ -853,6 +926,10 @@ body::after {
 
   .w-auto {
     width: 100% !important;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: 1fr !important;
   }
 
   .btn-calculate {
