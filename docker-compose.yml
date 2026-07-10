@@ -15,6 +15,7 @@ services:
       - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=bilitool_vn;Username=bilitool;Password=${DB_PASSWORD}
       - Authentication__Google__ClientId=${GOOGLE_CLIENT_ID}
       - Authentication__Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
+      - ApiSettings__AllowedApiKeys__0=${ApiSettings__AllowedApiKeys__0}
     depends_on:
       postgres:
         condition: service_healthy
