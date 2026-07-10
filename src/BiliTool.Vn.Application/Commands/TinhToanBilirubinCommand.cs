@@ -179,7 +179,7 @@ public class TinhToanBilirubinHandler
 
     private static string LayMauHienThi(MucDoNguyHiem mucDo) => mucDo switch
     {
-        MucDoNguyHiem.BinhThuong => "#27ae60",          // xanh lá
+        MucDoNguyHiem.BinhThuong => "#1e8449",          // xanh lá đậm, đạt tương phản WCAG AA
         MucDoNguyHiem.CanTheoDoiSat => "#f39c12",       // vàng
         MucDoNguyHiem.CanChieuDen => "#e67e22",         // cam
         MucDoNguyHiem.CanChieuDenTichCuc => "#e74c3c",  // đỏ

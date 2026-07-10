@@ -9,13 +9,13 @@
   --primary-dark: #155a83;
   --primary-light: #e8f4f9;
   --accent: #2ecc71;
-  --accent-dark: #27ae60;
+  --accent-dark: #1e8449;
 
-  --danger: #e74c3c;
+  --danger: #c0392b;
   --danger-dark: #c0392b;
   --warning: #f39c12;
   --warning-light: #fef9e7;
-  --success: #27ae60;
+  --success: #1e8449;
   --success-light: #eafaf1;
   --info: #3498db;
 
@@ -24,8 +24,8 @@
   --gray-200: #e9ecef;
   --gray-300: #dee2e6;
   --gray-400: #ced4da;
-  --gray-500: #adb5bd;
-  --gray-600: #6c757d;
+  --gray-500: #5f6b76;
+  --gray-600: #4f5b66;
   --gray-700: #495057;
   --gray-800: #343a40;
   --gray-900: #212529;
