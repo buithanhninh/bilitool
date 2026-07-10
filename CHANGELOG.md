@@ -1,5 +1,14 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.12] - 2026-07-10
+### Added
+- Added a Playwright English-language sweep test covering all public pages after switching the UI to English.
+
+### Changed
+- Added complete English content branches for `/huong-dan` and `/tich-hop-his`.
+- Localized English SEO metadata and advisor display text on `/gioi-thieu`.
+- Bumped cache/version metadata to `1.3.12`.
+
 ## [1.3.11] - 2026-07-10
 ### Added
 - Rebuilt `/huong-dan` as a detailed clinical guidance page for neonatal jaundice using AAP 2022 and NICE CG98 references.

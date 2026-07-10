@@ -42,6 +42,23 @@
     var niceDate = isEnglish ? "Updated 10/2023" : isFrench ? "Mis à jour 10/2023" : "Cập nhật 10/2023";
 
     var advisorTitle = isEnglish ? "Author & Clinical Advisor" : isFrench ? "Autrice et conseillère clinique" : "Tác giả - Cố vấn chuyên môn";
+
+    var advisorName = isEnglish ? "MSc. MD. Ninh Thi Phuong Mai" : isFrench ? "Dr. Ninh Thi Phuong Mai" : "ThS. BS. Ninh Thị Phương Mai";
+    var metaDescription = isEnglish
+        ? "BiliTool.Vn is clinical decision support software for neonatal jaundice management. Clinical advisor: MSc. MD. Ninh Thi Phuong Mai, General Pediatrics Department, E Hospital."
+        : isFrench
+            ? "BiliTool.Vn est un logiciel d’aide à la décision clinique pour la prise en charge de l’ictère néonatal. Conseillère clinique : Dr. Ninh Thi Phuong Mai, Hôpital E."
+            : "BiliTool.Vn - phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh tại Việt Nam. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai - Khoa Nội Nhi Tổng Hợp, Bệnh viện E.";
+    var metaKeywords = isEnglish
+        ? "BiliTool.Vn, neonatal jaundice, bilirubin, Ninh Thi Phuong Mai, E Hospital, AAP 2022, NICE CG98"
+        : isFrench
+            ? "BiliTool.Vn, ictère néonatal, bilirubine, Ninh Thi Phuong Mai, Hôpital E, AAP 2022, NICE CG98"
+            : "BiliTool.Vn, vàng da sơ sinh, bilirubin, ThS BS Ninh Thị Phương Mai, Bệnh viện E, AAP 2022, NICE CG98";
+    var socialDescription = isEnglish
+        ? "Clinical decision support for neonatal jaundice assessment and monitoring using AAP 2022 and NICE CG98."
+        : isFrench
+            ? "Aide à la décision clinique pour l’évaluation et le suivi de l’ictère néonatal selon AAP 2022 et NICE CG98."
+            : "Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E.";
     var hospital = isEnglish ? "General Pediatrics Department – E Hospital" : isFrench ? "Pédiatrie générale – Hôpital E" : "Khoa Nội Nhi Tổng Hợp – Bệnh viện E";
     var bio1 = isEnglish
         ? "ThS. BS. Ninh Thi Phuong Mai has years of direct clinical experience in pediatric examination and treatment, with strengths in respiratory disease, immunology-allergy, gastroenterology, and pediatric nutrition."
@@ -74,18 +91,18 @@
 <PageTitle>@pageTitle</PageTitle>
 
 <HeadContent>
-    <meta name="description" content="BiliTool.Vn - phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh tại Việt Nam. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai - Khoa Nội Nhi Tổng Hợp, Bệnh viện E." />
-    <meta name="keywords" content="BiliTool.Vn, vàng da sơ sinh, bilirubin, ThS BS Ninh Thị Phương Mai, Bệnh viện E, AAP 2022, NICE CG98" />
+    <meta name="description" content="@metaDescription" />
+    <meta name="keywords" content="@metaKeywords" />
     <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
     <meta property="og:type" content="profile" />
     <meta property="og:title" content="@pageTitle" />
-    <meta property="og:description" content="Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
+    <meta property="og:description" content="@socialDescription" />
     <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
     <meta property="og:site_name" content="BiliTool.Vn" />
     <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@pageTitle" />
-    <meta name="twitter:description" content="BiliTool.Vn hỗ trợ đánh giá và theo dõi vàng da sơ sinh theo AAP 2022 và NICE CG98." />
+    <meta name="twitter:description" content="@socialDescription" />
 </HeadContent>
 
 <div class="about-page-shell">
@@ -134,11 +151,11 @@
 
     <section class="about-advisor-panel about-reveal">
         <div class="about-advisor-photo">
-            <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thị Phương Mai" onerror="this.src='/images/doctor-placeholder.svg'" />
+            <img src="/images/bs-mai.jpg" alt="@advisorName" onerror="this.src='/images/doctor-placeholder.svg'" />
         </div>
         <div class="about-advisor-content">
             <div class="about-section-label"><i class="fas fa-user-md"></i> @advisorTitle</div>
-            <h2>ThS. BS. Ninh Thị Phương Mai</h2>
+            <h2>@advisorName</h2>
             <p class="about-advisor-role"><i class="fas fa-hospital"></i> @hospital</p>
             <p>@bio1</p>
             <p>@bio2</p>
