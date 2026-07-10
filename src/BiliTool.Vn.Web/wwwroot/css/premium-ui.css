@@ -508,8 +508,7 @@ body::after {
     linear-gradient(135deg, rgba(255,255,255,.92), rgba(235,248,252,.76)) !important;
 }
 
-.ket-qua-header::before {
-  content: "Kết quả lâm sàng";
+.ket-qua-title {
   color: var(--premium-teal);
   font-size: .72rem;
   font-weight: 900;

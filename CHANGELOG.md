@@ -1,5 +1,11 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.14] - 2026-07-10
+### Changed
+- Localized the bilirubin result header and nomogram/chart labels for English and French.
+- Extended English and French Playwright language sweeps to include an auto-calculated result view.
+- Bumped cache/version metadata to `1.3.14`.
+
 ## [1.3.13] - 2026-07-10
 ### Added
 - Added a Playwright French-language sweep test covering all public pages after switching the UI to French.

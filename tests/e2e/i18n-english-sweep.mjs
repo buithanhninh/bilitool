@@ -20,7 +20,8 @@ const publicPages = [
   '/dang-ky',
   '/quen-mat-khau',
   '/dat-lai-mat-khau',
-  '/admin/login'
+  '/admin/login',
+  '/may-tinh?ngaysinh=09/07/2026&giosinh=01:25&ngaymau=10/07/2026&giomau=09:25&bili=12&donvi=UmolL&tuoithai=43&autocalc=true'
 ];
 
 const vietnameseCharacters = /[ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠ-ỹ]/;

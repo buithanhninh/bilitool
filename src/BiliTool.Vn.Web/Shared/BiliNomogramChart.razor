@@ -1,26 +1,27 @@
 @using BiliTool.Vn.Application.DTOs
 @using System.Globalization
-<div class="bili-nomogram-container" role="img" aria-label="Biểu đồ ngưỡng bilirubin theo tuổi giờ">
+@inject BiliTool.Vn.Web.Services.TranslationService T
+<div class="bili-nomogram-container" role="img" aria-label="@T["Nomogram_Aria"]">
     <div class="bili-nomogram-header">
-        <div class="nomogram-eyebrow">Biểu đồ lâm sàng</div>
+        <div class="nomogram-eyebrow">@T["Nomogram_Eyebrow"]</div>
         <div class="nomogram-title">
-            Ngưỡng bilirubin theo tuổi giờ
+            @T["Nomogram_Title"]
         </div>
         <div class="nomogram-subtitle">
             @if (DonVi == "UmolL")
             {
-                @KetQua.BilirubinUmolL.ToString("F0")<span> μmol/L @@ @KetQua.TuoiGio giờ | Tuổi thai: @KetQua.TuoiThaiTuan tuần | Nguy cơ TK: @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")</span>
+                @KetQua.BilirubinUmolL.ToString("F0")<span> μmol/L @@ @KetQua.TuoiGio @T["Nomogram_AgeUnit"] | @T["Nomogram_GestationalAge"]: @KetQua.TuoiThaiTuan @T["Weeks_Short"] | @T["Nomogram_NeuroRiskShort"]: @(KetQua.CoNguyCoThanKinh ? T["Yes"] : T["No"])</span>
             }
             else
             {
-                @KetQua.BilirubinMgDl.ToString("F1")<span> mg/dL @@ @KetQua.TuoiGio giờ | Tuổi thai: @KetQua.TuoiThaiTuan tuần | Nguy cơ TK: @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")</span>
+                @KetQua.BilirubinMgDl.ToString("F1")<span> mg/dL @@ @KetQua.TuoiGio @T["Nomogram_AgeUnit"] | @T["Nomogram_GestationalAge"]: @KetQua.TuoiThaiTuan @T["Weeks_Short"] | @T["Nomogram_NeuroRiskShort"]: @(KetQua.CoNguyCoThanKinh ? T["Yes"] : T["No"])</span>
             }
         </div>
         <div class="nomogram-legend">
-            <span class="legend-item"><span class="legend-color pt-color"></span> Chiếu đèn</span>
-            <span class="legend-item"><span class="legend-color esc-color"></span> Chiếu tích cực</span>
-            <span class="legend-item"><span class="legend-color et-color"></span> Thay máu</span>
-            <span class="legend-item legend-patient"><span class="legend-diamond">◆</span> Bệnh nhi</span>
+            <span class="legend-item"><span class="legend-color pt-color"></span> @T["Nomogram_Phototherapy"]</span>
+            <span class="legend-item"><span class="legend-color esc-color"></span> @T["Nomogram_IntensivePhototherapy"]</span>
+            <span class="legend-item"><span class="legend-color et-color"></span> @T["Nomogram_ExchangeTransfusion"]</span>
+            <span class="legend-item legend-patient"><span class="legend-diamond">◆</span> @T["Nomogram_Patient"]</span>
         </div>
     </div>
 
@@ -67,7 +68,7 @@
 
             <!-- Axis labels -->
             @((MarkupString)FormattableString.Invariant($"<text x='15' y='{height / 2}' transform='rotate(-90 15 {height / 2})' class='axis-title'>Bilirubin ({(DonVi == "UmolL" ? "μmol/L" : "mg/dL")})</text>"))
-            @((MarkupString)FormattableString.Invariant($"<text x='{width / 2}' y='{height - 5}' class='axis-title'>Tuổi (giờ)</text>"))
+            @((MarkupString)FormattableString.Invariant($"<text x='{width / 2}' y='{height - 5}' class='axis-title'>{T["Nomogram_AgeAxis"]}</text>"))
 
             @if (KetQua.ChartData != null && KetQua.ChartData.Any())
             {

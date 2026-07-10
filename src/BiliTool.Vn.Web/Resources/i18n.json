@@ -221,7 +221,19 @@
     "HistoryDeleted": "Đã xóa lịch sử tính toán!",
     "DeleteError": "Lỗi khi xóa",
     "LoginRequired_Toast": "Vui lòng đăng nhập để lưu trữ dữ liệu bệnh nhi!",
-    "EnterName_Error": "Vui lòng nhập họ tên bé."
+    "EnterName_Error": "Vui lòng nhập họ tên bé.",
+    "ClinicalResult": "Kết quả lâm sàng",
+    "Nomogram_Aria": "Biểu đồ ngưỡng bilirubin theo tuổi giờ",
+    "Nomogram_Eyebrow": "Biểu đồ lâm sàng",
+    "Nomogram_Title": "Ngưỡng bilirubin theo tuổi giờ",
+    "Nomogram_AgeUnit": "giờ",
+    "Nomogram_GestationalAge": "Tuổi thai",
+    "Nomogram_NeuroRiskShort": "Nguy cơ TK",
+    "Nomogram_Phototherapy": "Chiếu đèn",
+    "Nomogram_IntensivePhototherapy": "Chiếu tích cực",
+    "Nomogram_ExchangeTransfusion": "Thay máu",
+    "Nomogram_Patient": "Bệnh nhi",
+    "Nomogram_AgeAxis": "Tuổi (giờ)"
   },
   "en": {
     "Menu_Calculator": "Bilirubin Calculator",
@@ -445,7 +457,19 @@
     "HistoryDeleted": "Calculation history cleared!",
     "DeleteError": "Error deleting",
     "LoginRequired_Toast": "Please login to store patient records!",
-    "EnterName_Error": "Please enter the baby's name."
+    "EnterName_Error": "Please enter the baby's name.",
+    "ClinicalResult": "Clinical result",
+    "Nomogram_Aria": "Bilirubin threshold chart by age in hours",
+    "Nomogram_Eyebrow": "Clinical chart",
+    "Nomogram_Title": "Bilirubin thresholds by age in hours",
+    "Nomogram_AgeUnit": "hours",
+    "Nomogram_GestationalAge": "Gestational age",
+    "Nomogram_NeuroRiskShort": "Neurotoxicity risk",
+    "Nomogram_Phototherapy": "Phototherapy",
+    "Nomogram_IntensivePhototherapy": "Intensive phototherapy",
+    "Nomogram_ExchangeTransfusion": "Exchange transfusion",
+    "Nomogram_Patient": "Patient",
+    "Nomogram_AgeAxis": "Age (hours)"
   },
   "fr": {
     "Menu_Calculator": "Calculateur de Bilirubine",
@@ -669,6 +693,18 @@
     "HistoryDeleted": "Historique des calculs effacé !",
     "DeleteError": "Erreur lors de la suppression",
     "LoginRequired_Toast": "Veuillez vous connecter pour enregistrer les dossiers des patients !",
-    "EnterName_Error": "Veuillez entrer le nom du bébé."
+    "EnterName_Error": "Veuillez entrer le nom du bébé.",
+    "ClinicalResult": "Résultat clinique",
+    "Nomogram_Aria": "Graphique des seuils de bilirubine selon l’âge en heures",
+    "Nomogram_Eyebrow": "Graphique clinique",
+    "Nomogram_Title": "Seuils de bilirubine selon l’âge en heures",
+    "Nomogram_AgeUnit": "heures",
+    "Nomogram_GestationalAge": "Âge gestationnel",
+    "Nomogram_NeuroRiskShort": "Risque neurotoxique",
+    "Nomogram_Phototherapy": "Photothérapie",
+    "Nomogram_IntensivePhototherapy": "Photothérapie intensive",
+    "Nomogram_ExchangeTransfusion": "Exsanguino-transfusion",
+    "Nomogram_Patient": "Patient",
+    "Nomogram_AgeAxis": "Âge (heures)"
   }
 }
