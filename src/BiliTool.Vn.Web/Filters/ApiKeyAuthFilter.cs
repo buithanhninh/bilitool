@@ -21,10 +21,19 @@ public class ApiKeyAuthFilter : IAsyncActionFilter
         // Lấy danh sách khóa được cấu hình
         var allowedKeys = _configuration.GetSection("ApiSettings:AllowedApiKeys").Get<string[]>();
 
-        // Nếu không có cấu hình khóa nào, cho phép đi qua (tương thích ngược hoặc public)
+        // Không có cấu hình khóa nghĩa là tích hợp HIS chưa sẵn sàng; không mở public mặc định.
         if (allowedKeys == null || allowedKeys.Length == 0)
         {
-            await next();
+            context.Result = new ObjectResult(new ProblemDetails
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.4",
+                Title = "Dịch vụ API chưa được cấu hình (API key configuration missing)",
+                Status = StatusCodes.Status503ServiceUnavailable,
+                Detail = "API tích hợp HIS chưa được cấu hình khóa truy cập. Vui lòng liên hệ quản trị hệ thống."
+            })
+            {
+                StatusCode = StatusCodes.Status503ServiceUnavailable
+            };
             return;
         }
 

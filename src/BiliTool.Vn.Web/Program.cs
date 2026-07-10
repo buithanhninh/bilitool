@@ -198,6 +198,15 @@ using (var scope = app.Services.CreateScope())
 // PHẢI đặt đầu tiên để đọc X-Forwarded-Proto từ Cloudflare Tunnel
 app.UseForwardedHeaders();
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.TryAdd("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    await next();
+});
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/loi");
@@ -240,6 +249,30 @@ app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/health/live", () => Results.Ok(new
+{
+    status = "Healthy",
+    service = "BiliTool.Vn",
+    checkedAt = DateTimeOffset.UtcNow
+}));
+
+app.MapGet("/health/ready", async (IServiceProvider services) =>
+{
+    using var scope = services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<BiliToolDbContext>();
+    var canConnect = await db.Database.CanConnectAsync();
+
+    return canConnect
+        ? Results.Ok(new
+        {
+            status = "Ready",
+            database = "Connected",
+            clinicalEngine = "BaselineMayTinhBilirubin",
+            checkedAt = DateTimeOffset.UtcNow
+        })
+        : Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+});
 
 app.MapRazorPages();
 app.MapBlazorHub();

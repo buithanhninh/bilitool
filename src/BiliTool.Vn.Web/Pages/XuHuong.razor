@@ -90,7 +90,14 @@
                                     @if (bn.LanDoGanNhat != null)
                                     {
                                         <small class="bili-badge @GetMucDoClass(bn.LanDoGanNhat.MucDoNguyHiem)">
-                                            @bn.LanDoGanNhat.BilirubinMgDl.ToString("F1") mg/dL
+                                            @if (donViDoStr == "UmolL")
+                                            {
+                                                @((Math.Round(bn.LanDoGanNhat.BilirubinMgDl * 17.104m, 0)).ToString("F0"))<span> μmol/L</span>
+                                            }
+                                            else
+                                            {
+                                                @bn.LanDoGanNhat.BilirubinMgDl.ToString("F1")<span> mg/dL</span>
+                                            }
                                         </small>
                                     }
                                     else
@@ -163,12 +170,18 @@
                             <div class="form-group-vn">
                                 <label class="label-vn">
                                     <i class="fas fa-tint" style="color:var(--danger);"></i>
-                                    @T["TotalBilirubin"] (mg/dL) <span class="text-danger">*</span>
+                                    @T["TotalBilirubin"] (@(donViDoStr == "UmolL" ? "μmol/L" : "mg/dL")) <span class="text-danger">*</span>
                                 </label>
-                                <input type="number" step="0.1" min="0" max="50"
-                                       class="input-vn"
-                                       @bind="bilirubinMoi"
-                                       placeholder="@T["Trend_BiliPlaceholder"]" />
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="number" step="0.1" min="0" max="@(donViDoStr == "UmolL" ? 1000 : 50)"
+                                           class="input-vn" style="flex: 1;"
+                                           @bind="bilirubinMoi"
+                                           placeholder="@(donViDoStr == "UmolL" ? "Ví dụ: 250" : "Ví dụ: 13.5")" />
+                                    <select class="select-vn" style="width: 120px;" @bind="donViDoStr">
+                                        <option value="MgDl">@T["Unit_MgDl"]</option>
+                                        <option value="UmolL">@T["Unit_UmolL"]</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group-vn">
                                 <label class="label-vn">
@@ -237,7 +250,7 @@
                                     <tr>
                                         <th>@T["SampleTime"]</th>
                                         <th>@T["Age"]</th>
-                                        <th>Bilirubin (mg/dL)</th>
+                                        <th>Bilirubin (@(donViDoStr == "UmolL" ? "μmol/L" : "mg/dL"))</th>
                                         <th>@T["CalcBili_Evaluation"]</th>
                                         <th style="width:40px;"></th>
                                     </tr>
@@ -249,8 +262,16 @@
                                             <td><i class="fas fa-calendar-alt text-muted" style="font-size:0.75rem;margin-right:4px;"></i>@xn.ThoiGianLayMau.ToLocalTime().ToString("HH:mm dd/MM/yyyy")</td>
                                             <td><strong>@xn.TuoiGioTuDong.ToString("F0")</strong> @T["Hours"]</td>
                                             <td>
-                                                <span class="bili-value">@xn.BilirubinMgDl.ToString("F1")</span>
-                                                <small class="text-muted"> mg/dL</small>
+                                                @if (donViDoStr == "UmolL")
+                                                {
+                                                    <span class="bili-value">@((Math.Round(xn.BilirubinMgDl * 17.104m, 0)).ToString("F0"))</span>
+                                                    <small class="text-muted"> μmol/L</small>
+                                                }
+                                                else
+                                                {
+                                                    <span class="bili-value">@xn.BilirubinMgDl.ToString("F1")</span>
+                                                    <small class="text-muted"> mg/dL</small>
+                                                }
                                             </td>
                                             <td>
                                                 <span class="muc-do-badge-sm @GetMucDoClass(xn.MucDoNguyHiem)">
@@ -444,6 +465,29 @@
     private List<HoSoBenhNhanDto> dsBenhNhan = new();
     private HoSoBenhNhanDto? benhNhanChon;
 
+    private string _donViDoStr = "UmolL";
+    private string donViDoStr
+    {
+        get => _donViDoStr;
+        set
+        {
+            if (_donViDoStr != value)
+            {
+                _donViDoStr = value;
+                _ = OnUnitChanged();
+            }
+        }
+    }
+
+    private async Task OnUnitChanged()
+    {
+        if (benhNhanChon?.DsXetNghiem.Any() == true)
+        {
+            await VeBieuDo();
+            StateHasChanged();
+        }
+    }
+
     // Form nhập xét nghiệm
     private decimal bilirubinMoi = 0;
     private bool tuyChinh = false;
@@ -500,9 +544,12 @@
         thongBaoOK = false;
 
         if (benhNhanChon == null) return;
-        if (bilirubinMoi <= 0 || bilirubinMoi > 50)
+        
+        decimal maxVal = donViDoStr == "UmolL" ? 1000 : 50;
+        string unitStr = donViDoStr == "UmolL" ? "μmol/L" : "mg/dL";
+        if (bilirubinMoi <= 0 || bilirubinMoi > maxVal)
         {
-            thongBaoLoi = "Giá trị Bilirubin không hợp lệ (0 – 50 mg/dL).";
+            thongBaoLoi = $"Giá trị Bilirubin không hợp lệ (0 – {maxVal} {unitStr}).";
             return;
         }
 
@@ -510,10 +557,11 @@
         try
         {
             var userId = NguoiDung.Id ?? NguoiDung.Email ?? "";
+            decimal biliMgDl = donViDoStr == "UmolL" ? Math.Round(bilirubinMoi / 17.104m, 2) : bilirubinMoi;
             var dto = new ThemXetNghiemDto
             {
                 BenhNhanId = benhNhanChon.Id,
-                BilirubinMgDl = bilirubinMoi,
+                BilirubinMgDl = biliMgDl,
                 ThoiGianLayMauTuyChon = tuyChinh ? thoiGianTuyChinhStr : null
             };
             await Mediator.Send(new ThemXetNghiemCommand(userId, dto));
@@ -588,10 +636,26 @@
         if (benhNhanChon?.DsXetNghiem.Any() != true) return;
         var sorted = benhNhanChon.DsXetNghiem.OrderBy(x => x.ThoiGianLayMau).ToList();
         var labels = sorted.Select(x => $"{x.TuoiGioTuDong:F0}h").ToArray();
-        var values = sorted.Select(x => (double)x.BilirubinMgDl).ToArray();
-        var cd = sorted.Select(x => x.NguongChieuDen.HasValue ? (double)x.NguongChieuDen.Value : (double?)null).ToArray();
-        var tm = sorted.Select(x => x.NguongThayCuuMau.HasValue ? (double)x.NguongThayCuuMau.Value : (double?)null).ToArray();
-        await JS.InvokeVoidAsync("bilitool.initXuHuongChart", "bilirubinBenhNhanChart", labels, values, cd, tm);
+        
+        double[] values;
+        double?[] cd;
+        double?[] tm;
+        
+        if (donViDoStr == "UmolL")
+        {
+            values = sorted.Select(x => (double)Math.Round(x.BilirubinMgDl * 17.104m, 0)).ToArray();
+            cd = sorted.Select(x => x.NguongChieuDen.HasValue ? (double)Math.Round(x.NguongChieuDen.Value * 17.104m, 0) : (double?)null).ToArray();
+            tm = sorted.Select(x => x.NguongThayCuuMau.HasValue ? (double)Math.Round(x.NguongThayCuuMau.Value * 17.104m, 0) : (double?)null).ToArray();
+        }
+        else
+        {
+            values = sorted.Select(x => (double)x.BilirubinMgDl).ToArray();
+            cd = sorted.Select(x => x.NguongChieuDen.HasValue ? (double)x.NguongChieuDen.Value : (double?)null).ToArray();
+            tm = sorted.Select(x => x.NguongThayCuuMau.HasValue ? (double)x.NguongThayCuuMau.Value : (double?)null).ToArray();
+        }
+        
+        string unitSuffix = donViDoStr == "UmolL" ? "μmol/L" : "mg/dL";
+        await JS.InvokeVoidAsync("bilitool.initXuHuongChart", "bilirubinBenhNhanChart", labels, values, cd, tm, unitSuffix);
     }
 
     private void ToggleTungChonThoiGian()

@@ -1,5 +1,5 @@
 using System.Security.Cryptography;
-using System.Text;
+using System.Net;
 using BiliTool.Vn.Application.Services;
 using BiliTool.Vn.Domain.Entities;
 using BiliTool.Vn.Infrastructure.Persistence;
@@ -141,22 +141,29 @@ public class AuthService : IAuthService
 
     private bool VerifyPassword(string password, string hash, string saltString)
     {
+        if (string.IsNullOrWhiteSpace(hash) || string.IsNullOrWhiteSpace(saltString))
+            return false;
+
         var salt = Convert.FromBase64String(saltString);
         using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000, HashAlgorithmName.SHA256);
-        var computedHash = Convert.ToBase64String(pbkdf2.GetBytes(32));
-        return hash == computedHash;
+        var computedHash = pbkdf2.GetBytes(32);
+        var storedHash = Convert.FromBase64String(hash);
+
+        return storedHash.Length == computedHash.Length &&
+               CryptographicOperations.FixedTimeEquals(storedHash, computedHash);
     }
 
     private async Task GenerateAndSendOtp(HoSoNguoiDung user, string subject)
     {
-        var otp = new Random().Next(100000, 999999).ToString();
+        var otp = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
         user.OtpCode = otp;
         user.OtpExpiryTime = DateTime.UtcNow.AddMinutes(15);
+        var safeHoTen = WebUtility.HtmlEncode(user.HoTen);
 
         string htmlTemplate = $@"
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;'>
             <h2 style='color: #1a6b9a; text-align: center;'>BiliTool.Vn</h2>
-            <p style='font-size: 16px; color: #374151;'>Xin chào {user.HoTen},</p>
+            <p style='font-size: 16px; color: #374151;'>Xin chào {safeHoTen},</p>
             <p style='font-size: 16px; color: #374151;'>Đây là mã OTP của bạn để hoàn tất quá trình xác minh:</p>
             <div style='text-align: center; margin: 30px 0;'>
                 <span style='font-size: 32px; font-weight: bold; color: #1a6b9a; letter-spacing: 5px; padding: 10px 20px; background-color: #f0fdfa; border-radius: 8px; border: 2px dashed #1a6b9a;'>{otp}</span>

@@ -132,6 +132,12 @@
 
     <script src="_framework/blazor.server.js" autostart="false"></script>
     <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').catch(() => { });
+            });
+        }
+
         Blazor.start({
             reconnectionOptions: {
                 maxRetries: 30, // Thử lại rất nhiều lần trước khi bỏ cuộc (khoảng 1 phút)

@@ -8,9 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.28" />
     <PackageReference Include="Blazored.Toast" Version="4.2.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.14">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.28">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

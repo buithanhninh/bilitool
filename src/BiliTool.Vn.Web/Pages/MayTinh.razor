@@ -359,7 +359,7 @@ else
     <div class="panel-ket-qua">
         @if (ketQua != null)
         {
-            <KetQuaPanel KetQua="ketQua" OnSaoChep="SaoChepBaoCao" OnIn="InBaoCao" OnTaoHoSo="MoModalTaoHoSo" />
+            <KetQuaPanel KetQua="ketQua" DonVi="@donViDoStr" OnSaoChep="SaoChepBaoCao" OnIn="InBaoCao" OnTaoHoSo="MoModalTaoHoSo" />
         }
         else
         {
@@ -485,11 +485,7 @@ else
             hasQuery = true;
         }
 
-        // Auto tính toán nếu có cờ
-        if (hasQuery && QueryAutoCalc == true)
-        {
-            TinhToan();
-        }
+        _ = hasQuery;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -505,7 +501,7 @@ else
     private bool dangTinhToan;
     private bool dungNgayGio = true;
     private decimal? etcoc;
-    private string donViDoStr = "MgDl";
+    private string donViDoStr = "UmolL";
 
     // ── Input Properties ─────────────────────────────────────
 
@@ -604,8 +600,8 @@ else
 
     private string GetConversionText() =>
         donViDoStr == "MgDl"
-            ? $"≈ {Math.Round(model.TongBilirubin * 17.1m, 0)} μmol/L"
-            : $"≈ {Math.Round(model.TongBilirubin / 17.1m, 1)} mg/dL";
+            ? $"≈ {Math.Round(model.TongBilirubin * 17.104m, 0)} μmol/L"
+            : $"≈ {Math.Round(model.TongBilirubin / 17.104m, 1)} mg/dL";
 
     // ── Event Handlers ────────────────────────────────────────
 
@@ -631,7 +627,7 @@ else
         NgayLayMauStr = "";
         GioSinhStr = "08:00";
         GioLayMauStr = "16:00";
-        donViDoStr = "MgDl";
+        donViDoStr = "UmolL";
         dungNgayGio = true;
     }
 
@@ -763,7 +759,7 @@ else
             var xnDto = new ThemXetNghiemDto
             {
                 BenhNhanId = bn.Id,
-                BilirubinMgDl = donViDoStr == "UmolL" ? Math.Round(model.TongBilirubin / 17.1m, 2) : model.TongBilirubin,
+                BilirubinMgDl = donViDoStr == "UmolL" ? Math.Round(model.TongBilirubin / 17.104m, 2) : model.TongBilirubin,
                 ThoiGianLayMauTuyChon = thoiGianLayMauThucTe
             };
             await Mediator.Send(new ThemXetNghiemCommand(userId, xnDto));

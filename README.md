@@ -162,3 +162,12 @@ Phần mềm tuân thủ nghiêm ngặt:
 | Logging | Serilog |
 | Tests | xUnit + FluentAssertions |
 | Deploy | Docker Compose + Nginx |
+
+---
+
+## Tài Liệu Vận Hành & Nâng Cấp
+
+- Clinical safety & release governance: `docs/operations/clinical-safety-and-release.md`
+- Deployment & health checks: `docs/operations/deployment-and-health.md`
+- Security hardening notes: `docs/operations/security-hardening.md`
+- API v2 integration: `docs/integration/api-v2.md`

@@ -1,4 +1,6 @@
 using BiliTool.Vn.Application.DTOs;
+using BiliTool.Vn.Application.Services;
+using BiliTool.Vn.Domain.Clinical.Bilirubin;
 using BiliTool.Vn.Domain.Enums;
 using BiliTool.Vn.Domain.Services;
 using BiliTool.Vn.Domain.ValueObjects;
@@ -20,11 +22,20 @@ public class TinhToanBilirubinHandler
     : IRequestHandler<TinhToanBilirubinCommand, KetQuaTinhToanDto>
 {
     private readonly IMayTinhBilirubin _mayTinh;
+    private readonly IBilirubinClinicalFacade _clinicalFacade;
+    private readonly IClinicalAuditService? _clinicalAuditService;
 
-    public TinhToanBilirubinHandler(IMayTinhBilirubin mayTinh)
-        => _mayTinh = mayTinh;
+    public TinhToanBilirubinHandler(
+        IMayTinhBilirubin mayTinh,
+        IBilirubinClinicalFacade clinicalFacade,
+        IClinicalAuditService? clinicalAuditService = null)
+    {
+        _mayTinh = mayTinh;
+        _clinicalFacade = clinicalFacade;
+        _clinicalAuditService = clinicalAuditService;
+    }
 
-    public Task<KetQuaTinhToanDto> Handle(
+    public async Task<KetQuaTinhToanDto> Handle(
         TinhToanBilirubinCommand request,
         CancellationToken cancellationToken)
     {
@@ -54,8 +65,9 @@ public class TinhToanBilirubinHandler
         };
 
         // Tính toán kết hợp AAP 2022 + NICE CG98
-        var ketQua = _mayTinh.TinhToan(tuoiGio, bilirubinMgDl, yc.TuoiThaiTuan,
+        var clinicalResult = _clinicalFacade.TinhToan(tuoiGio, bilirubinMgDl, yc.TuoiThaiTuan,
             yeuToNguyCo, yc.TrangThaiChieuDen);
+        var ketQua = clinicalResult.KetQua;
 
         // Map sang DTO
         var dto = new KetQuaTinhToanDto
@@ -135,7 +147,12 @@ public class TinhToanBilirubinHandler
         }
         dto.ChartData = chartData;
 
-        return Task.FromResult(dto);
+        if (_clinicalAuditService != null)
+        {
+            await _clinicalAuditService.TryRecordCalculationAsync(yc, dto, clinicalResult.Trace, cancellationToken);
+        }
+
+        return dto;
     }
 
     private static double TinhTuoiGio(YeuCauTinhToanBilirubinDto yc)

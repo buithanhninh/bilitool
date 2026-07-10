@@ -25,7 +25,9 @@ window.bilitool = {
     },
 
     // Khởi tạo biểu đồ xu hướng bilirubin
-    initXuHuongChart: function (canvasId, labels, values, nguongChieuDen, nguongThayCuuMau) {
+    initXuHuongChart: function (canvasId, labels, values, nguongChieuDen, nguongThayCuuMau, unitSuffix) {
+        const unit = unitSuffix || 'mg/dL';
+        const decimals = unit === 'μmol/L' ? 0 : 1;
         const ctx = document.getElementById(canvasId);
         if (!ctx) return;
 
@@ -40,7 +42,7 @@ window.bilitool = {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Bilirubin (mg/dL)',
+                        label: `Bilirubin (${unit})`,
                         data: values,
                         borderColor: '#1a6b9a',
                         backgroundColor: 'rgba(26,107,154,0.1)',
@@ -87,7 +89,7 @@ window.bilitool = {
                         titleFont: { family: 'Be Vietnam Pro', weight: 'bold' },
                         bodyFont: { family: 'Be Vietnam Pro' },
                         callbacks: {
-                            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} mg/dL`
+                            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(decimals)} ${unit}`
                         }
                     }
                 },
@@ -103,7 +105,7 @@ window.bilitool = {
                     y: {
                         title: {
                             display: true,
-                            text: 'Bilirubin (mg/dL)',
+                            text: `Bilirubin (${unit})`,
                             font: { family: 'Be Vietnam Pro', weight: 'bold' }
                         },
                         grid: { color: 'rgba(0,0,0,0.05)' },

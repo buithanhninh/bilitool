@@ -30,8 +30,16 @@
             <div class="thong-so-item">
                 <span class="ts-label">Bilirubin</span>
                 <span class="ts-value">
-                    @KetQua.BilirubinMgDl.ToString("F1") mg/dL
-                    <small>(@KetQua.BilirubinUmolL μmol/L)</small>
+                    @if (DonVi == "UmolL")
+                    {
+                        @KetQua.BilirubinUmolL.ToString("F0")<span> μmol/L</span>
+                        <small>(@KetQua.BilirubinMgDl.ToString("F1") mg/dL)</small>
+                    }
+                    else
+                    {
+                        @KetQua.BilirubinMgDl.ToString("F1")<span> mg/dL</span>
+                        <small>(@KetQua.BilirubinUmolL.ToString("F0") μmol/L)</small>
+                    }
                 </span>
             </div>
             <div class="thong-so-item">
@@ -43,7 +51,7 @@
         </div>
 
         <!-- Thanh ngưỡng (được thay thế bằng Biểu đồ Nomogram) -->
-        <BiliNomogramChart KetQua="@KetQua" />
+        <BiliNomogramChart KetQua="@KetQua" DonVi="@DonVi" />
 
         <!-- Khoảng cách -->
         <div class="khoang-cach-grid">
@@ -213,6 +221,7 @@
 
 @code {
     [Parameter] public KetQuaTinhToanDto KetQua { get; set; } = default!;
+    [Parameter] public string DonVi { get; set; } = "UmolL";
     [Parameter] public EventCallback<string> OnSaoChep { get; set; }
     [Parameter] public EventCallback OnIn { get; set; }
     [Parameter] public EventCallback OnTaoHoSo { get; set; }
@@ -260,20 +269,49 @@
         d < 2 ? "text-warning fw-bold" :
         "text-success";
 
-    private string FormatKhoangCach(decimal d) =>
-        d < 0
-            ? $"{T["Exceeded"]} {Math.Abs(d):F1} mg/dL"
-            : $"{T["Remaining"]} {d:F1} mg/dL";
+    private string FormatKhoangCach(decimal d)
+    {
+        if (DonVi == "UmolL")
+        {
+            decimal u = d * 17.104m;
+            return u < 0
+                ? $"{T["Exceeded"]} {Math.Abs(Math.Round(u, 0)):F0} μmol/L"
+                : $"{T["Remaining"]} {Math.Round(u, 0):F0} μmol/L";
+        }
+        else
+        {
+            return d < 0
+                ? $"{T["Exceeded"]} {Math.Abs(d):F1} mg/dL"
+                : $"{T["Remaining"]} {d:F1} mg/dL";
+        }
+    }
 
     private string GetKhuyenNghiChinh()
     {
         var e = KetQua.MucDoNguyHiemEnum.ToString();
-        var baseStr = string.Format(T[$"Rec_{e}"], KetQua.BilirubinMgDl, KetQua.NguongChieuDen);
-        if (e == "CanTheoDoiSat")
+        var template = T[$"Rec_{e}"].ToString();
+        
+        if (DonVi == "UmolL")
         {
-            baseStr += " " + (KetQua.CoNguyCoThanKinh ? T["Rec_CanTheoDoiSat_Risk"] : T["Rec_CanTheoDoiSat_NoRisk"]);
+            template = template.Replace("mg/dL", "μmol/L").Replace("mg/dl", "μmol/l");
+            decimal val0 = Math.Round(KetQua.BilirubinUmolL, 0);
+            decimal val1 = Math.Round(KetQua.NguongChieuDen * 17.104m, 0);
+            var baseStr = string.Format(template, val0, val1);
+            if (e == "CanTheoDoiSat")
+            {
+                baseStr += " " + (KetQua.CoNguyCoThanKinh ? T["Rec_CanTheoDoiSat_Risk"] : T["Rec_CanTheoDoiSat_NoRisk"]);
+            }
+            return baseStr;
         }
-        return baseStr;
+        else
+        {
+            var baseStr = string.Format(template, KetQua.BilirubinMgDl, KetQua.NguongChieuDen);
+            if (e == "CanTheoDoiSat")
+            {
+                baseStr += " " + (KetQua.CoNguyCoThanKinh ? T["Rec_CanTheoDoiSat_Risk"] : T["Rec_CanTheoDoiSat_NoRisk"]);
+            }
+            return baseStr;
+        }
     }
 
     private string GetTheoDoiTiepTheo()
@@ -288,12 +326,30 @@
         sb.AppendLine($"{T["SampleTime"]}: {KetQua.ThoiGianTinhToan:dd/MM/yyyy HH:mm}");
         sb.AppendLine($"{T["GestationalAge"]}: {KetQua.TuoiThaiTuan} {T["WeeksTerm"].Split(' ')[0]}");
         sb.AppendLine($"{T["AgeSampleHours"]}: {KetQua.TuoiGio:F1} {T["Hours"]}");
-        sb.AppendLine($"{T["TotalBilirubin"]}: {KetQua.BilirubinMgDl:F1} mg/dL ({KetQua.BilirubinUmolL:F0} μmol/L)");
+        if (DonVi == "UmolL")
+        {
+            sb.AppendLine($"{T["TotalBilirubin"]}: {KetQua.BilirubinUmolL:F0} μmol/L ({KetQua.BilirubinMgDl:F1} mg/dL)");
+        }
+        else
+        {
+            sb.AppendLine($"{T["TotalBilirubin"]}: {KetQua.BilirubinMgDl:F1} mg/dL ({KetQua.BilirubinUmolL:F0} μmol/L)");
+        }
         sb.AppendLine($"{T["CalcBili_Risk"]}: {(KetQua.CoNguyCoThanKinh ? T["Yes"] : T["No"])}");
+        
         sb.AppendLine("--- AAP 2022 ---");
-        sb.AppendLine($"{T["CalcBili_ThresholdChieuDen"]}: {KetQua.NguongChieuDen:F1} mg/dL");
-        sb.AppendLine($"{T["CalcBili_ThresholdChieuDenTichCuc"]}: {KetQua.NguongChieuDenTichCuc:F1} mg/dL");
-        sb.AppendLine($"{T["CalcBili_ThresholdThayMau"]}: {KetQua.NguongThayCuuMau:F1} mg/dL");
+        if (DonVi == "UmolL")
+        {
+            sb.AppendLine($"{T["CalcBili_ThresholdChieuDen"]}: {Math.Round(KetQua.NguongChieuDen * 17.104m, 0):F0} μmol/L");
+            sb.AppendLine($"{T["CalcBili_ThresholdChieuDenTichCuc"]}: {Math.Round(KetQua.NguongChieuDenTichCuc * 17.104m, 0):F0} μmol/L");
+            sb.AppendLine($"{T["CalcBili_ThresholdThayMau"]}: {Math.Round(KetQua.NguongThayCuuMau * 17.104m, 0):F0} μmol/L");
+        }
+        else
+        {
+            sb.AppendLine($"{T["CalcBili_ThresholdChieuDen"]}: {KetQua.NguongChieuDen:F1} mg/dL");
+            sb.AppendLine($"{T["CalcBili_ThresholdChieuDenTichCuc"]}: {KetQua.NguongChieuDenTichCuc:F1} mg/dL");
+            sb.AppendLine($"{T["CalcBili_ThresholdThayMau"]}: {KetQua.NguongThayCuuMau:F1} mg/dL");
+        }
+        
         sb.AppendLine("--- NICE CG98 ---");
         sb.AppendLine($"{T["Phototherapy"]} NICE: {KetQua.NguongChieuDen_NICE_UmolL} µmol/L (≈{KetQua.NguongChieuDen_NICE_MgDl} mg/dL)");
         sb.AppendLine($"{T["ExchangeTransfusion"]} NICE: {KetQua.NguongThayCuuMau_NICE_UmolL} µmol/L (≈{KetQua.NguongThayCuuMau_NICE_MgDl} mg/dL)");

@@ -15,6 +15,7 @@ public class BiliToolDbContext : DbContext
     public DbSet<HoSoNguoiDung> HoSoNguoiDung => Set<HoSoNguoiDung>();
     public DbSet<HoSoBenhNhan> HoSoBenhNhan => Set<HoSoBenhNhan>();
     public DbSet<XetNghiemBilirubin> XetNghiemBilirubin => Set<XetNghiemBilirubin>();
+    public DbSet<ClinicalAuditLog> ClinicalAuditLogs => Set<ClinicalAuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -146,6 +147,25 @@ public class BiliToolDbContext : DbContext
             e.Property(x => x.NguongChieuDen).HasColumnName("nguong_chieu_den").HasPrecision(5, 2);
             e.Property(x => x.NguongThayCuuMau).HasColumnName("nguong_thay_cuu_mau").HasPrecision(5, 2);
             e.Property(x => x.NgayTao).HasColumnName("ngay_tao").IsRequired();
+        });
+
+        // ── ClinicalAuditLog ───────────────────────────────────────────
+        modelBuilder.Entity<ClinicalAuditLog>(e =>
+        {
+            e.ToTable("clinical_audit_logs");
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Id).HasColumnName("id");
+            e.Property(a => a.CalculatedAt).HasColumnName("calculated_at").IsRequired();
+            e.Property(a => a.GuidelineCode).HasColumnName("guideline_code").HasMaxLength(100).IsRequired();
+            e.Property(a => a.EngineMode).HasColumnName("engine_mode").HasMaxLength(100).IsRequired();
+            e.Property(a => a.UserId).HasColumnName("user_id").HasMaxLength(256);
+            e.Property(a => a.ApiClientId).HasColumnName("api_client_id").HasMaxLength(256);
+            e.Property(a => a.CorrelationId).HasColumnName("correlation_id").HasMaxLength(128);
+            e.Property(a => a.RequestJson).HasColumnName("request_json").HasColumnType("jsonb").IsRequired();
+            e.Property(a => a.ResponseJson).HasColumnName("response_json").HasColumnType("jsonb").IsRequired();
+            e.Property(a => a.TraceJson).HasColumnName("trace_json").HasColumnType("jsonb").IsRequired();
+            e.HasIndex(a => a.CalculatedAt).HasDatabaseName("ix_clinical_audit_logs_calculated_at");
+            e.HasIndex(a => a.GuidelineCode).HasDatabaseName("ix_clinical_audit_logs_guideline_code");
         });
     }
 }

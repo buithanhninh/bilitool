@@ -1,3 +1,4 @@
+using BiliTool.Vn.Domain.Clinical.Bilirubin;
 using BiliTool.Vn.Domain.Services;
 using BiliTool.Vn.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,10 +24,12 @@ public static class InfrastructureServiceRegistration
 
         // ── Domain Services ───────────────────────────────────
         services.AddScoped<IMayTinhBilirubin, MayTinhBilirubin>();
+        services.AddScoped<IBilirubinClinicalFacade, BilirubinClinicalFacade>();
         
         // ── Infrastructure Services ───────────────────────────
         services.AddTransient<BiliTool.Vn.Application.Services.IEmailService, BiliTool.Vn.Infrastructure.Services.SmtpEmailService>();
         services.AddScoped<BiliTool.Vn.Application.Services.IAuthService, BiliTool.Vn.Infrastructure.Services.AuthService>();
+        services.AddScoped<BiliTool.Vn.Application.Services.IClinicalAuditService, BiliTool.Vn.Infrastructure.Services.ClinicalAuditService>();
 
         // ── CQRS Handlers trong Infrastructure ────────────────
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(InfrastructureServiceRegistration).Assembly));

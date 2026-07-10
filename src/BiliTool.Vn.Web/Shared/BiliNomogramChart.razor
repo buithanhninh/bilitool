@@ -6,7 +6,14 @@
             BiliGraph Thresholds
         </div>
         <div class="nomogram-subtitle">
-            @KetQua.BilirubinMgDl.ToString("F1") mg/dL @@ @KetQua.TuoiGio giờ | Tuổi thai: @KetQua.TuoiThaiTuan tuần | Nguy cơ TK: @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")
+            @if (DonVi == "UmolL")
+            {
+                @KetQua.BilirubinUmolL.ToString("F0")<span> μmol/L @@ @KetQua.TuoiGio giờ | Tuổi thai: @KetQua.TuoiThaiTuan tuần | Nguy cơ TK: @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")</span>
+            }
+            else
+            {
+                @KetQua.BilirubinMgDl.ToString("F1")<span> mg/dL @@ @KetQua.TuoiGio giờ | Tuổi thai: @KetQua.TuoiThaiTuan tuần | Nguy cơ TK: @(KetQua.CoNguyCoThanKinh ? "Có" : "Không")</span>
+            }
         </div>
         <div class="nomogram-legend">
             <span class="legend-item"><span class="legend-color pt-color"></span> Chiếu đèn</span>
@@ -19,10 +26,21 @@
     <div class="bili-nomogram-svg-wrapper">
         <svg viewBox="0 0 @width @height" preserveAspectRatio="xMidYMid meet" class="bili-nomogram-svg">
             <!-- Grid lines -->
-            @for (int i = 0; i <= MaxY; i += 6)
+            @if (DonVi == "UmolL")
             {
-                <line x1="@PaddingLeft" y1="@(GetY(i).ToString(CultureInfo.InvariantCulture))" x2="@(width - PaddingRight)" y2="@(GetY(i).ToString(CultureInfo.InvariantCulture))" class="grid-line" />
-                @((MarkupString)FormattableString.Invariant($"<text x='{PaddingLeft - 10}' y='{GetY(i) + 4}' class='axis-label y-axis'>{i}</text>"))
+                @for (int i = 0; i <= 500; i += 100)
+                {
+                    <line x1="@PaddingLeft" y1="@(GetY(i).ToString(CultureInfo.InvariantCulture))" x2="@(width - PaddingRight)" y2="@(GetY(i).ToString(CultureInfo.InvariantCulture))" class="grid-line" />
+                    @((MarkupString)FormattableString.Invariant($"<text x='{PaddingLeft - 10}' y='{GetY(i) + 4}' class='axis-label y-axis'>{i}</text>"))
+                }
+            }
+            else
+            {
+                @for (int i = 0; i <= 30; i += 6)
+                {
+                    <line x1="@PaddingLeft" y1="@(GetY(i).ToString(CultureInfo.InvariantCulture))" x2="@(width - PaddingRight)" y2="@(GetY(i).ToString(CultureInfo.InvariantCulture))" class="grid-line" />
+                    @((MarkupString)FormattableString.Invariant($"<text x='{PaddingLeft - 10}' y='{GetY(i) + 4}' class='axis-label y-axis'>{i}</text>"))
+                }
             }
             
             @{ int xStep = MaxX > 168 ? 48 : 24; }
@@ -33,7 +51,7 @@
             }
 
             <!-- Axis labels -->
-            @((MarkupString)FormattableString.Invariant($"<text x='15' y='{height / 2}' transform='rotate(-90 15 {height / 2})' class='axis-title'>Bilirubin (mg/dL)</text>"))
+            @((MarkupString)FormattableString.Invariant($"<text x='15' y='{height / 2}' transform='rotate(-90 15 {height / 2})' class='axis-title'>Bilirubin ({(DonVi == "UmolL" ? "μmol/L" : "mg/dL")})</text>"))
             @((MarkupString)FormattableString.Invariant($"<text x='{width / 2}' y='{height - 5}' class='axis-title'>Tuổi (giờ)</text>"))
 
             @if (KetQua.ChartData != null && KetQua.ChartData.Any())
@@ -45,7 +63,7 @@
             }
 
             <!-- Current Patient Point -->
-            <polygon points="@GetDiamondPoints(KetQua.TuoiGio, (double)KetQua.BilirubinMgDl)" class="patient-point" />
+            <polygon points="@GetDiamondPoints(KetQua.TuoiGio, DonVi == "UmolL" ? (double)KetQua.BilirubinUmolL : (double)KetQua.BilirubinMgDl)" class="patient-point" />
         </svg>
     </div>
 </div>
@@ -147,7 +165,8 @@
 </style>
 
 @code {
-    [Parameter] public KetQuaTinhToanDto KetQua { get; set; }
+    [Parameter] public KetQuaTinhToanDto KetQua { get; set; } = default!;
+    [Parameter] public string DonVi { get; set; } = "UmolL";
 
     private int width = 800;
     private int height = 400;
@@ -157,7 +176,7 @@
     private int PaddingBottom = 40;
 
     private int MaxX => KetQua.ChartData?.Any() == true ? (int)KetQua.ChartData.Max(d => d.Hour) : 336;
-    private int MaxY = 30; // 30 mg/dL is standard max
+    private int MaxY => DonVi == "UmolL" ? 513 : 30;
 
     private double GetX(double hour)
     {
@@ -173,7 +192,14 @@
     private string GetPoints(Func<ChartDataPoint, decimal> selector)
     {
         if (KetQua.ChartData == null) return "";
-        var pts = KetQua.ChartData.Select(d => FormattableString.Invariant($"{GetX(d.Hour)},{GetY((double)selector(d))}")).ToList();
+        var pts = KetQua.ChartData.Select(d => {
+            double val = (double)selector(d);
+            if (DonVi == "UmolL")
+            {
+                val = val * 17.104;
+            }
+            return FormattableString.Invariant($"{GetX(d.Hour)},{GetY(val)}");
+        }).ToList();
         return string.Join(" ", pts);
     }
 

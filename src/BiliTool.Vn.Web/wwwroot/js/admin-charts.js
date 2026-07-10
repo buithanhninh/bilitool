@@ -213,3 +213,79 @@ window.adminCharts = {
         });
     }
 };
+
+// Global function used in BenhNhanDetail.razor
+window.drawMultyLineChartNomogram = function (chartId, listThoiGian, arrayNguongChieuDen, arrayNguongThayMau, listKetQuaBilirubin, unitSuffix) {
+    var unit = unitSuffix || 'mg/dL';
+    var decimals = unit === 'μmol/L' ? 0 : 1;
+    var ctx = document.getElementById(chartId);
+    if (!ctx) return;
+    var existingChart = Chart.getChart(ctx);
+    if (existingChart) existingChart.destroy();
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: listThoiGian.map(x => x + 'h'),
+            datasets: [
+                {
+                    label: `Bilirubin Thực tế (${unit})`,
+                    data: listKetQuaBilirubin,
+                    borderColor: '#4338ca',
+                    backgroundColor: 'rgba(67, 56, 202, 0.1)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#4338ca',
+                    pointRadius: 5,
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: 'Ngưỡng chiếu đèn',
+                    data: arrayNguongChieuDen,
+                    borderColor: '#f59e0b',
+                    borderDash: [6, 3],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false
+                },
+                {
+                    label: 'Ngưỡng thay máu',
+                    data: arrayNguongThayMau,
+                    borderColor: '#ef4444',
+                    borderDash: [6, 3],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { usePointStyle: true, boxWidth: 8 }
+                },
+                tooltip: {
+                    backgroundColor: '#0f172a',
+                    padding: 12,
+                    callbacks: {
+                        label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(decimals)} ${unit}`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Tuổi (giờ)', font: { family: 'Be Vietnam Pro', weight: 'bold' } },
+                    grid: { display: false }
+                },
+                y: {
+                    title: { display: true, text: `Bilirubin (${unit})`, font: { family: 'Be Vietnam Pro', weight: 'bold' } },
+                    grid: { color: '#e2e8f0', borderDash: [4, 4] },
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+};

@@ -14,10 +14,12 @@ namespace BiliTool.Vn.Web.Controllers;
 public class BilirubinApiController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ILogger<BilirubinApiController> _logger;
 
-    public BilirubinApiController(IMediator mediator)
+    public BilirubinApiController(IMediator mediator, ILogger<BilirubinApiController> logger)
     {
         _mediator = mediator;
+        _logger = logger;
     }
 
     [HttpPost("calculate")]
@@ -45,11 +47,15 @@ public class BilirubinApiController : ControllerBase
         }
         catch (Exception ex)
         {
+            var traceId = HttpContext.TraceIdentifier;
+            _logger.LogError(ex, "Lỗi hệ thống khi tính bilirubin qua API HIS. TraceId: {TraceId}", traceId);
+
             return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Title = "Lỗi hệ thống (System Error)",
                 Status = StatusCodes.Status500InternalServerError,
-                Detail = ex.Message
+                Detail = "Không thể xử lý yêu cầu tại thời điểm này. Vui lòng thử lại hoặc liên hệ quản trị hệ thống.",
+                Extensions = { { "traceId", traceId } }
             });
         }
     }

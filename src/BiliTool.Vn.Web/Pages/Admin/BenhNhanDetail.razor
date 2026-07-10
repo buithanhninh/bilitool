@@ -28,16 +28,24 @@ else
                     Hồ sơ: @MaskName(hs.HoTenBenhNhan)
                 </h2>
             </div>
-            <div class="text-end">
-                <div class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-clock"></i> Cập nhật mới nhất</div>
-                @if (hs.DsXetNghiem.Any())
-                {
-                    <div style="font-weight: 600; color: var(--admin-primary);">@hs.DsXetNghiem.First().ThoiGianLayMau.ToString("dd/MM/yyyy HH:mm")</div>
-                }
-                else
-                {
-                    <div style="font-weight: 600;">Chưa có xét nghiệm</div>
-                }
+            <div class="text-end d-flex align-items-center gap-3">
+                <div>
+                    <select class="form-select form-select-sm" style="width: 120px;" @bind="donViDoStr">
+                        <option value="MgDl">mg/dL (Mỹ)</option>
+                        <option value="UmolL">μmol/L (Quốc tế)</option>
+                    </select>
+                </div>
+                <div class="text-end">
+                    <div class="text-muted" style="font-size: 0.85rem;"><i class="fas fa-clock"></i> Cập nhật mới nhất</div>
+                    @if (hs.DsXetNghiem.Any())
+                    {
+                        <div style="font-weight: 600; color: var(--admin-primary);">@hs.DsXetNghiem.First().ThoiGianLayMau.ToString("dd/MM/yyyy HH:mm")</div>
+                    }
+                    else
+                    {
+                        <div style="font-weight: 600;">Chưa có xét nghiệm</div>
+                    }
+                </div>
             </div>
         </div>
 
@@ -96,7 +104,14 @@ else
                         var latest = hs.DsXetNghiem.First();
                         <div class="p-3 rounded mt-auto" style="background: var(--admin-primary-light); border: 1px dashed var(--admin-primary);">
                             <div style="font-size: 0.85rem; color: var(--admin-primary); font-weight: 600;">CHỈ SỐ CAO NHẤT (Đỉnh điểm)</div>
-                            <h3 class="mb-0 text-primary fw-bold">@maxBilirubin <small style="font-size:1rem; font-weight:normal;">mg/dL</small></h3>
+                            @if (donViDoStr == "UmolL")
+                            {
+                                <h3 class="mb-0 text-primary fw-bold">@((Math.Round(maxBilirubin * 17.104m, 0)).ToString("F0")) <small style="font-size:1rem; font-weight:normal;">μmol/L</small></h3>
+                            }
+                            else
+                            {
+                                <h3 class="mb-0 text-primary fw-bold">@maxBilirubin <small style="font-size:1rem; font-weight:normal;">mg/dL</small></h3>
+                            }
                             <div class="mt-2 text-danger" style="font-size: 0.8rem;"><i class="fas fa-exclamation-circle"></i> Chỉ định gần nhất: <strong>@latest.MucDoNguyHiem</strong></div>
                         </div>
                     }
@@ -145,7 +160,7 @@ else
                                 <th>#</th>
                                 <th>Thời gian lấy mẫu (UTC)</th>
                                 <th>Giờ tuổi tự động</th>
-                                <th>Bilirubin (mg/dL)</th>
+                                <th>Bilirubin (@(donViDoStr == "UmolL" ? "μmol/L" : "mg/dL"))</th>
                                 <th>Chỉ định (Hệ thống AAP/NICE)</th>
                                 <th>Ngưỡng C.Đèn / T.Máu</th>
                             </tr>
@@ -166,13 +181,22 @@ else
                                         <td>@i</td>
                                         <td>@x.ThoiGianLayMau.ToString("dd/MM/yyyy HH:mm")</td>
                                         <td><strong>@x.TuoiGioTuDong.ToString("0.0")</strong> h</td>
-                                        <td><span class="text-primary fw-bold" style="font-size: 1.1rem;">@x.BilirubinMgDl.ToString("0.0")</span></td>
                                         <td>
-                                            @if (x.MucDoNguyHiem.Contains("Chiếu đèn") || x.MucDoNguyHiem.Contains("chiếu đèn"))
+                                            @if (donViDoStr == "UmolL")
+                                            {
+                                                <span class="text-primary fw-bold" style="font-size: 1.1rem;">@((Math.Round(x.BilirubinMgDl * 17.104m, 0)).ToString("F0"))</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-primary fw-bold" style="font-size: 1.1rem;">@x.BilirubinMgDl.ToString("0.0")</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (x.MucDoNguyHiem?.Contains("Chiếu đèn") == true || x.MucDoNguyHiem?.Contains("chiếu đèn") == true)
                                             {
                                                 <span class="admin-badge badge-warning">@x.MucDoNguyHiem</span>
                                             }
-                                            else if (x.MucDoNguyHiem.Contains("Thay máu") || x.MucDoNguyHiem.Contains("thay máu"))
+                                            else if (x.MucDoNguyHiem?.Contains("Thay máu") == true || x.MucDoNguyHiem?.Contains("thay máu") == true)
                                             {
                                                 <span class="admin-badge badge-danger">@x.MucDoNguyHiem</span>
                                             }
@@ -182,7 +206,14 @@ else
                                             }
                                         </td>
                                         <td>
-                                            @(x.NguongChieuDen?.ToString("0") ?? "-") / @(x.NguongThayCuuMau?.ToString("0") ?? "-")
+                                            @if (donViDoStr == "UmolL")
+                                            {
+                                                @((x.NguongChieuDen.HasValue ? Math.Round(x.NguongChieuDen.Value * 17.104m, 0).ToString("0") : "-"))<span> / </span>@((x.NguongThayCuuMau.HasValue ? Math.Round(x.NguongThayCuuMau.Value * 17.104m, 0).ToString("0") : "-"))
+                                            }
+                                            else
+                                            {
+                                                @(x.NguongChieuDen?.ToString("0") ?? "-")<span> / </span>@(x.NguongThayCuuMau?.ToString("0") ?? "-")
+                                            }
                                         </td>
                                     </tr>
                                     i--;
@@ -201,6 +232,29 @@ else
     public Guid BenhNhanId { get; set; }
 
     private HoSoBenhNhanDto? hs;
+
+    private string _donViDoStr = "UmolL";
+    private string donViDoStr
+    {
+        get => _donViDoStr;
+        set
+        {
+            if (_donViDoStr != value)
+            {
+                _donViDoStr = value;
+                _ = OnUnitChanged();
+            }
+        }
+    }
+
+    private async Task OnUnitChanged()
+    {
+        if (hs != null && hs.DsXetNghiem.Any())
+        {
+            await VeBieuDoNomogram();
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -265,17 +319,29 @@ else
 
         foreach (var x in sorted)
         {
+            double cdVal = (double)(x.NguongChieuDen ?? 0);
+            double tmVal = (double)(x.NguongThayCuuMau ?? 0);
+            double biliVal = (double)x.BilirubinMgDl;
+            
+            if (donViDoStr == "UmolL")
+            {
+                cdVal = Math.Round(cdVal * 17.104, 0);
+                tmVal = Math.Round(tmVal * 17.104, 0);
+                biliVal = Math.Round(biliVal * 17.104, 0);
+            }
+            
             listThoiGian.Add(Math.Round(x.TuoiGioTuDong, 1));
-            arrayNguongChieuDen.Add((double)(x.NguongChieuDen ?? 0));
-            arrayNguongThayMau.Add((double)(x.NguongThayCuuMau ?? 0));
-            listKetQuaBilirubin.Add((double)x.BilirubinMgDl);
+            arrayNguongChieuDen.Add(cdVal);
+            arrayNguongThayMau.Add(tmVal);
+            listKetQuaBilirubin.Add(biliVal);
         }
 
         string chartId = "ketQuaBieuDoNomogramAdmin";
+        string unitSuffix = donViDoStr == "UmolL" ? "μmol/L" : "mg/dL";
 
         if (listThoiGian.Count > 0)
         {
-            await JS.InvokeVoidAsync("drawMultyLineChartNomogram", chartId, listThoiGian, arrayNguongChieuDen, arrayNguongThayMau, listKetQuaBilirubin);
+            await JS.InvokeVoidAsync("drawMultyLineChartNomogram", chartId, listThoiGian, arrayNguongChieuDen, arrayNguongThayMau, listKetQuaBilirubin, unitSuffix);
         }
     }
 }

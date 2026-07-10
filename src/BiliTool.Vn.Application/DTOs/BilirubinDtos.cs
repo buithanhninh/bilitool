@@ -24,7 +24,7 @@ public class YeuCauTinhToanBilirubinDto
     public decimal TongBilirubin { get; set; }
 
     /// <summary>Đơn vị đo (MgDl hoặc UmolL)</summary>
-    public DonViDo DonViDo { get; set; } = DonViDo.MgDl;
+    public DonViDo DonViDo { get; set; } = DonViDo.UmolL;
 
     /// <summary>Tuổi thai (tuần, phải >= 35)</summary>
     public int TuoiThaiTuan { get; set; }

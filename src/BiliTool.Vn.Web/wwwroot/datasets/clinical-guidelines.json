@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "activeEngine": "BaselineMayTinhBilirubin",
+  "mode": "shadow-metadata-only",
+  "clinicalDecisionSource": "Compiled domain engine; this file is metadata and offline disclosure only.",
+  "guidelines": [
+    {
+      "code": "AAP2022",
+      "name": "American Academy of Pediatrics 2022 Hyperbilirubinemia Guideline",
+      "version": "2022.baseline-1",
+      "effectiveFrom": "2022-09-01",
+      "decisionRole": "combined-threshold-source",
+      "validatedBy": "Clinical baseline tests",
+      "sourceNote": "Thresholds remain frozen in MayTinhBilirubin until dataset engine passes golden diff gate."
+    },
+    {
+      "code": "NICE_CG98",
+      "name": "NICE CG98 Jaundice in newborn babies under 28 days",
+      "version": "2023.baseline-1",
+      "effectiveFrom": "2023-10-01",
+      "decisionRole": "combined-threshold-source",
+      "validatedBy": "Clinical baseline tests",
+      "sourceNote": "Thresholds remain frozen in MayTinhBilirubin until dataset engine passes golden diff gate."
+    }
+  ],
+  "safetyControls": {
+    "baselineEngineFrozen": true,
+    "goldenTestsRequiredBeforeDatasetActivation": true,
+    "datasetActivationFeatureFlag": "ClinicalEngine:UseDatasetEngine",
+    "defaultUseDatasetEngine": false
+  }
+}
