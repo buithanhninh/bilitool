@@ -2190,9 +2190,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .nice-thresholds-title i { color:#3498db; margin-right:6px; }
 .nice-thresholds-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .nice-th-item { display:flex; flex-direction:column; background:white; border-radius:8px; padding:10px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
-.nice-th-label { font-size:0.8rem; color:#7f8c8d; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
+.nice-th-label { font-size:0.8rem; color:#4f5b66; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
 .nice-th-value { font-size:1.1rem; font-weight:700; color:#2c3e50; margin:2px 0; }
-.nice-th-sub { font-size:0.78rem; color:#95a5a6; }
+.nice-th-sub { font-size:0.78rem; color:#4f5b66; }
 
 .nice-repeat-box { display:flex; align-items:center; gap:10px; background:#fef9e7; border-radius:8px; padding:10px 14px; margin:10px 0; border:1px solid #f0e0a0; font-size:0.9rem; }
 .nice-repeat-box i { color:#f39c12; }
