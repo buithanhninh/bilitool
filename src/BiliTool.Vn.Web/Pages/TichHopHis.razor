@@ -2,148 +2,160 @@
 @using System.Globalization
 
 @{
-    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLowerInvariant();
+    var pageTitle = lang == "en"
+        ? "HIS / EMR Integration — BiliTool.Vn API & Deep Link"
+        : lang == "fr"
+            ? "Intégration HIS / EMR — API et lien profond BiliTool.Vn"
+            : "Tích Hợp BiliTool.Vn Vào Hệ Thống HIS / Bệnh Án Điện Tử (EMR) | API & Deep Link";
 }
 
-@if (lang == "en")
-{
-    <PageTitle>HIS / EMR Integration — BiliTool.Vn API & Deep Link</PageTitle>
+<PageTitle>@pageTitle</PageTitle>
 
-    <HeadContent>
-        <meta name="description" content="Technical reference for integrating BiliTool.Vn with hospital management systems (HIS) and electronic medical records (EMR). Supports Deep Linking (URL parameters) and RESTful API." />
-        <meta name="keywords" content="HIS integration, EMR integration, bilirubin API, deep link bilitool, hospital software, automated bilirubin calculation" />
-        <link rel="canonical" href="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="BiliTool.Vn Hospital HIS/EMR Integration" />
-        <meta property="og:description" content="API and Deep Link guidelines for integrating neonatal bilirubin calculations into hospital software." />
-        <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="BiliTool.Vn Hospital HIS/EMR Integration" />
-        <meta name="twitter:description" content="Integrate BiliTool's neonatal bilirubin calculator with your hospital EMR using APIs." />
-    </HeadContent>
+<HeadContent>
+    <meta name="description" content="Tài liệu kỹ thuật tích hợp BiliTool.Vn với HIS/EMR: Deep Link, REST API, API key, tham số đầu vào, enum, response và lỗi thường gặp." />
+    <meta name="keywords" content="BiliTool.Vn HIS EMR API, tích hợp bệnh án điện tử, deep link bilirubin, API bilirubin sơ sinh" />
+    <link rel="canonical" href="https://bilitool.vn/tich-hop-his" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Tích hợp BiliTool.Vn vào HIS / EMR" />
+    <meta property="og:description" content="Deep Link và REST API cho tích hợp tính ngưỡng bilirubin sơ sinh vào phần mềm bệnh viện." />
+    <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
+    <meta property="og:site_name" content="BiliTool.Vn" />
+    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+</HeadContent>
 
-    <div class="his-integration-wrapper">
-        <div class="his-header">
-            <i class="fas fa-hospital-alt"></i>
-            <h1>HIS / EMR System Integration</h1>
-            <p>BiliTool.Vn provides flexible integration into existing Hospital Information Systems (HIS) or Electronic Medical Records (EMR) through 2 standardized methods.</p>
+<div class="his-doc-shell">
+    <section class="his-hero-panel">
+        <div class="his-kicker"><i class="fas fa-hospital-alt"></i> HIS / EMR Integration</div>
+        <h1>Tích hợp hệ thống HIS / EMR</h1>
+        <p>BiliTool.Vn hỗ trợ 2 cách tích hợp: mở giao diện bằng Deep Link để bác sĩ kiểm tra trực tiếp, hoặc gọi REST API bảo mật bằng <code>X-API-Key</code> để HIS nhận kết quả JSON.</p>
+        <div class="his-status-grid" aria-label="Trạng thái rà soát tài liệu">
+            <div><strong>Đã đối chiếu</strong><span>Route, DTO, validator, response</span></div>
+            <div><strong>API bảo mật</strong><span><code>X-API-Key</code> + rate limit</span></div>
+            <div><strong>Phạm vi</strong><span>Trẻ ≥35 tuần, tuổi 1–336 giờ</span></div>
+        </div>
+    </section>
+
+    <section class="his-audit-card">
+        <h2><i class="fas fa-clipboard-check"></i> Kết luận rà soát nhanh</h2>
+        <ul class="his-check-list">
+            <li><i class="fas fa-check"></i><span><strong>Đúng:</strong> Deep Link hiện có route <code>/may-tinh</code> và các query <code>ngaysinh</code>, <code>giosinh</code>, <code>ngaymau</code>, <code>giomau</code>, <code>bili</code>, <code>donvi</code>, <code>tuoithai</code>, <code>autocalc</code>.</span></li>
+            <li><i class="fas fa-check"></i><span><strong>Đúng:</strong> API chính thức là <code>POST /api/v1/bilirubin/calculate</code>, nhận <code>YeuCauTinhToanBilirubinDto</code>, trả <code>KetQuaTinhToanDto</code>.</span></li>
+            <li><i class="fas fa-triangle-exclamation"></i><span><strong>Cần làm rõ:</strong> Deep Link chưa truyền được yếu tố nguy cơ thần kinh/lâm sàng; nếu HIS cần truyền đầy đủ nguy cơ, phải dùng REST API.</span></li>
+            <li><i class="fas fa-triangle-exclamation"></i><span><strong>Cần làm rõ:</strong> JSON enum hiện nên gửi dạng số: <code>donViDo: 0</code> = mg/dL, <code>donViDo: 1</code> = µmol/L; không ghi <code>"MgDl"</code> trong JSON API.</span></li>
+            <li><i class="fas fa-triangle-exclamation"></i><span><strong>Cần làm rõ:</strong> API validation đang giới hạn tuổi <code>1–336 giờ</code>; tài liệu cũ ghi phạm vi rộng hơn gây hiểu nhầm khi tích hợp.</span></li>
+        </ul>
+    </section>
+
+    <section class="his-method-card">
+        <div class="his-method-heading">
+            <span>Phương pháp 1</span>
+            <h2>Deep Link mở giao diện máy tính</h2>
+        </div>
+        <p>Phù hợp khi HIS muốn mở BiliTool.Vn trong tab/cửa sổ mới, tự điền dữ liệu cơ bản, để bác sĩ kiểm tra lại trước khi tính. Deep Link không yêu cầu API key vì không gọi endpoint JSON.</p>
+        <div class="his-endpoint"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
+
+        <div class="table-responsive">
+            <table class="his-table">
+                <thead>
+                    <tr><th>Tham số</th><th>Bắt buộc</th><th>Định dạng hợp lệ</th><th>Ghi chú</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>ngaysinh</code></td><td>Có nếu auto tính</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, hoặc <code>ddMMyyyy</code></td><td>Ngày sinh.</td></tr>
+                    <tr><td><code>giosinh</code></td><td>Khuyến nghị</td><td><code>HH:mm</code> hoặc <code>HHmm</code></td><td>Nếu bỏ trống, UI dùng giờ mặc định.</td></tr>
+                    <tr><td><code>ngaymau</code></td><td>Có nếu auto tính</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, hoặc <code>ddMMyyyy</code></td><td>Ngày lấy mẫu bilirubin.</td></tr>
+                    <tr><td><code>giomau</code></td><td>Khuyến nghị</td><td><code>HH:mm</code> hoặc <code>HHmm</code></td><td>Nếu bỏ trống, UI dùng giờ mặc định.</td></tr>
+                    <tr><td><code>bili</code></td><td>Có nếu auto tính</td><td>Số thập phân dùng dấu chấm, ví dụ <code>12.5</code></td><td>Bilirubin toàn phần.</td></tr>
+                    <tr><td><code>donvi</code></td><td>Không</td><td><code>MgDl</code> hoặc <code>UmolL</code></td><td>Mặc định giao diện là <code>UmolL</code>.</td></tr>
+                    <tr><td><code>tuoithai</code></td><td>Có nếu auto tính</td><td>Số nguyên <code>35–45</code></td><td>Tuổi thai khi sinh theo tuần.</td></tr>
+                    <tr><td><code>autocalc</code></td><td>Không</td><td><code>true</code> hoặc <code>false</code></td><td><code>true</code> tự chạy tính toán sau khi mở trang.</td></tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="integration-method">
-            <h2><span class="method-badge">Method 1</span> Deep Link (URL Parameters)</h2>
-            <p>This is the simplest method, allowing the EMR to open BiliTool.Vn in a browser tab and pre-fill the newborn's clinical details via URL parameters. The clinician can review the information and click <strong>Calculate</strong>.</p>
-            
-            <div class="api-endpoint">
-                <code>GET</code>
-                <span class="url">https://bilitool.vn/may-tinh?ngaysinh={dd/mm/yyyy}&amp;giosinh={HH:mm}...</span>
-            </div>
+        <div class="his-note warning"><i class="fas fa-circle-info"></i><span>Deep Link hiện chưa hỗ trợ truyền yếu tố nguy cơ, ETCOc hoặc trạng thái chiếu đèn. Dữ liệu này cần bác sĩ chọn trên giao diện hoặc HIS gọi REST API.</span></div>
 
-            <div class="table-responsive">
-                <table class="table-api">
-                    <thead>
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Example</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>ngaysinh</code></td>
-                            <td>String</td>
-                            <td>Date of birth (format: dd/mm/yyyy)</td>
-                            <td><code>15/03/2026</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>giosinh</code></td>
-                            <td>String</td>
-                            <td>Time of birth (format: HH:mm)</td>
-                            <td><code>08:30</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>ngaymau</code></td>
-                            <td>String</td>
-                            <td>Blood sample date (format: dd/mm/yyyy)</td>
-                            <td><code>16/03/2026</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>giomau</code></td>
-                            <td>String</td>
-                            <td>Blood sample time (format: HH:mm)</td>
-                            <td><code>10:00</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>bili</code></td>
-                            <td>Number</td>
-                            <td>Total Serum Bilirubin level</td>
-                            <td><code>12.5</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>donvi</code></td>
-                            <td>String</td>
-                            <td>Measurement unit (<code>MgDl</code> or <code>UmolL</code>)</td>
-                            <td><code>MgDl</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>tuoithai</code></td>
-                            <td>Number</td>
-                            <td>Gestational age in weeks (35 to 42)</td>
-                            <td><code>38</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>autocalc</code></td>
-                            <td>Boolean</td>
-                            <td>Automatically trigger calculation on load (true/false)</td>
-                            <td><code>true</code></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Example: Opening BiliTool.Vn from EMR UI</span>
-                </div>
-                <pre><code>// JavaScript EMR Integration
+        <h3>Ví dụ JavaScript trong HIS</h3>
+        <pre><code>// Mở BiliTool.Vn từ EMR bằng Deep Link
 const url = new URL("https://bilitool.vn/may-tinh");
-url.searchParams.append("ngaysinh", "15/03/2026");
-url.searchParams.append("giosinh", "08:30");
-url.searchParams.append("ngaymau", "16/03/2026");
-url.searchParams.append("giomau", "10:00");
-url.searchParams.append("bili", "12.5");
-url.searchParams.append("donvi", "MgDl");
-url.searchParams.append("tuoithai", "38");
-url.searchParams.append("autocalc", "true");
+url.searchParams.set("ngaysinh", "15/03/2026");
+url.searchParams.set("giosinh", "08:30");
+url.searchParams.set("ngaymau", "16/03/2026");
+url.searchParams.set("giomau", "10:00");
+url.searchParams.set("bili", "12.5");
+url.searchParams.set("donvi", "MgDl");
+url.searchParams.set("tuoithai", "38");
+url.searchParams.set("autocalc", "true");
 
 window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
+    </section>
+
+    <section class="his-method-card">
+        <div class="his-method-heading">
+            <span>Phương pháp 2</span>
+            <h2>REST API cho HIS/EMR</h2>
+        </div>
+        <p>Phù hợp khi HIS cần nhận kết quả JSON để lưu vào bệnh án điện tử, hiển thị trong màn hình nội bộ hoặc tích hợp workflow tự động. API yêu cầu header <code>X-API-Key</code> và đang áp dụng rate limit <code>30 request/phút</code> cho mỗi cửa sổ giới hạn.</p>
+        <div class="his-endpoint"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
+
+        <div class="his-note"><i class="fas fa-lock"></i><span>Production chỉ cấp API key cho đơn vị tích hợp. Nếu chưa cấu hình khóa, API trả <code>503</code>; nếu thiếu hoặc sai khóa, API trả <code>401</code>.</span></div>
+
+        <h3>Header bắt buộc</h3>
+        <pre><code>Content-Type: application/json
+X-API-Key: {integration_api_key}</code></pre>
+
+        <h3>Trường đầu vào chính</h3>
+        <div class="table-responsive">
+            <table class="his-table">
+                <thead>
+                    <tr><th>Trường JSON</th><th>Bắt buộc</th><th>Kiểu</th><th>Giới hạn / ý nghĩa</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>tuoiTheoGio</code></td><td>Có nếu không gửi ngày giờ</td><td>number</td><td>Tuổi lúc lấy mẫu, hợp lệ <code>1–336</code> giờ.</td></tr>
+                    <tr><td><code>ngaySinh</code></td><td>Có nếu không gửi <code>tuoiTheoGio</code></td><td>ISO datetime</td><td>Có thể gửi kèm giờ, ví dụ <code>2026-03-15T08:30:00+07:00</code>.</td></tr>
+                    <tr><td><code>gioSinh</code></td><td>Không</td><td><code>HH:mm:ss</code></td><td>Nếu gửi riêng, hệ thống dùng ngày của <code>ngaySinh</code> cộng giờ này.</td></tr>
+                    <tr><td><code>ngayLayMau</code></td><td>Có nếu không gửi <code>tuoiTheoGio</code></td><td>ISO datetime</td><td>Phải sau thời điểm sinh, tuổi tính được <code>1–336</code> giờ.</td></tr>
+                    <tr><td><code>gioLayMau</code></td><td>Không</td><td><code>HH:mm:ss</code></td><td>Nếu gửi riêng, hệ thống dùng ngày của <code>ngayLayMau</code> cộng giờ này.</td></tr>
+                    <tr><td><code>tongBilirubin</code></td><td>Có</td><td>number</td><td>&gt;0; tối đa <code>60</code> nếu mg/dL, <code>1026</code> nếu µmol/L.</td></tr>
+                    <tr><td><code>donViDo</code></td><td>Không</td><td>number enum</td><td><code>0</code> = MgDl, <code>1</code> = UmolL. Mặc định <code>1</code>.</td></tr>
+                    <tr><td><code>tuoiThaiTuan</code></td><td>Có</td><td>integer</td><td>Hợp lệ <code>35–45</code> tuần.</td></tr>
+                    <tr><td><code>yeuToNguyCo</code></td><td>Không</td><td>object</td><td>Không gửi thì mặc định tất cả yếu tố là <code>false/null</code>.</td></tr>
+                    <tr><td><code>trangThaiChieuDen</code></td><td>Không</td><td>number enum</td><td><code>0</code> không chiếu đèn, <code>1</code> đang chiếu, <code>2</code> chiếu đèn tích cực, <code>3</code> đã dừng.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Yếu tố nguy cơ hỗ trợ trong API</h3>
+        <div class="his-risk-grid">
+            <div>
+                <h4>AAP 2022 - nguy cơ độc thần kinh</h4>
+                <code>benhTanHuyetMienDichHoacThieuG6PD</code>
+                <code>nhiemKhuanHuyetHoacNghiNgo</code>
+                <code>albuminThapDuoi3gDl</code>
+                <code>tinhTrangLamSangKhongOnDinh</code>
+                <code>etCOcPpm</code>
+            </div>
+            <div>
+                <h4>NICE CG98 - nguy cơ lâm sàng / mở rộng</h4>
+                <code>anhChiBiVangDaCanChieuDen</code>
+                <code>meBuMeHoanToan</code>
+                <code>vangDaTrong24hDau</code>
+                <code>benhTanHuyetRh</code>
+                <code>benhTanHuyetABO</code>
+                <code>dauHieuBenhNaoBilirubinCap</code>
             </div>
         </div>
 
-        <div class="integration-method">
-            <h2><span class="method-badge">Method 2</span> RESTful API (Headless Call)</h2>
-            <p>Allows EMR backend systems to post clinical data directly to the BiliTool.Vn calculations server. The server returns a structured JSON payload detailing all calculated AAP 2022 and NICE CG98 thresholds, risk assessments, and clinical follow-up recommendations for automatic storage and display in your EMR UI.</p>
-            
-            <p><strong>Security Token:</strong> To protect clinical calculations, all requests must contain the <code>X-API-Key</code> header containing the integration token configured for your hospital.</p>
-
-            <div class="api-endpoint">
-                <code>POST</code>
-                <span class="url">/api/v1/bilirubin/calculate</span>
-                <span class="content-type">Header: <code>X-API-Key: {your_api_key}</code></span>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Example: JSON Request Payload</span>
-                </div>
-                <pre><code>{
-  "ngaySinh": "2026-03-15T08:30:00Z", // ISO 8601 UTC date-time string
-  "ngayLayMau": "2026-03-16T10:00:00Z",
+        <h3>Request mẫu đúng theo DTO hiện tại</h3>
+        <pre><code>{
+  "tuoiTheoGio": null,
+  "ngaySinh": "2026-03-15T08:30:00+07:00",
+  "ngayLayMau": "2026-03-16T10:00:00+07:00",
   "tongBilirubin": 12.5,
-  "donViDo": 0, // 0 = MgDl, 1 = UmolL
+  "donViDo": 0,
   "tuoiThaiTuan": 38,
+  "trangThaiChieuDen": 0,
   "yeuToNguyCo": {
     "benhTanHuyetMienDichHoacThieuG6PD": false,
     "nhiemKhuanHuyetHoacNghiNgo": false,
@@ -156,618 +168,374 @@ window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
     "benhTanHuyetRh": false,
     "benhTanHuyetABO": false,
     "dauHieuBenhNaoBilirubinCap": false
-  },
-  "trangThaiChieuDen": 0 // 0 = None, 1 = Standard, 2 = Intensive, 3 = Stopped (rebound check)
+  }
 }</code></pre>
-            </div>
 
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Example: JSON Response Payload</span>
-                </div>
-                <pre><code>{
-  "tuoiGio": 25.5,
-  "tuoiThaiTuan": 38,
-  "bilirubinMgDl": 12.5,
-  "bilirubinUmolL": 214.0,
-  "coNguyCoThanKinh": false,
-  "nguongChieuDen": 11.5,
-  "nguongChieuDenTichCuc": 13.5,
-  "nguongThayCuuMau": 21.4,
-  "khoangCachDenNguongChieuDen": 1.0,
-  "khoangCachDenNguongThayCuuMau": 8.9,
-  "nguongChieuDen_NICE_UmolL": 300.0,
-  "nguongThayCuuMau_NICE_UmolL": 450.0,
-  "nguongChieuDen_NICE_MgDl": 17.5,
-  "nguongThayCuuMau_NICE_MgDl": 26.3,
-  "canChieuDenNgay": true,
-  "canChieuDenTichCuc": false,
-  "canXemXetThayCuuMau": false,
-  "mucDoNguyHiemEnum": 2, // 0=Normal, 1=CloseMonitor, 2=NeedsPhototherapy, 3=NeedsIntensivePhoto, 4=ConsiderExchange, 5=EmergencyExchange
-  "mauNguyHiem": "#e67e22",
-  "thoiGianTaiKhamEnum": 2, // 0=Within4h, 1=Within8h, 2=Within12h, 3=Within24h
-  "phacDoQuyetDinh": 0, // 0=AAP2022, 1=NICE_CG98
-  "nguyCoKernicterus": false,
-  "lyDoNguyCoKernicterus": [],
-  "laVangDaKeoDai": false,
-  "canhBaoVangDaKeoDai": null,
-  "canIVIG": false,
-  "moTaIVIG": null,
-  "coTheDungChieuDen": false,
-  "canKiemTraRebound": false,
-  "lichDoLapNICE": "Below threshold >50 µmol/L — routine repeat not required (NICE 1.4.2)",
-  "gioDoLapTiepTheo": null,
-  "chuThichThamChieu": [
-    "Phototherapy threshold per AAP 2022 (GA 38w, no neuro risk)",
-    "Note: Clinical variation may exist among lab kits..."
-  ],
-  "thoiGianTinhToan": "2026-06-01T09:50:00Z"
-}</code></pre>
-            </div>
+        <h3>Nhóm trường kết quả quan trọng</h3>
+        <div class="table-responsive">
+            <table class="his-table">
+                <thead><tr><th>Trường trả về</th><th>Ý nghĩa</th></tr></thead>
+                <tbody>
+                    <tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Ngữ cảnh bệnh nhi sau khi hệ thống tính/chuẩn hóa.</td></tr>
+                    <tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Giá trị bilirubin quy đổi song song 2 đơn vị.</td></tr>
+                    <tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>Ngưỡng AAP 2022 theo mg/dL.</td></tr>
+                    <tr><td><code>nguongChieuDen_NICE_UmolL</code>, <code>nguongThayCuuMau_NICE_UmolL</code></td><td>Ngưỡng NICE CG98 theo µmol/L.</td></tr>
+                    <tr><td><code>canChieuDenNgay</code>, <code>canChieuDenTichCuc</code>, <code>canXemXetThayCuuMau</code></td><td>Cờ quyết định để HIS hiển thị cảnh báo.</td></tr>
+                    <tr><td><code>gioDoLapTiepTheo</code>, <code>lichDoLapNICE</code></td><td>Gợi ý thời điểm đo lại khi phác đồ trả về.</td></tr>
+                    <tr><td><code>phacDoQuyetDinh</code>, <code>chuThichThamChieu</code></td><td>Phác đồ quyết định và ghi chú nguồn tham chiếu.</td></tr>
+                    <tr><td><code>chartData</code></td><td>Dữ liệu nomogram để HIS tự vẽ biểu đồ nếu cần.</td></tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-}
-else if (lang == "fr")
-{
-    <PageTitle>Intégration HIS / EMR — API & Deep Link BiliTool.Vn</PageTitle>
+    </section>
 
-    <HeadContent>
-        <meta name="description" content="Référence technique pour l'intégration de BiliTool.Vn avec les dossiers de santé (HIS) et dossiers patients informatisés (EMR). Supporte le Deep Link et les API RESTful." />
-        <meta name="keywords" content="Intégration HIS, intégration EMR, API bilirubine, deep link bilitool, logiciel hôpital, calcul automatique de la bilirubine" />
-        <link rel="canonical" href="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Intégration HIS/EMR BiliTool.Vn" />
-        <meta property="og:description" content="Guide technique pour intégrer les calculs de bilirubine néonatale dans les progiciels de santé." />
-        <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Intégration HIS/EMR BiliTool.Vn" />
-        <meta name="twitter:description" content="Intégrez le calculateur de bilirubine de BiliTool avec votre logiciel hôpital via API." />
-    </HeadContent>
-
-    <div class="his-integration-wrapper">
-        <div class="his-header">
-            <i class="fas fa-hospital-alt"></i>
-            <h1>Intégration HIS / EMR</h1>
-            <p>BiliTool.Vn offre une intégration flexible dans les systèmes de gestion hospitalière (HIS) ou dossiers médicaux partagés (EMR) via 2 méthodes standardisées.</p>
+    <section class="his-method-card">
+        <div class="his-method-heading">
+            <span>Tham khảo nâng cao</span>
+            <h2>API v2 clinical wrapper</h2>
         </div>
+        <p>Endpoint <code>POST /api/v2/clinical/bilirubin/calculate</code> dùng cùng input như API v1 nhưng bọc kết quả theo cấu trúc clinical wrapper: <code>guideline</code>, <code>patientContext</code>, <code>thresholds</code>, <code>recommendation</code>, <code>legacyResult</code>. Endpoint này cũng yêu cầu <code>X-API-Key</code>.</p>
+        <div class="his-endpoint"><code>GET</code><span>https://bilitool.vn/api/v2/clinical/bilirubin/guidelines/active</span></div>
+    </section>
 
-        <div class="integration-method">
-            <h2><span class="method-badge">Méthode 1</span> Deep Link (Paramètres d'URL)</h2>
-            <p>Il s'agit de la méthode la plus simple, permettant au DPI d'ouvrir BiliTool.Vn dans un navigateur et de pré-remplir les données cliniques du nourrisson via des paramètres d'URL. Le médecin n'a plus qu'à vérifier les informations et cliquer sur <strong>Calculer</strong>.</p>
-            
-            <div class="api-endpoint">
-                <code>GET</code>
-                <span class="url">https://bilitool.vn/may-tinh?ngaysinh={dd/mm/yyyy}&amp;giosinh={HH:mm}...</span>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table-api">
-                    <thead>
-                        <tr>
-                            <th>Paramètre</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Exemple</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>ngaysinh</code></td>
-                            <td>String</td>
-                            <td>Date de naissance (format: dd/mm/yyyy)</td>
-                            <td><code>15/03/2026</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>giosinh</code></td>
-                            <td>String</td>
-                            <td>Heure de naissance (format: HH:mm)</td>
-                            <td><code>08:30</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>ngaymau</code></td>
-                            <td>String</td>
-                            <td>Date du prélèvement (format: dd/mm/yyyy)</td>
-                            <td><code>16/03/2026</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>giomau</code></td>
-                            <td>String</td>
-                            <td>Heure du prélèvement (format: HH:mm)</td>
-                            <td><code>10:00</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>bili</code></td>
-                            <td>Number</td>
-                            <td>Niveau de bilirubine totale</td>
-                            <td><code>12.5</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>donvi</code></td>
-                            <td>String</td>
-                            <td>Unité de mesure (<code>MgDl</code> ou <code>UmolL</code>)</td>
-                            <td><code>MgDl</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>tuoithai</code></td>
-                            <td>Number</td>
-                            <td>Âge gestationnel (semaines, de 35 à 42)</td>
-                            <td><code>38</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>autocalc</code></td>
-                            <td>Boolean</td>
-                            <td>Calcul automatique dès le chargement (true/false)</td>
-                            <td><code>true</code></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Exemple: Ouvrir BiliTool.Vn depuis le logiciel hospitalier</span>
-                </div>
-                <pre><code>// Intégration JavaScript
-const url = new URL("https://bilitool.vn/may-tinh");
-url.searchParams.append("ngaysinh", "15/03/2026");
-url.searchParams.append("giosinh", "08:30");
-url.searchParams.append("ngaymau", "16/03/2026");
-url.searchParams.append("giomau", "10:00");
-url.searchParams.append("bili", "12.5");
-url.searchParams.append("donvi", "MgDl");
-url.searchParams.append("tuoithai", "38");
-url.searchParams.append("autocalc", "true");
-
-window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
-            </div>
+    <section class="his-method-card his-error-card">
+        <div class="his-method-heading">
+            <span>Vận hành</span>
+            <h2>Mã lỗi cần HIS xử lý</h2>
         </div>
-
-        <div class="integration-method">
-            <h2><span class="method-badge">Méthode 2</span> API REST (Appel Serveur à Serveur)</h2>
-            <p>Permet aux serveurs EMR d'envoyer les données cliniques directement au moteur de calcul de BiliTool.Vn. Le serveur retourne un JSON structuré décrivant tous les seuils calculés AAP 2022 et NICE CG98, les classifications de risque et les recommandations cliniques pour un stockage automatique dans votre dossier patient.</p>
-            
-            <p><strong>Clé d'authentification:</strong> Pour des raisons de sécurité, chaque appel API doit inclure l'en-tête HTTP <code>X-API-Key</code> contenant la clé d'intégration fournie pour votre établissement.</p>
-
-            <div class="api-endpoint">
-                <code>POST</code>
-                <span class="url">/api/v1/bilirubin/calculate</span>
-                <span class="content-type">Header: <code>X-API-Key: {your_api_key}</code></span>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Exemple: Données de la Requête (JSON)</span>
-                </div>
-                <pre><code>{
-  "ngaySinh": "2026-03-15T08:30:00Z", // Chaîne date-heure ISO 8601 UTC
-  "ngayLayMau": "2026-03-16T10:00:00Z",
-  "tongBilirubin": 12.5,
-  "donViDo": 0, // 0 = MgDl, 1 = UmolL
-  "tuoiThaiTuan": 38,
-  "yeuToNguyCo": {
-    "benhTanHuyetMienDichHoacThieuG6PD": false,
-    "nhiemKhuanHuyetHoacNghiNgo": false,
-    "albuminThapDuoi3gDl": false,
-    "tinhTrangLamSangKhongOnDinh": false,
-    "etCOcPpm": null,
-    "anhChiBiVangDaCanChieuDen": false,
-    "meBuMeHoanToan": false,
-    "vangDaTrong24hDau": false,
-    "benhTanHuyetRh": false,
-    "benhTanHuyetABO": false,
-    "dauHieuBenhNaoBilirubinCap": false
-  },
-  "trangThaiChieuDen": 0 // 0 = Sans, 1 = Standard, 2 = Intensive, 3 = Arrêt (contrôle rebond)
-}</code></pre>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Exemple: Données de la Réponse (JSON)</span>
-                </div>
-                <pre><code>{
-  "tuoiGio": 25.5,
-  "tuoiThaiTuan": 38,
-  "bilirubinMgDl": 12.5,
-  "bilirubinUmolL": 214.0,
-  "coNguyCoThanKinh": false,
-  "nguongChieuDen": 11.5,
-  "nguongChieuDenTichCuc": 13.5,
-  "nguongThayCuuMau": 21.4,
-  "khoangCachDenNguongChieuDen": 1.0,
-  "khoangCachDenNguongThayCuuMau": 8.9,
-  "nguongChieuDen_NICE_UmolL": 300.0,
-  "nguongThayCuuMau_NICE_UmolL": 450.0,
-  "nguongChieuDen_NICE_MgDl": 17.5,
-  "nguongThayCuuMau_NICE_MgDl": 26.3,
-  "canChieuDenNgay": true,
-  "canChieuDenTichCuc": false,
-  "canXemXetThayCuuMau": false,
-  "mucDoNguyHiemEnum": 2, // 0=Normal, 1=Surveillance, 2=PhototherapieStandard, 3=PhototherapieIntensive, 4=EnvisagerExsanguino, 5=UrgenceExsanguino
-  "mauNguyHiem": "#e67e22",
-  "thoiGianTaiKhamEnum": 2, // 0=Sous4h, 1=Sous8h, 2=Sous12h, 3=Sous24h
-  "phacDoQuyetDinh": 0, // 0=AAP2022, 1=NICE_CG98
-  "nguyCoKernicterus": false,
-  "lyDoNguyCoKernicterus": [],
-  "laVangDaKeoDai": false,
-  "canhBaoVangDaKeoDai": null,
-  "canIVIG": false,
-  "moTaIVIG": null,
-  "coTheDungChieuDen": false,
-  "canKiemTraRebound": false,
-  "lichDoLapNICE": "Sous le seuil >50 µmol/L — pas de répétition systématique requise (NICE 1.4.2)",
-  "gioDoLapTiepTheo": null,
-  "chuThichThamChieu": [
-    "Seuil de photothérapie selon AAP 2022 (GA 38w, sans risque NT)",
-    "Remarque: Des variations de mesures peuvent exister selon les kits réactifs..."
-  ],
-  "thoiGianTinhToan": "2026-06-01T09:50:00Z"
-}</code></pre>
-            </div>
+        <div class="his-error-grid">
+            <div><strong>400</strong><span>Dữ liệu không hợp lệ: thiếu tuổi/ngày mẫu, tuổi ngoài 1–336 giờ, tuổi thai ngoài 35–45 tuần, bilirubin vượt giới hạn.</span></div>
+            <div><strong>401</strong><span>Thiếu hoặc sai <code>X-API-Key</code>.</span></div>
+            <div><strong>429</strong><span>Vượt rate limit API.</span></div>
+            <div><strong>503</strong><span>Máy chủ chưa cấu hình danh sách API key tích hợp.</span></div>
+            <div><strong>500</strong><span>Lỗi hệ thống; response có <code>traceId</code> để đối soát log.</span></div>
         </div>
-    </div>
-}
-else
-{
-    <PageTitle>Tích Hợp BiliTool.Vn Vào Hệ Thống HIS / Bệnh Án Điện Tử (EMR) | API & Deep Link</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="Tài liệu kỹ thuật tích hợp BiliTool.Vn vào phần mềm quản lý bệnh viện (HIS) và bệnh án điện tử (EMR). Hỗ trợ 2 phương pháp: Deep Link (URL parameters) và RESTful API trả kết quả JSON." />
-        <meta name="keywords" content="tích hợp HIS, bệnh án điện tử EMR, API bilirubin, deep link bilitool, phần mềm bệnh viện, tính bilirubin tự động" />
-        <link rel="canonical" href="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Tích Hợp BiliTool.Vn Vào HIS/EMR Bệnh Viện" />
-        <meta property="og:description" content="Hướng dẫn API và Deep Link tích hợp tính bilirubin sơ sinh tự động vào hệ thống bệnh viện." />
-        <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Tích Hợp BiliTool.Vn Vào HIS/EMR Bệnh Viện" />
-        <meta name="twitter:description" content="Tài liệu API và Deep Link tích hợp tính bilirubin sơ sinh vào HIS/EMR." />
-    </HeadContent>
-
-    <div class="his-integration-wrapper">
-        <div class="his-header">
-            <i class="fas fa-hospital-alt"></i>
-            <h1>Tích hợp hệ thống HIS / EMR</h1>
-            <p>BiliTool.Vn cung cấp khả năng tích hợp linh hoạt vào các hệ thống quản lý bệnh viện (HIS) hoặc bệnh án điện tử (EMR) hiện có thông qua 2 phương pháp chuẩn hóa.</p>
-        </div>
-
-        <div class="integration-method">
-            <h2><span class="method-badge">Phương pháp 1</span> Deep Link (Tham số URL)</h2>
-            <p>Đây là phương pháp đơn giản nhất, cho phép EMR mở giao diện BiliTool.Vn và tự động điền các thông tin bệnh Nhi thông qua thanh địa chỉ (URL). Bác sĩ có thể kiểm tra lại thông tin và bấm <strong>Tính toán</strong>.</p>
-            
-            <div class="api-endpoint">
-                <code>GET</code>
-                <span class="url">https://bilitool.vn/may-tinh?ngaysinh={dd/mm/yyyy}&amp;giosinh={HH:mm}...</span>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table-api">
-                    <thead>
-                        <tr>
-                            <th>Tham số</th>
-                            <th>Loại</th>
-                            <th>Mô tả</th>
-                            <th>Ví dụ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>ngaysinh</code></td>
-                            <td>String</td>
-                            <td>Ngày sinh (định dạng: dd/mm/yyyy)</td>
-                            <td><code>15/03/2026</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>giosinh</code></td>
-                            <td>String</td>
-                            <td>Giờ sinh (định dạng: HH:mm)</td>
-                            <td><code>08:30</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>ngaymau</code></td>
-                            <td>String</td>
-                            <td>Ngày lấy mẫu máu</td>
-                            <td><code>16/03/2026</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>giomau</code></td>
-                            <td>String</td>
-                            <td>Giờ lấy mẫu máu</td>
-                            <td><code>10:00</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>bili</code></td>
-                            <td>Number</td>
-                            <td>Chỉ số Bilirubin toàn phần</td>
-                            <td><code>12.5</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>donvi</code></td>
-                            <td>String</td>
-                            <td>Đơn vị đo (<code>MgDl</code> hoặc <code>UmolL</code>)</td>
-                            <td><code>MgDl</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>tuoithai</code></td>
-                            <td>Number</td>
-                            <td>Tuổi thai (tuần). Từ 35 đến 45.</td>
-                            <td><code>38</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>autocalc</code></td>
-                            <td>Boolean</td>
-                            <td>Tự động tính toán khi mở trang (true/false)</td>
-                            <td><code>true</code></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Ví dụ: Mở BiliTool.Vn từ nút bấm trong EMR</span>
-                </div>
-                <pre><code>// JavaScript EMR Integration
-const url = new URL("https://bilitool.vn/may-tinh");
-url.searchParams.append("ngaysinh", "15/03/2026");
-url.searchParams.append("giosinh", "08:30");
-url.searchParams.append("ngaymau", "16/03/2026");
-url.searchParams.append("giomau", "10:00");
-url.searchParams.append("bili", "12.5");
-url.searchParams.append("donvi", "MgDl");
-url.searchParams.append("tuoithai", "38");
-url.searchParams.append("autocalc", "true");
-
-window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
-            </div>
-        </div>
-
-        <div class="integration-method">
-            <h2><span class="method-badge">Phương pháp 2</span> RESTful API (Headless Call)</h2>
-            <p>Cho phép các hệ thống phần mềm đẩy dữ liệu trực tiếp lên máy chủ BiliTool.Vn qua giao thức HTTP POST. Máy chủ sẽ trả về kết quả JSON chi tiết (kèm tất cả các ngưỡng tính toán AAP 2022, NICE CG98, phân loại nguy cơ lâm sàng, cảnh báo và hướng xử trí) để HIS tự động lưu trữ và hiển thị.</p>
-            
-            <p><strong>Xác thực bảo mật:</strong> Để đảm bảo an toàn, API yêu cầu gửi kèm Header <code>X-API-Key</code> với giá trị khóa tích hợp được cấp cho bệnh viện của bạn.</p>
-
-            <div class="api-endpoint">
-                <code>POST</code>
-                <span class="url">/api/v1/bilirubin/calculate</span>
-                <span class="content-type">Header: <code>X-API-Key: {your_api_key}</code></span>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Ví dụ: Request Data (JSON)</span>
-                </div>
-                <pre><code>{
-  "ngaySinh": "2026-03-15T08:30:00Z", // Hỗ trợ chuỗi ISO 8601 chứa giờ
-  "ngayLayMau": "2026-03-16T10:00:00Z",
-  "tongBilirubin": 12.5,
-  "donViDo": 0, // 0 = MgDl, 1 = UmolL
-  "tuoiThaiTuan": 38,
-  "yeuToNguyCo": {
-    "benhTanHuyetMienDichHoacThieuG6PD": false,
-    "nhiemKhuanHuyetHoacNghiNgo": false,
-    "albuminThapDuoi3gDl": false,
-    "tinhTrangLamSangKhongOnDinh": false,
-    "etCOcPpm": null,
-    "anhChiBiVangDaCanChieuDen": false,
-    "meBuMeHoanToan": false,
-    "vangDaTrong24hDau": false,
-    "benhTanHuyetRh": false,
-    "benhTanHuyetABO": false,
-    "dauHieuBenhNaoBilirubinCap": false
-  },
-  "trangThaiChieuDen": 0 // 0 = KhongChieuDen, 1 = DangChieuDen, 2 = DangChieuDenTichCuc, 3 = DaDungChieuDen
-}</code></pre>
-            </div>
-
-            <div class="code-example-box">
-                <div class="code-header">
-                    <span>Ví dụ: Response (JSON)</span>
-                </div>
-                <pre><code>{
-  "tuoiGio": 25.5,
-  "tuoiThaiTuan": 38,
-  "bilirubinMgDl": 12.5,
-  "bilirubinUmolL": 214.0,
-  "coNguyCoThanKinh": false,
-  "nguongChieuDen": 11.5,
-  "nguongChieuDenTichCuc": 13.5,
-  "nguongThayCuuMau": 21.4,
-  "khoangCachDenNguongChieuDen": 1.0,
-  "khoangCachDenNguongThayCuuMau": 8.9,
-  "nguongChieuDen_NICE_UmolL": 300.0,
-  "nguongThayCuuMau_NICE_UmolL": 450.0,
-  "nguongChieuDen_NICE_MgDl": 17.5,
-  "nguongThayCuuMau_NICE_MgDl": 26.3,
-  "canChieuDenNgay": true,
-  "canChieuDenTichCuc": false,
-  "canXemXetThayCuuMau": false,
-  "mucDoNguyHiemEnum": 2, // 0=BinhThuong, 1=CanTheoDoiSat, 2=CanChieuDen, 3=CanChieuDenTichCuc, 4=CanXemXetThayMau, 5=KhanCapThayCuuMau
-  "mauNguyHiem": "#e67e22",
-  "thoiGianTaiKhamEnum": 2, // 0=TrongVong4Gio, 1=TrongVong8Gio, 2=TrongVong12Gio, 3=TrongVong24Gio
-  "phacDoQuyetDinh": 0, // 0=AAP2022, 1=NICE_CG98
-  "nguyCoKernicterus": false,
-  "lyDoNguyCoKernicterus": [],
-  "laVangDaKeoDai": false,
-  "canhBaoVangDaKeoDai": null,
-  "canIVIG": false,
-  "moTaIVIG": null,
-  "coTheDungChieuDen": false,
-  "canKiemTraRebound": false,
-  "lichDoLapNICE": "Dưới ngưỡng >50 µmol/L — không cần đo lặp thường quy (NICE 1.4.2)",
-  "gioDoLapTiepTheo": null,
-  "chuThichThamChieu": [
-    "Ngưỡng chiếu đèn theo AAP 2022 (GA 38w, không nguy cơ TK)",
-    "Lưu ý: Có sai lệch giữa các kit xét nghiệm bilirubin..."
-  ],
-  "thoiGianTinhToan": "2026-06-01T09:50:00Z"
-}</code></pre>
-            </div>
-        </div>
-    </div>
-}
+    </section>
+</div>
 
 <style>
-    .his-integration-wrapper {
-        padding: 40px;
-        max-width: 1000px;
+    .his-doc-shell {
+        --his-ink: #07111f;
+        --his-muted: #526070;
+        --his-blue: #0f5f8f;
+        --his-teal: #0f766e;
+        --his-line: rgba(15, 95, 143, 0.16);
+        max-width: 1180px;
         margin: 0 auto;
-        color: #334155;
-    }
-    
-    .his-header {
-        text-align: center;
-        margin-bottom: 50px;
-    }
-    
-    .his-header i {
-        font-size: 3.5rem;
-        color: var(--primary);
-        margin-bottom: 20px;
-    }
-    
-    .his-header h1 {
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 15px;
-    }
-    
-    .his-header p {
-        font-size: 1.1rem;
-        color: #64748b;
-        max-width: 700px;
-        margin: 0 auto;
-        line-height: 1.6;
+        padding: clamp(18px, 3vw, 34px);
+        color: var(--his-ink);
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
     }
 
-    .integration-method {
-        background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        padding: 40px;
-        margin-bottom: 40px;
-        border: 1px solid var(--gray-200);
+    .his-hero-panel,
+    .his-audit-card,
+    .his-method-card {
+        border: 1px solid rgba(255,255,255,0.72);
+        background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(247,252,255,0.86));
+        box-shadow: 0 24px 70px rgba(8, 34, 55, 0.11), inset 0 1px 0 rgba(255,255,255,0.9);
+        border-radius: 30px;
+        padding: clamp(24px, 4vw, 44px);
+        margin-bottom: 22px;
+        overflow: hidden;
     }
 
-    .integration-method h2 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin-bottom: 15px;
-        color: #0f172a;
-        display: flex;
+    .his-hero-panel {
+        position: relative;
+        background:
+            radial-gradient(circle at 14% 16%, rgba(15,118,110,0.16), transparent 28%),
+            radial-gradient(circle at 88% 10%, rgba(15,95,143,0.20), transparent 30%),
+            linear-gradient(135deg, rgba(255,255,255,0.98), rgba(234,248,255,0.88));
+    }
+
+    .his-kicker,
+    .his-method-heading span {
+        display: inline-flex;
         align-items: center;
-        gap: 15px;
-    }
-
-    .method-badge {
-        background: var(--blue-light);
-        color: var(--primary);
-        font-size: 0.8rem;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-weight: 700;
+        gap: 9px;
+        color: var(--his-blue);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
     }
 
-    .integration-method p {
-        color: #475569;
-        line-height: 1.6;
-        margin-bottom: 25px;
+    .his-hero-panel h1,
+    .his-method-heading h2 {
+        margin: 14px 0;
+        color: var(--his-ink);
+        font-weight: 900;
+        letter-spacing: -0.045em;
+        line-height: 1.05;
     }
 
-    .api-endpoint {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        padding: 15px 20px;
-        border-radius: var(--radius-md);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 30px;
-        font-family: monospace;
-        font-size: 1rem;
+    .his-hero-panel h1 {
+        max-width: 820px;
+        font-size: clamp(2.1rem, 5vw, 4.4rem);
+        outline: none !important;
+        border: 0 !important;
     }
 
-    .api-endpoint code {
-        background: var(--primary);
-        color: white;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-weight: 700;
-        font-size: 0.9rem;
+    .his-hero-panel p,
+    .his-method-card p,
+    .his-audit-card li,
+    .his-note {
+        color: var(--his-muted);
+        line-height: 1.72;
+        font-weight: 560;
     }
 
-    .api-endpoint .url {
-        color: #0f172a;
-        font-weight: 600;
-    }
-
-    .api-endpoint .content-type {
-        margin-left: auto;
-        color: #94a3b8;
-        font-size: 0.85rem;
-    }
-
-    .table-api {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 30px;
-        font-size: 0.95rem;
-    }
-
-    .table-api th, .table-api td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .table-api th {
-        background: #f8fafc;
-        font-weight: 600;
-        color: #1e293b;
-    }
-
-    .table-api td code {
-        background: #f1f5f9;
-        color: #ef4444;
+    .his-hero-panel code,
+    .his-note code,
+    .his-table code,
+    .his-check-list code,
+    .his-method-card p code {
+        color: #0b5f8a;
+        background: rgba(14, 165, 233, 0.08);
+        border: 1px solid rgba(14, 165, 233, 0.13);
+        border-radius: 7px;
         padding: 2px 6px;
-        border-radius: 4px;
-        font-family: monospace;
     }
 
-    .code-example-box {
-        background: #0f172a;
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        margin-bottom: 20px;
+    .his-status-grid,
+    .his-error-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 26px;
     }
 
-    .code-header {
-        background: #1e293b;
-        padding: 10px 20px;
-        color: #94a3b8;
-        font-size: 0.85rem;
-        font-family: monospace;
-        display: flex;
-        justify-content: space-between;
+    .his-status-grid div,
+    .his-error-grid div {
+        border: 1px solid var(--his-line);
+        border-radius: 20px;
+        padding: 16px;
+        background: rgba(255,255,255,0.72);
     }
 
-    .code-example-box pre {
+    .his-status-grid strong,
+    .his-error-grid strong {
+        display: block;
+        color: var(--his-blue);
+        font-size: 1rem;
+        font-weight: 900;
+    }
+
+    .his-status-grid span,
+    .his-error-grid span {
+        display: block;
+        color: var(--his-muted);
+        margin-top: 7px;
+        line-height: 1.45;
+        font-weight: 650;
+    }
+
+    .his-audit-card h2 {
+        color: var(--his-ink);
+        font-size: 1.45rem;
+        font-weight: 900;
+        margin-bottom: 18px;
+    }
+
+    .his-check-list {
+        list-style: none;
+        padding: 0;
         margin: 0;
-        padding: 20px;
+        display: grid;
+        gap: 12px;
+    }
+
+    .his-check-list li {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .his-check-list i {
+        width: 30px;
+        height: 30px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 50%;
+        color: #0f766e;
+        background: rgba(15,118,110,0.12);
+    }
+
+    .his-check-list .fa-triangle-exclamation {
+        color: #b45309;
+        background: rgba(245,158,11,0.14);
+    }
+
+    .his-method-heading {
+        margin-bottom: 16px;
+    }
+
+    .his-method-heading h2 {
+        font-size: clamp(1.55rem, 3vw, 2.3rem);
+    }
+
+    .his-endpoint {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        margin: 22px 0;
+        padding: 16px;
+        border: 1px solid var(--his-line);
+        border-radius: 18px;
+        background: #f8fafc;
         overflow-x: auto;
     }
 
-    .code-example-box code {
-        color: #e2e8f0;
-        font-family: monospace;
-        font-size: 0.95rem;
+    .his-endpoint > code {
+        flex: 0 0 auto;
+        color: #fff;
+        background: linear-gradient(135deg, #0f5f8f, #0f766e);
+        border: 0;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-weight: 900;
+    }
+
+    .his-endpoint span {
+        color: #0f172a;
+        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .his-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        border: 1px solid rgba(15,23,42,0.08);
+        border-radius: 18px;
+        background: #fff;
+        margin: 18px 0;
+    }
+
+    .his-table th,
+    .his-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(15,23,42,0.07);
+        vertical-align: top;
+        color: var(--his-muted);
         line-height: 1.5;
+    }
+
+    .his-table th {
+        color: var(--his-ink);
+        background: #f5f9fc;
+        font-weight: 900;
+    }
+
+    .his-table tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .his-note {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 12px;
+        align-items: start;
+        margin: 18px 0;
+        padding: 16px;
+        border: 1px solid rgba(15,118,110,0.16);
+        border-radius: 18px;
+        background: rgba(240,253,250,0.72);
+    }
+
+    .his-note.warning {
+        border-color: rgba(245,158,11,0.22);
+        background: rgba(255,251,235,0.78);
+    }
+
+    .his-note i {
+        color: var(--his-teal);
+        font-size: 1.05rem;
+        margin-top: 4px;
+    }
+
+    .his-method-card h3 {
+        margin: 28px 0 12px;
+        color: var(--his-ink);
+        font-size: 1.2rem;
+        font-weight: 900;
+    }
+
+    .his-risk-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .his-risk-grid div {
+        border: 1px solid var(--his-line);
+        border-radius: 20px;
+        padding: 18px;
+        background: rgba(255,255,255,0.72);
+    }
+
+    .his-risk-grid h4 {
+        color: var(--his-ink);
+        font-weight: 900;
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .his-risk-grid code {
+        display: inline-block;
+        margin: 4px 4px 4px 0;
+        color: #0b5f8a;
+        background: rgba(14,165,233,0.08);
+        border: 1px solid rgba(14,165,233,0.13);
+        border-radius: 999px;
+        padding: 5px 9px;
+        font-size: 0.82rem;
+    }
+
+    pre {
+        border: 1px solid rgba(15,23,42,0.12);
+        border-radius: 20px;
+        background: #07111f;
+        color: #d9f99d;
+        padding: 18px;
+        overflow-x: auto;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    pre code {
+        color: inherit;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+        font-size: 0.9rem;
+        line-height: 1.62;
+    }
+
+    @@media (max-width: 900px) {
+        .his-status-grid,
+        .his-error-grid,
+        .his-risk-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 560px) {
+        .his-doc-shell {
+            padding: 14px;
+        }
+
+        .his-hero-panel,
+        .his-audit-card,
+        .his-method-card {
+            border-radius: 24px;
+        }
+
+        .his-check-list li,
+        .his-note {
+            grid-template-columns: 1fr;
+        }
     }
 </style>

@@ -1,5 +1,22 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.7] - 2026-07-10
+
+### Changed
+- Reworked HIS/EMR integration documentation to match the actual Deep Link query contract, API routes, DTO fields, enum values, validation limits, response groups, and error handling.
+- Added explicit notes that Deep Link does not support risk-factor transfer and full risk-factor integration requires REST API.
+- Clarified API key behavior, rate limiting, `donViDo` numeric enum values, `trangThaiChieuDen`, and the `1–336` hour API validation range.
+- Restyled the HIS/EMR page with high-contrast clinical documentation cards, tables, callouts, and code blocks.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- HIS/EMR page desktop/mobile smoke test passed.
+- UI calculator smoke test passed.
+- API without `X-API-Key` returns 401 as expected.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- Vulnerability scan: no vulnerable NuGet packages.
+
 ## [1.3.6] - 2026-07-10
 
 ### Changed
