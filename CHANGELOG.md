@@ -1,5 +1,13 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.11] - 2026-07-10
+### Added
+- Rebuilt `/huong-dan` as a detailed clinical guidance page for neonatal jaundice using AAP 2022 and NICE CG98 references.
+- Added modern clinical UI sections for workflow, neurotoxicity risks, intervention levels, NICE monitoring, red flags, AAP quick tables, and source references.
+
+### Changed
+- Bumped cache/version metadata to `1.3.11`.
+
 ## [1.3.10] - 2026-07-10
 
 ### Changed

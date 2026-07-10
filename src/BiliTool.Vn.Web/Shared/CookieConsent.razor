@@ -5,11 +5,11 @@
 
 @if (showBanner)
 {
-    <div class="cookie-consent-card">
+    <div class="cookie-consent-card" role="region" aria-labelledby="cookie-consent-title">
         <div class="cookie-content">
             <div class="cookie-header">
                 <i class="fas fa-cookie-bite cookie-icon"></i>
-                <h3>@T["Cookie_Title"]</h3>
+                <h3 id="cookie-consent-title">@T["Cookie_Title"]</h3>
             </div>
             <p class="cookie-text">
                 @T["Cookie_Desc"] 

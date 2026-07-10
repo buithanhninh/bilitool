@@ -1,513 +1,265 @@
 @page "/huong-dan"
-@using System.Globalization
 
-@{
-    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
-}
+<PageTitle>Hướng Dẫn Lâm Sàng Vàng Da Sơ Sinh — AAP 2022 & NICE CG98 | BiliTool.Vn</PageTitle>
 
-@if (lang == "en")
-{
-    <PageTitle>Clinical Guidelines for Neonatal Jaundice - AAP 2022 & NICE CG98 | BiliTool.Vn</PageTitle>
+<HeadContent>
+    <meta name="description" content="Hướng dẫn lâm sàng chi tiết về đánh giá và xử trí vàng da sơ sinh theo AAP 2022 và NICE CG98: yếu tố nguy cơ, ngưỡng chiếu đèn, thay máu, IVIG, rebound và theo dõi." />
+    <meta name="keywords" content="hướng dẫn vàng da sơ sinh, AAP 2022, NICE CG98, bilirubin sơ sinh, ngưỡng chiếu đèn, thay máu, IVIG, G6PD, bệnh não bilirubin, kernicterus" />
+    <link rel="canonical" href="https://bilitool.vn/huong-dan" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Hướng Dẫn Lâm Sàng Vàng Da Sơ Sinh — AAP 2022 & NICE CG98" />
+    <meta property="og:description" content="Tài liệu tra cứu nhanh cho bác sĩ: đánh giá bilirubin, yếu tố nguy cơ, chiếu đèn, escalation of care, thay máu, IVIG và rebound." />
+    <meta property="og:url" content="https://bilitool.vn/huong-dan" />
+    <meta property="og:site_name" content="BiliTool.Vn" />
+    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+</HeadContent>
 
-    <HeadContent>
-        <meta name="description" content="Clinical reference: guidelines for the assessment and treatment of neonatal jaundice per AAP 2022 and NICE CG98. Lookup phototherapy thresholds, exchange transfusion thresholds, risk factors, IVIG, and rebound." />
-        <meta name="keywords" content="neonatal jaundice, AAP 2022, NICE CG98, bilirubin chart, phototherapy threshold, exchange transfusion, neurotoxicity risk, G6PD, kernicterus, rebound, IVIG" />
-        <link rel="canonical" href="https://bilitool.vn/huong-dan" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Clinical Guidelines for Neonatal Jaundice — AAP 2022 & NICE CG98" />
-        <meta property="og:description" content="Bilirubin thresholds, risk factors, phototherapy, exchange transfusion, and IVIG indications for newborns." />
-        <meta property="og:url" content="https://bilitool.vn/huong-dan" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Clinical Guidelines for Neonatal Jaundice — AAP 2022 & NICE CG98" />
-        <meta name="twitter:description" content="Bilirubin thresholds and risk assessment for newborns per AAP and NICE guidelines." />
-    </HeadContent>
-
-    <div class="huong-dan-wrapper">
-        <div class="hd-header">
-            <i class="fas fa-book-medical"></i>
-            <h1>Clinical Guidelines for Neonatal Jaundice (AAP 2022 & NICE CG98)</h1>
+<div class="clinical-guide">
+    <section class="guide-hero reveal-card">
+        <div class="hero-orb hero-orb-a"></div>
+        <div class="hero-orb hero-orb-b"></div>
+        <div class="guide-kicker"><i class="fas fa-book-medical"></i> Clinical Decision Support</div>
+        <h1>Hướng dẫn lâm sàng điều trị vàng da sơ sinh</h1>
+        <p class="hero-lead">Tài liệu tra cứu thực hành theo <strong>AAP 2022</strong> và <strong>NICE CG98</strong>, tập trung vào quyết định chiếu đèn, chăm sóc tăng cường, thay máu, IVIG và theo dõi sau điều trị.</p>
+        <div class="hero-actions">
+            <a class="hero-button primary" href="/"><i class="fas fa-calculator"></i> Mở máy tính bilirubin</a>
+            <a class="hero-button ghost" href="/xu-huong"><i class="fas fa-chart-line"></i> Theo dõi xu hướng</a>
         </div>
-        
-        <div class="hd-meta">
-            <strong>References:</strong> 
-            <ul>
-                <li>Kemper AR, et al. "Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation." <em>Pediatrics.</em> 2022;150(3):e2022058859.</li>
-                <li>NICE Clinical Guideline [CG98]. "Jaundice in newborn babies under 28 days." Updated October 2023.</li>
-            </ul>
+        <div class="hero-disclaimer"><i class="fas fa-triangle-exclamation"></i> Công cụ hỗ trợ lâm sàng, không thay thế thăm khám, phác đồ bệnh viện, hội chẩn sơ sinh hoặc quyết định cấp cứu.</div>
+    </section>
+
+    <section class="guide-grid metrics-grid">
+        <article class="metric-card reveal-card">
+            <span>Phạm vi AAP</span>
+            <strong>≥ 35 tuần</strong>
+            <p>Áp dụng đến 336 giờ tuổi, dùng đường cong theo tuổi thai và nguy cơ độc thần kinh.</p>
+        </article>
+        <article class="metric-card reveal-card delay-1">
+            <span>Phạm vi NICE</span>
+            <strong>&lt; 28 ngày</strong>
+            <p>Đánh giá vàng da trẻ sơ sinh dưới 28 ngày, gồm theo dõi, điều trị và vàng da kéo dài.</p>
+        </article>
+        <article class="metric-card reveal-card delay-2">
+            <span>Đơn vị chuẩn</span>
+            <strong>1 mg/dL = 17.104 µmol/L</strong>
+            <p>Luôn kiểm tra đơn vị xét nghiệm trước khi nhập dữ liệu và diễn giải kết quả.</p>
+        </article>
+    </section>
+
+    <section class="guide-section reveal-card">
+        <div class="section-label">01 · Quy trình thực hành</div>
+        <h2>Luồng đánh giá bilirubin an toàn</h2>
+        <div class="timeline-grid">
+            <div class="timeline-item"><b>1</b><h3>Xác định tuổi giờ</h3><p>Tính từ thời điểm sinh đến thời điểm lấy mẫu. Sai lệch giờ làm lệch ngưỡng điều trị.</p></div>
+            <div class="timeline-item"><b>2</b><h3>Nhập TSB/TcB đúng đơn vị</h3><p>Dùng bilirubin toàn phần. Khi quyết định điều trị, ưu tiên TSB theo quy trình xét nghiệm tại đơn vị.</p></div>
+            <div class="timeline-item"><b>3</b><h3>Chọn tuổi thai</h3><p>AAP dùng nhóm ≥35 tuần; NICE có bảng/công thức theo tuổi thai và tuổi sau sinh.</p></div>
+            <div class="timeline-item"><b>4</b><h3>Đánh dấu nguy cơ</h3><p>Phân biệt nguy cơ độc thần kinh AAP với yếu tố nguy cơ lâm sàng NICE.</p></div>
+            <div class="timeline-item"><b>5</b><h3>Đọc ngưỡng thấp hơn</h3><p>BiliTool.Vn tính song song hai phác đồ và hiển thị phác đồ quyết định để minh bạch.</p></div>
+            <div class="timeline-item"><b>6</b><h3>Lập kế hoạch theo dõi</h3><p>Hẹn kiểm tra lại theo khoảng cách đến ngưỡng, tốc độ tăng, nguy cơ rebound và tình trạng trẻ.</p></div>
         </div>
+    </section>
 
-        <!-- 1. Scope of Application -->
-        <section class="hd-section">
-            <h2>1. Scope of Application (Dual Protocol)</h2>
-            <p>The system combines two leading clinical guidelines (US and UK) to provide the safest guidance for infants:</p>
-            <ul class="hd-list">
-                <li><strong>AAP 2022:</strong> Applies to newborn infants <strong>≥ 35 weeks gestation</strong> and up to <strong>336 hours (14 days after birth)</strong>.</li>
-                <li><strong>NICE CG98:</strong> Applies to newborn infants <strong>up to 672 hours (28 days after birth)</strong>, supporting preterm infants and calculating exact thresholds via interpolation.</li>
-            </ul>
-            <p><em>Safety Principle of BiliTool.Vn: The algorithm calculates thresholds under both guidelines and automatically recommends the lower (stricter) treatment threshold.</em></p>
-        </section>
-
-        <!-- 2. Risk Assessment -->
-        <section class="hd-section">
-            <h2>2. Risk Factor Assessment</h2>
-            
-            <h3 class="mt-3" style="color: #2563eb;"><i class="fas fa-brain"></i> Neurotoxicity Risk Factors (AAP 2022)</h3>
-            <p>If <strong>ANY</strong> of these factors are present, the treatment threshold is automatically lowered:</p>
-            <ul class="hd-list">
-                <li><strong>Isoimmune hemolytic disease:</strong> ABO, Rh incompatibility, positive DAT (Coombs test).</li>
-                <li><strong>G6PD deficiency</strong> or other hemolytic disorders.</li>
-                <li><strong>Sepsis:</strong> Confirmed or suspected.</li>
-                <li><strong>Clinical instability:</strong> Shock, mechanical ventilation, asphyxia... in the past 24 hours.</li>
-                <li><strong>Low serum albumin:</strong> &lt; 3.0 g/dL.</li>
-            </ul>
-            <p><em>Note: Prematurity (35 - 37 weeks) is NOT marked as a risk factor here, as it is handled by separate gestational age curves.</em></p>
-
-            <h3 class="mt-4" style="color: #047857;"><i class="fas fa-notes-medical"></i> Clinical Risk Factors (NICE CG98)</h3>
-            <ul class="hd-list">
-                <li><strong>Jaundice visible within 24h:</strong> Red flag, monitor closely.</li>
-                <li><strong>Hemolytic disease (Rh/ABO):</strong> Assess for IVIG if TSB increases &gt; 8.5 µmol/L/hour.</li>
-                <li><strong>Kernicterus Risk:</strong> Emergency warning if TSB &gt; 340 µmol/L (for infants ≥37w), or increases &gt; 8.5 µmol/L/hour, or acute encephalopathy signs.</li>
-            </ul>
-        </section>
-
-        <!-- 3. Intervention Thresholds -->
-        <section class="hd-section">
-            <h2>3. Clinical Intervention Thresholds</h2>
-            <ul class="hd-list">
-                <li><strong>Phototherapy Threshold:</strong> TSB level to initiate blue light phototherapy.</li>
-                <li>
-                    <strong style="color: #c0392b;">Intensive Phototherapy (Escalation of Care):</strong> Indicated when TSB reaches:
-                    <ul>
-                        <li>AAP 2022: TSB is within <strong>2.0 mg/dL</strong> of the exchange transfusion threshold.</li>
-                        <li>NICE CG98: TSB is within <strong>50 µmol/L</strong> (~2.9 mg/dL) of the exchange transfusion threshold.</li>
-                    </ul>
-                </li>
-                <li><strong style="color: #8e1010;">Exchange Transfusion:</strong> Urgent exchange transfusion if TSB reaches threshold or infant shows signs of acute bilirubin encephalopathy.</li>
-            </ul>
-        </section>
-
-        <!-- 4. NICE CG98 Specific Recommendations -->
-        <section class="hd-section">
-            <h2>4. NICE CG98 Specific Recommendations</h2>
-            <ul class="hd-list">
-                <li><strong>Stopping phototherapy:</strong> Consider stopping once TSB falls <strong>≥ 50 µmol/L</strong> below the phototherapy threshold.</li>
-                <li><strong>Rebound check:</strong> Repeat bilirubin measurement <strong>12 - 18 hours</strong> after stopping phototherapy to check for rebound.</li>
-                <li>
-                    <strong>Prolonged Jaundice:</strong>
-                    <ul>
-                        <li>Term infants (≥ 37w): Jaundice lasting <strong>&gt; 14 days</strong>.</li>
-                        <li>Preterm infants (&lt; 37w): Jaundice lasting <strong>&gt; 21 days</strong>.</li>
-                        <li><em>Recommendation:</em> Test conjugated bilirubin, FBC, blood group, DAT, and screen for metabolic/thyroid disorders.</li>
-                    </ul>
-                </li>
-                <li><strong>IVIG Indication:</strong> Administer IVIG 500 mg/kg over 4 hours if Rh/ABO hemolytic disease is present AND TSB increases &gt; 8.5 µmol/L/hour.</li>
-            </ul>
-        </section>
-
-        <!-- 5. Look-up Tables -->
-        <section class="hd-section">
-            <h2>5. Phototherapy Thresholds Lookup Table (mg/dL) - AAP 2022</h2>
-            <p><em>(Swipe horizontally or scroll to view the full table)</em></p>
-            
-            <h3>A. INFANTS WITH NO NEUROTOXICITY RISK FACTORS</h3>
-            <div class="table-responsive">
-                <table class="table-nomogram table-normal">
-                    <thead>
-                        <tr>
-                            <th>Age</th>
-                            <th>35 Weeks</th>
-                            <th>36 Weeks</th>
-                            <th>37 Weeks</th>
-                            <th>38 Weeks</th>
-                            <th>39 Weeks</th>
-                            <th>≥ 40 Weeks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>12 hours</td><td>6.1</td><td>7.1</td><td>8.1</td><td>9.1</td><td>9.8</td><td>10.4</td></tr>
-                        <tr><td>24 hours</td><td>10.6</td><td>11.4</td><td>11.7</td><td>12.3</td><td>12.8</td><td>13.3</td></tr>
-                        <tr><td>48 hours</td><td>14.2</td><td>15.3</td><td>15.7</td><td>16.0</td><td>16.5</td><td>17.0</td></tr>
-                        <tr><td>72 hours</td><td>16.8</td><td>17.8</td><td>18.3</td><td>18.8</td><td>19.3</td><td>19.8</td></tr>
-                        <tr><td>96 hours</td><td>18.6</td><td>19.5</td><td>20.0</td><td>20.7</td><td>21.3</td><td>21.8</td></tr>
-                        <tr><td>120 hours</td><td>19.7</td><td>20.5</td><td>21.0</td><td>21.6</td><td>22.1</td><td>22.6</td></tr>
-                        <tr><td>≥ 144 hours</td><td>20.0</td><td>20.8</td><td>21.3</td><td>22.0</td><td>22.5</td><td>23.0</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3 class="mt-4">B. INFANTS WITH NEUROTOXICITY RISK FACTORS</h3>
-            <div class="table-responsive">
-                <table class="table-nomogram table-risk">
-                    <thead>
-                        <tr>
-                            <th>Age</th>
-                            <th>35 Weeks</th>
-                            <th>36 Weeks</th>
-                            <th>37 Weeks</th>
-                            <th>38 Weeks</th>
-                            <th>39 Weeks</th>
-                            <th>≥ 40 Weeks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>12 hours</td><td>4.3</td><td>5.2</td><td>6.1</td><td>7.1</td><td>7.8</td><td>8.5</td></tr>
-                        <tr><td>24 hours</td><td>8.9</td><td>9.5</td><td>10.0</td><td>10.5</td><td>10.5</td><td>10.5</td></tr>
-                        <tr><td>48 hours</td><td>12.2</td><td>13.0</td><td>13.5</td><td>14.0</td><td>14.0</td><td>14.0</td></tr>
-                        <tr><td>72 hours</td><td>14.6</td><td>15.3</td><td>15.8</td><td>16.6</td><td>16.6</td><td>16.6</td></tr>
-                        <tr><td>96 hours</td><td>16.1</td><td>16.9</td><td>17.4</td><td>18.2</td><td>18.2</td><td>18.2</td></tr>
-                        <tr><td>120 hours</td><td>17.0</td><td>17.8</td><td>18.3</td><td>19.1</td><td>19.1</td><td>19.1</td></tr>
-                        <tr><td>≥ 144 hours</td><td>17.5</td><td>18.3</td><td>18.8</td><td>19.5</td><td>19.5</td><td>19.5</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <p class="mt-3"><strong>Unit Conversion:</strong> <code>1 mg/dL = 17.104 μmol/L</code></p>
-        </section>
-    </div>
-}
-else if (lang == "fr")
-{
-    <PageTitle>Directives Cliniques pour l'Ictère Néonatal - AAP 2022 & NICE CG98 | BiliTool.Vn</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="Référence clinique: directives pour l'évaluation et le traitement de l'ictère néonatal selon AAP 2022 et NICE CG98. Seuils de photothérapie, exsanguino-transfusion, facteurs de risque, IVIG et rebond." />
-        <meta name="keywords" content="ictère néonatal, AAP 2022, NICE CG98, courbe bilirubine, seuil photothérapie, exsanguino-transfusion, risque neurotoxicité, G6PD, ictère nucléaire, rebond, IVIG" />
-        <link rel="canonical" href="https://bilitool.vn/huong-dan" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Directives Cliniques pour l'Ictère Néonatal — AAP 2022 & NICE CG98" />
-        <meta property="og:description" content="Seuils de bilirubine, facteurs de risque, photothérapie, exsanguino-transfusion et indications d'IVIG pour les nouveau-nés." />
-        <meta property="og:url" content="https://bilitool.vn/huong-dan" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Directives Cliniques pour l'Ictère Néonatal — AAP 2022 & NICE CG98" />
-        <meta name="twitter:description" content="Seuils de bilirubine et évaluation des risques pour les nouveau-nés selon les directives AAP et NICE." />
-    </HeadContent>
-
-    <div class="huong-dan-wrapper">
-        <div class="hd-header">
-            <i class="fas fa-book-medical"></i>
-            <h1>Directives Cliniques pour l'Ictère Néonatal (AAP 2022 & NICE CG98)</h1>
+    <section class="guide-section split-section reveal-card">
+        <div>
+            <div class="section-label">02 · AAP 2022</div>
+            <h2>Yếu tố nguy cơ độc thần kinh</h2>
+            <p class="section-intro">Khi có yếu tố nguy cơ, ngưỡng chiếu đèn và ngưỡng chăm sóc tăng cường thấp hơn. Tuổi thai thấp đã được phản ánh trong đường cong tuổi thai; không đánh dấu lặp nếu phần mềm đã chọn tuổi thai.</p>
         </div>
-        
-        <div class="hd-meta">
-            <strong>Références:</strong> 
-            <ul>
-                <li>Kemper AR, et al. "Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation." <em>Pediatrics.</em> 2022;150(3):e2022058859.</li>
-                <li>NICE Clinical Guideline [CG98]. "Jaundice in newborn babies under 28 days." Mis à jour en Octobre 2023.</li>
-            </ul>
+        <div class="risk-list">
+            <div><i class="fas fa-vial-circle-check"></i><span>Albumin huyết thanh <strong>&lt; 3.0 g/dL</strong> khi có chỉ định đo hoặc trẻ đạt vùng chăm sóc tăng cường.</span></div>
+            <div><i class="fas fa-droplet"></i><span>Bệnh tan huyết miễn dịch, thiếu G6PD hoặc tình trạng tan huyết khác đã biết/nghi ngờ.</span></div>
+            <div><i class="fas fa-bacteria"></i><span>Nhiễm khuẩn huyết xác định hoặc nghi ngờ.</span></div>
+            <div><i class="fas fa-heart-pulse"></i><span>Tình trạng lâm sàng không ổn định đáng kể trong 24 giờ trước đó.</span></div>
+            <div><i class="fas fa-chart-line"></i><span>Tốc độ tăng gợi ý tan huyết: <strong>&gt;0.3 mg/dL/giờ</strong> trong 24 giờ đầu hoặc <strong>&gt;0.2 mg/dL/giờ</strong> sau đó.</span></div>
         </div>
+    </section>
 
-        <!-- 1. Champ d'application -->
-        <section class="hd-section">
-            <h2>1. Champ d'application (Double Protocole)</h2>
-            <p>Le système combine les deux protocoles leaders mondiaux (États-Unis et Royaume-Uni) afin d'assurer la plus grande sécurité pour le nourrisson :</p>
-            <ul class="hd-list">
-                <li><strong>AAP 2022:</strong> S'applique aux nouveau-nés <strong>≥ 35 semaines de gestation</strong> et jusqu'à <strong>336 heures (14 jours après la naissance)</strong>.</li>
-                <li><strong>NICE CG98:</strong> S'applique aux nouveau-nés <strong>jusqu'à 672 heures (28 jours après la naissance)</strong>, prenant en charge les prématurés et calculant les seuils par interpolation précise.</li>
-            </ul>
-            <p><em>Principe de sécurité de BiliTool.Vn: L'algorithme calcule les seuils en parallèle selon les deux directives et sélectionne automatiquement le seuil d'intervention le plus bas (le plus strict).</em></p>
-        </section>
-
-        <!-- 2. Évaluation des Facteurs de Risque -->
-        <section class="hd-section">
-            <h2>2. Évaluation des Facteurs de Risque</h2>
-            
-            <h3 class="mt-3" style="color: #2563eb;"><i class="fas fa-brain"></i> Facteurs de Risque de Neurotoxicité (AAP 2022)</h3>
-            <p>Si <strong>L'UN</strong> de ces facteurs est présent, le seuil de traitement est automatiquement abaissé :</p>
-            <ul class="hd-list">
-                <li><strong>Maladie hémolytique iso-immune:</strong> Incompatibilité ABO, Rh, test de Coombs (DAT) positif.</li>
-                <li><strong>Déficit en G6PD</strong> ou autres maladies hémolytiques.</li>
-                <li><strong>Sepsie:</strong> Confirmée ou suspectée.</li>
-                <li><strong>Instabilité clinique:</strong> Choc, ventilation mécanique, asphyxie... au cours des dernières 24 heures.</li>
-                <li><strong>Albumine sérique basse:</strong> &lt; 3.0 g/dL.</li>
-            </ul>
-            <p><em>Remarque: La prématurité (35 - 37 semaines) n'est PAS cochée comme facteur de risque ici, car elle est prise en charge par des courbes de seuil distinctes.</em></p>
-
-            <h3 class="mt-4" style="color: #047857;"><i class="fas fa-notes-medical"></i> Facteurs de Risque Clinique (NICE CG98)</h3>
-            <ul class="hd-list">
-                <li><strong>Ictère visible dans les premières 24h:</strong> Signe d'alerte, à surveiller de près.</li>
-                <li><strong>Maladie hémolytique (Rh/ABO):</strong> Évaluer pour IVIG si la bilirubine totale augmente de &gt; 8.5 µmol/L/heure.</li>
-                <li><strong>Risque d'ictère nucléaire:</strong> Alerte d'urgence si la bilirubine totale &gt; 340 µmol/L (nourrisson ≥37w), ou augmente de &gt; 8.5 µmol/L/heure, ou signes d'encéphalopathie aiguë.</li>
-            </ul>
-        </section>
-
-        <!-- 3. Seuils d'Intervention -->
-        <section class="hd-section">
-            <h2>3. Seuils d'Intervention Clinique</h2>
-            <ul class="hd-list">
-                <li><strong>Seuil de photothérapie:</strong> Niveau de bilirubine totale pour débuter la photothérapie par lumière bleue.</li>
-                <li>
-                    <strong style="color: #c0392b;">Photothérapie intensive (Escalation of Care):</strong> Indiquée lorsque la bilirubine totale atteint :
-                    <ul>
-                        <li>AAP 2022: La bilirubine totale est à moins de <strong>2.0 mg/dL</strong> du seuil d'exsanguino-transfusion.</li>
-                        <li>NICE CG98: La bilirubine totale est à moins de <strong>50 µmol/L</strong> (~2.9 mg/dL) du seuil d'exsanguino-transfusion.</li>
-                    </ul>
-                </li>
-                <li><strong style="color: #8e1010;">Exsanguino-transfusion:</strong> Procédure d'urgence si la bilirubine totale atteint le seuil ou si le nourrisson présente des signes d'encéphalopathie aiguë.</li>
-            </ul>
-        </section>
-
-        <!-- 4. Recommandations Spécifiques NICE CG98 -->
-        <section class="hd-section">
-            <h2>4. Recommandations Spécifiques NICE CG98</h2>
-            <ul class="hd-list">
-                <li><strong>Arrêt de la photothérapie:</strong> Envisager l'arrêt lorsque la bilirubine totale descend à <strong>≥ 50 µmol/L</strong> sous le seuil de photothérapie.</li>
-                <li><strong>Contrôle rebond:</strong> Mesurer à nouveau la bilirubine <strong>12 - 18 heures</strong> après l'arrêt pour détecter un effet rebond.</li>
-                <li>
-                    <strong>Ictère prolongé:</strong>
-                    <ul>
-                        <li>Nourrisson à terme (≥ 37w): Ictère durant <strong>&gt; 14 jours</strong>.</li>
-                        <li>Nourrisson prématuré (&lt; 37w): Ictère durant <strong>&gt; 21 jours</strong>.</li>
-                        <li><em>Recommandation:</em> Doser la bilirubine conjuguée, NFS, groupe sanguin, DAT, et dépistage métabolique/thyroïdien.</li>
-                    </ul>
-                </li>
-                <li><strong>Indication IVIG:</strong> Administrer IVIG 500 mg/kg sur 4 heures si maladie hémolytique Rh/ABO ET augmentation de la bilirubine totale &gt; 8.5 µmol/L/heure.</li>
-            </ul>
-        </section>
-
-        <!-- 5. Tableaux de Référence -->
-        <section class="hd-section">
-            <h2>5. Tableaux des Seuils de Photothérapie (mg/dL) - AAP 2022</h2>
-            <p><em>(Glissez horizontalement ou faites défiler pour voir le tableau complet)</em></p>
-            
-            <h3>A. NOURRISSONS SANS FACTEURS DE RISQUE DE NEUROTOXICITÉ</h3>
-            <div class="table-responsive">
-                <table class="table-nomogram table-normal">
-                    <thead>
-                        <tr>
-                            <th>Âge</th>
-                            <th>35 Semaines</th>
-                            <th>36 Semaines</th>
-                            <th>37 Semaines</th>
-                            <th>38 Semaines</th>
-                            <th>39 Semaines</th>
-                            <th>≥ 40 Semaines</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>12 heures</td><td>6.1</td><td>7.1</td><td>8.1</td><td>9.1</td><td>9.8</td><td>10.4</td></tr>
-                        <tr><td>24 heures</td><td>10.6</td><td>11.4</td><td>11.7</td><td>12.3</td><td>12.8</td><td>13.3</td></tr>
-                        <tr><td>48 heures</td><td>14.2</td><td>15.3</td><td>15.7</td><td>16.0</td><td>16.5</td><td>17.0</td></tr>
-                        <tr><td>72 heures</td><td>16.8</td><td>17.8</td><td>18.3</td><td>18.8</td><td>19.3</td><td>19.8</td></tr>
-                        <tr><td>96 heures</td><td>18.6</td><td>19.5</td><td>20.0</td><td>20.7</td><td>21.3</td><td>21.8</td></tr>
-                        <tr><td>120 heures</td><td>19.7</td><td>20.5</td><td>21.0</td><td>21.6</td><td>22.1</td><td>22.6</td></tr>
-                        <tr><td>≥ 144 heures</td><td>20.0</td><td>20.8</td><td>21.3</td><td>22.0</td><td>22.5</td><td>23.0</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3 class="mt-4">B. NOURRISSONS AVEC FACTEURS DE RISQUE DE NEUROTOXICITÉ</h3>
-            <div class="table-responsive">
-                <table class="table-nomogram table-risk">
-                    <thead>
-                        <tr>
-                            <th>Âge</th>
-                            <th>35 Semaines</th>
-                            <th>36 Semaines</th>
-                            <th>37 Semaines</th>
-                            <th>38 Semaines</th>
-                            <th>39 Semaines</th>
-                            <th>≥ 40 Semaines</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>12 heures</td><td>4.3</td><td>5.2</td><td>6.1</td><td>7.1</td><td>7.8</td><td>8.5</td></tr>
-                        <tr><td>24 heures</td><td>8.9</td><td>9.5</td><td>10.0</td><td>10.5</td><td>10.5</td><td>10.5</td></tr>
-                        <tr><td>48 heures</td><td>12.2</td><td>13.0</td><td>13.5</td><td>14.0</td><td>14.0</td><td>14.0</td></tr>
-                        <tr><td>72 heures</td><td>14.6</td><td>15.3</td><td>15.8</td><td>16.6</td><td>16.6</td><td>16.6</td></tr>
-                        <tr><td>96 heures</td><td>16.1</td><td>16.9</td><td>17.4</td><td>18.2</td><td>18.2</td><td>18.2</td></tr>
-                        <tr><td>120 heures</td><td>17.0</td><td>17.8</td><td>18.3</td><td>19.1</td><td>19.1</td><td>19.1</td></tr>
-                        <tr><td>≥ 144 heures</td><td>17.5</td><td>18.3</td><td>18.8</td><td>19.5</td><td>19.5</td><td>19.5</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <p class="mt-3"><strong>Conversion d'unités:</strong> <code>1 mg/dL = 17.104 μmol/L</code></p>
-        </section>
-    </div>
-}
-else
-{
-    <PageTitle>Hướng Dẫn Lâm Sàng Điều Trị Vàng Da Sơ Sinh — AAP 2022 & NICE CG98 | BiliTool.Vn</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="Tài liệu tra cứu y khoa: phác đồ đánh giá và điều trị vàng da sơ sinh theo AAP 2022 và NICE CG98. Bảng tra ngưỡng chiếu đèn, ngưỡng thay máu, yếu tố nguy cơ thần kinh, chỉ định IVIG, kiểm tra rebound bilirubin." />
-        <meta name="keywords" content="phác đồ vàng da sơ sinh, AAP 2022, NICE CG98, bảng tra bilirubin, ngưỡng chiếu đèn, ngưỡng thay máu, yếu tố nguy cơ thần kinh, G6PD, kernicterus, rebound bilirubin, IVIG" />
-        <link rel="canonical" href="https://bilitool.vn/huong-dan" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Hướng Dẫn Lâm Sàng Điều Trị Vàng Da Sơ Sinh — AAP 2022 & NICE CG98" />
-        <meta property="og:description" content="Bảng tra ngưỡng bilirubin, yếu tố nguy cơ, chỉ định chiếu đèn, thay máu và IVIG cho trẻ sơ sinh." />
-        <meta property="og:url" content="https://bilitool.vn/huong-dan" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Hướng Dẫn Lâm Sàng Vàng Da Sơ Sinh — AAP 2022 & NICE CG98" />
-        <meta name="twitter:description" content="Phác đồ, bảng tra ngưỡng bilirubin và yếu tố nguy cơ cho trẻ sơ sinh." />
-        <script type="application/ld+json">
-        {
-            "@@context": "https://schema.org",
-            "@@type": "MedicalWebPage",
-            "name": "Hướng dẫn lâm sàng điều trị vàng da sơ sinh (AAP 2022 & NICE CG98)",
-            "url": "https://bilitool.vn/huong-dan",
-            "description": "Tài liệu tra cứu y khoa phác đồ đánh giá và điều trị vàng da sơ sinh",
-            "about": {
-                "@@type": "MedicalCondition",
-                "name": "Neonatal Hyperbilirubinemia",
-                "alternateName": "Vàng da tăng bilirubin sơ sinh"
-            },
-            "lastReviewed": "2024-01-01",
-            "medicalAudience": { "@@type": "MedicalAudience", "audienceType": "Clinician" },
-            "citation": [
-                "Kemper AR, et al. Pediatrics. 2022;150(3):e2022058859",
-                "NICE CG98. Jaundice in newborn babies under 28 days. Updated Oct 2023"
-            ]
-        }
-        </script>
-    </HeadContent>
-
-    <div class="huong-dan-wrapper">
-        <div class="hd-header">
-            <i class="fas fa-book-medical"></i>
-            <h1>Hướng dẫn Lâm sàng Điều trị Vàng Da Sơ Sinh (AAP 2022 & NICE CG98)</h1>
+    <section class="guide-section reveal-card">
+        <div class="section-label">03 · Mốc can thiệp</div>
+        <h2>Diễn giải kết quả và hành động</h2>
+        <div class="action-grid">
+            <article><span class="badge safe">Theo dõi</span><h3>Dưới ngưỡng chiếu đèn</h3><p>Đánh giá khoảng cách đến ngưỡng, tuổi giờ, tuổi thai, bú kém, sụt cân, vàng da trong 24 giờ đầu và khả năng tái khám.</p></article>
+            <article><span class="badge treat">Chiếu đèn</span><h3>TSB đạt ngưỡng</h3><p>Bắt đầu chiếu đèn theo phác đồ đơn vị. Đảm bảo cường độ, diện tích da tiếp xúc, bảo vệ mắt và theo dõi nhiệt độ, nước tiểu, bú.</p></article>
+            <article><span class="badge escalate">Escalation</span><h3>Cách ngưỡng thay máu 2 mg/dL</h3><p>AAP định nghĩa chăm sóc tăng cường khi TSB đạt mức thấp hơn ngưỡng thay máu 2 mg/dL. Cần hồi sức, chiếu đèn tích cực, xét nghiệm và hội chẩn.</p></article>
+            <article><span class="badge danger">Cấp cứu</span><h3>Đạt ngưỡng thay máu hoặc bệnh não</h3><p>Chuẩn bị thay máu, hội chẩn sơ sinh/hồi sức, không trì hoãn nếu có dấu hiệu bệnh não bilirubin cấp tính.</p></article>
         </div>
-        
-        <div class="hd-meta">
-            <strong>Tài liệu tham khảo:</strong> 
-            <ul>
-                <li>Kemper AR, et al. "Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation." <em>Pediatrics.</em> 2022;150(3):e2022058859.</li>
-                <li>NICE Clinical Guideline [CG98]. "Jaundice in newborn babies under 28 days." Updated October 2023.</li>
-            </ul>
+    </section>
+
+    <section class="guide-section reveal-card">
+        <div class="section-label">04 · NICE CG98</div>
+        <h2>Theo dõi, dừng điều trị và IVIG</h2>
+        <div class="nice-panel">
+            <div><h3><i class="fas fa-eye"></i> Nhận diện vàng da</h3><p>Khám dưới ánh sáng tốt; thay đổi màu da có thể khó nhận biết hơn ở trẻ da sẫm màu. Vàng da trong 24 giờ đầu là dấu hiệu cần đánh giá khẩn.</p></div>
+            <div><h3><i class="fas fa-stopwatch"></i> Dừng chiếu đèn</h3><p>Cân nhắc dừng khi bilirubin giảm ≥50 µmol/L dưới ngưỡng chiếu đèn, sau đó kiểm tra rebound sau 12–18 giờ theo NICE.</p></div>
+            <div><h3><i class="fas fa-syringe"></i> IVIG</h3><p>Xem xét IVIG 500 mg/kg trong 4 giờ khi tan huyết Rh/ABO và bilirubin tiếp tục tăng &gt;8.5 µmol/L/giờ dù đã chiếu đèn tích cực.</p></div>
+            <div><h3><i class="fas fa-calendar-days"></i> Vàng da kéo dài</h3><p>Đánh giá nếu vàng da &gt;14 ngày ở trẻ ≥37 tuần hoặc &gt;21 ngày ở trẻ &lt;37 tuần; kiểm tra bilirubin liên hợp và nguyên nhân nền.</p></div>
         </div>
+    </section>
 
-        <!-- 1. Phạm vi áp dụng -->
-        <section class="hd-section">
-            <h2>1. Phạm vi áp dụng (Dual Protocol)</h2>
-            <p>Hệ thống kết hợp cả hai phác đồ hàng đầu thế giới (Mỹ và Anh) nhằm đưa ra cảnh báo an toàn nhất cho trẻ:</p>
-            <ul class="hd-list">
-                <li><strong>AAP 2022:</strong> Áp dụng cho trẻ sơ sinh <strong>≥ 35 tuần thai</strong> VÀ trong khoảng thời gian <strong>đến 336 giờ (14 ngày sau sinh)</strong>.</li>
-                <li><strong>NICE CG98:</strong> Áp dụng cho trẻ sơ sinh <strong>đến 672 giờ (28 ngày sau sinh)</strong>, hỗ trợ cả trẻ đẻ non và tính toán ngưỡng theo công thức nội suy chính xác.</li>
-            </ul>
-            <p><em>Nguyên tắc an toàn của BiliTool.Vn: Thuật toán luôn tính toán song song theo 2 phác đồ và tự động chọn <strong>ngưỡng điều trị thấp hơn (khắt khe hơn)</strong>.</em></p>
-        </section>
+    <section class="guide-section warning-section reveal-card">
+        <div class="section-label">05 · Cờ đỏ</div>
+        <h2>Dấu hiệu cần xử trí khẩn</h2>
+        <div class="red-flag-grid">
+            <span>Vàng da trong 24 giờ đầu</span>
+            <span>Bú kém, li bì, giảm trương lực hoặc tăng trương lực</span>
+            <span>Khóc thét, ưỡn người, co giật</span>
+            <span>Sốt/hạ thân nhiệt, nghi nhiễm khuẩn</span>
+            <span>Thiếu máu, gan lách to, nước tiểu sẫm</span>
+            <span>TSB tăng nhanh hoặc gần ngưỡng thay máu</span>
+        </div>
+    </section>
 
-        <!-- 2. Yếu tố nguy cơ -->
-        <section class="hd-section">
-            <h2>2. Đánh giá Yếu tố nguy cơ</h2>
-            
-            <h3 class="mt-3" style="color: #2563eb;"><i class="fas fa-brain"></i> Nguy cơ độc thần kinh (AAP 2022)</h3>
-            <p>Nếu có <strong>BẤT KỲ</strong> yếu tố nào dưới đây, ngưỡng điều trị sẽ tự động hạ thấp:</p>
-            <ul class="hd-list">
-                <li><strong>Bệnh tan huyết miễn dịch đồng loài:</strong> Bất đồng nhóm máu ABO, Rh, có test Coombs (DAT) dương tính.</li>
-                <li><strong>Thiếu men G6PD</strong> hoặc các bệnh lý tan máu khác.</li>
-                <li><strong>Nhiễm khuẩn huyết:</strong> Có xác nhận hoặc nghi ngờ.</li>
-                <li><strong>Tình trạng lâm sàng không ổn định:</strong> Sốc, thở máy, ngạt... trong vòng 24h qua.</li>
-                <li><strong>Albumin máu thấp:</strong> &lt; 3.0 g/dL.</li>
-            </ul>
-            <p><em>Lưu ý: Sinh non (35 - 37 tuần) KHÔNG phải là một yếu tố nguy cơ cấn đánh dấu trong mục này, vì điều đó đã được xử lý bằng các đường cong ngưỡng khác nhau dựa trên tuổi thai.</em></p>
+    <section class="guide-section reveal-card">
+        <div class="section-label">06 · Bảng tra nhanh AAP 2022</div>
+        <h2>Ngưỡng chiếu đèn tham khảo (mg/dL)</h2>
+        <p class="section-intro">Bảng rút gọn giúp kiểm tra nhanh. Khi ra quyết định, dùng máy tính theo tuổi giờ chính xác và bối cảnh lâm sàng.</p>
+        <h3 class="table-title">A. Không có yếu tố nguy cơ độc thần kinh</h3>
+        <div class="table-responsive elegant-table">
+            <table class="table-nomogram table-normal">
+                <thead><tr><th>Giờ tuổi</th><th>35 tuần</th><th>36 tuần</th><th>37 tuần</th><th>38 tuần</th><th>39 tuần</th><th>≥40 tuần</th></tr></thead>
+                <tbody>
+                    <tr><td>12 giờ</td><td>6.1</td><td>7.1</td><td>8.1</td><td>9.1</td><td>9.8</td><td>10.4</td></tr>
+                    <tr><td>24 giờ</td><td>10.6</td><td>11.4</td><td>11.7</td><td>12.3</td><td>12.8</td><td>13.3</td></tr>
+                    <tr><td>48 giờ</td><td>14.2</td><td>15.3</td><td>15.7</td><td>16.0</td><td>16.5</td><td>17.0</td></tr>
+                    <tr><td>72 giờ</td><td>16.8</td><td>17.8</td><td>18.3</td><td>18.8</td><td>19.3</td><td>19.8</td></tr>
+                    <tr><td>96 giờ</td><td>18.6</td><td>19.5</td><td>20.0</td><td>20.7</td><td>21.3</td><td>21.8</td></tr>
+                    <tr><td>120 giờ</td><td>19.7</td><td>20.5</td><td>21.0</td><td>21.6</td><td>22.1</td><td>22.6</td></tr>
+                    <tr><td>≥144 giờ</td><td>20.0</td><td>20.8</td><td>21.3</td><td>22.0</td><td>22.5</td><td>23.0</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <h3 class="table-title">B. Có yếu tố nguy cơ độc thần kinh</h3>
+        <div class="table-responsive elegant-table">
+            <table class="table-nomogram table-risk">
+                <thead><tr><th>Giờ tuổi</th><th>35 tuần</th><th>36 tuần</th><th>37 tuần</th><th>38 tuần</th><th>39 tuần</th><th>≥40 tuần</th></tr></thead>
+                <tbody>
+                    <tr><td>12 giờ</td><td>4.3</td><td>5.2</td><td>6.1</td><td>7.1</td><td>7.8</td><td>8.5</td></tr>
+                    <tr><td>24 giờ</td><td>8.9</td><td>9.5</td><td>10.0</td><td>10.5</td><td>10.5</td><td>10.5</td></tr>
+                    <tr><td>48 giờ</td><td>12.2</td><td>13.0</td><td>13.5</td><td>14.0</td><td>14.0</td><td>14.0</td></tr>
+                    <tr><td>72 giờ</td><td>14.6</td><td>15.3</td><td>15.8</td><td>16.6</td><td>16.6</td><td>16.6</td></tr>
+                    <tr><td>96 giờ</td><td>16.1</td><td>16.9</td><td>17.4</td><td>18.2</td><td>18.2</td><td>18.2</td></tr>
+                    <tr><td>120 giờ</td><td>17.0</td><td>17.8</td><td>18.3</td><td>19.1</td><td>19.1</td><td>19.1</td></tr>
+                    <tr><td>≥144 giờ</td><td>17.5</td><td>18.3</td><td>18.8</td><td>19.5</td><td>19.5</td><td>19.5</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
-            <h3 class="mt-4" style="color: #047857;"><i class="fas fa-notes-medical"></i> Nguy cơ lâm sàng (NICE CG98)</h3>
-            <ul class="hd-list">
-                <li><strong>Vàng da trong 24h đầu:</strong> Dấu hiệu nguy hiểm, cần theo dõi sát.</li>
-                <li><strong>Bệnh tan huyết (Rh/ABO):</strong> Chỉ định xem xét truyền IVIG nếu TSB tăng &gt; 8.5 µmol/L/giờ.</li>
-                <li><strong>Nguy cơ Kernicterus:</strong> Cảnh báo khẩn cấp khi TSB &gt; 340 µmol/L (trẻ ≥37w), hoặc tăng nhanh &gt; 8.5 µmol/L/giờ, hoặc có dấu hiệu bệnh não.</li>
-            </ul>
-        </section>
+    <section class="guide-section reveal-card">
+        <div class="section-label">07 · Tài liệu gốc</div>
+        <h2>Nguồn tham khảo</h2>
+        <div class="reference-grid">
+            <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i><strong>AAP 2022</strong><span>Kemper AR, et al. Pediatrics 2022;150(3):e2022058859.</span></a>
+            <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" rel="noopener"><i class="fas fa-arrow-up-right-from-square"></i><strong>NICE CG98</strong><span>Jaundice in newborn babies under 28 days. Last updated 31 October 2023.</span></a>
+            <a href="/mien-tru-trach-nhiem"><i class="fas fa-shield-heart"></i><strong>Miễn trừ trách nhiệm</strong><span>Đọc nguyên tắc an toàn và giới hạn sử dụng BiliTool.Vn.</span></a>
+        </div>
+    </section>
+</div>
 
-        <!-- 3. Cấu trúc ngưỡng -->
-        <section class="hd-section">
-            <h2>3. Các mốc Can thiệp Lâm sàng</h2>
-            <ul class="hd-list">
-                <li><strong>Ngưỡng chiếu đèn:</strong> Mức TSB bắt đầu yêu cầu thực hiện chiếu đèn ánh sáng xanh.</li>
-                <li>
-                    <strong style="color: #c0392b;">Chiếu đèn tích cực (Escalation of Care):</strong> Yêu cầu chiếu đèn tăng cường tối đa, hội chẩn và chuẩn bị sẵn sàng thay máu.
-                    <ul>
-                        <li>Theo AAP 2022: TSB chạm mức <strong>[Ngưỡng thay máu - 2.0 mg/dL]</strong>.</li>
-                        <li>Theo NICE CG98: TSB chạm mức <strong>[Ngưỡng thay máu - 50 µmol/L]</strong> (~2.9 mg/dL).</li>
-                    </ul>
-                </li>
-                <li><strong style="color: #8e1010;">Ngưỡng thay máu (Exchange Transfusion):</strong> Khẩn cấp thay máu nếu TSB chạm ngưỡng hoặc trẻ có biểu hiện bệnh não bilirubin cấp tính.</li>
-            </ul>
-        </section>
+<style>
+    .clinical-guide {
+        --ink: #07111f;
+        --muted: #546376;
+        --line: rgba(15, 95, 143, .16);
+        --blue: #0f5f8f;
+        --teal: #0f766e;
+        --green: #17693a;
+        --amber: #b7791f;
+        --red: #b42318;
+        --paper: rgba(255,255,255,.92);
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+        color: var(--ink);
+        font-family: "Aptos", "Segoe UI Variable", "Segoe UI", sans-serif;
+        background:
+            radial-gradient(circle at 8% 0%, rgba(15,118,110,.16), transparent 34%),
+            radial-gradient(circle at 92% 12%, rgba(15,95,143,.13), transparent 38%);
+    }
 
-        <!-- 4. Các hướng dẫn cụ thể theo NICE CG98 -->
-        <section class="hd-section">
-            <h2>4. Khuyến nghị theo NICE CG98</h2>
-            <ul class="hd-list">
-                <li><strong>Dừng chiếu đèn:</strong> Xem xét dừng khi TSB giảm <strong>≥ 50 µmol/L</strong> dưới ngưỡng chiếu đèn.</li>
-                <li><strong>Rebound check:</strong> Đo lại bilirubin <strong>12 - 18 giờ</strong> sau khi ngừng chiếu đèn để kiểm tra hiện tượng dội lại.</li>
-                <li>
-                    <strong>Vàng da kéo dài (Prolonged Jaundice):</strong>
-                    <ul>
-                        <li>Trẻ ≥ 37 tuần: Vàng da kéo dài <strong>&gt; 14 ngày</strong>.</li>
-                        <li>Trẻ &lt; 37 tuần: Vàng da kéo dài <strong>&gt; 21 ngày</strong>.</li>
-                        <li><em>Khuyến nghị:</em> Kiểm tra bilirubin liên hợp (conjugated), FBC, nhóm máu, DAT, và sàng lọc chuyển hóa/tuyến giáp.</li>
-                    </ul>
-                </li>
-                <li><strong>Chỉ định IVIG:</strong> Truyền IVIG 500 mg/kg trong 4 giờ nếu có bệnh tan huyết Rh/ABO VÀ bilirubin tăng &gt; 8.5 µmol/L/giờ.</li>
-            </ul>
-        </section>
+    .guide-hero, .guide-section, .metric-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: linear-gradient(145deg, rgba(255,255,255,.96), rgba(248,252,255,.84));
+        box-shadow: 0 24px 70px rgba(7,17,31,.09);
+        backdrop-filter: blur(18px);
+    }
 
-        <!-- 5. Bảng Tra Cứu AAP 2022 -->
-        <section class="hd-section">
-            <h2>5. Bảng tra cứu Ngưỡng Chiếu Đèn (mg/dL) - AAP 2022</h2>
-            <p><em>(Vuốt ngang bảng hoặc dùng thanh cuộn để xem đầy đủ)</em></p>
-            
-            <h3>A. TRẺ KHÔNG CÓ YẾU TỐ NGUY CƠ THẦN KINH</h3>
-            <div class="table-responsive">
-                <table class="table-nomogram table-normal">
-                    <thead>
-                        <tr>
-                            <th>Giờ tuổi</th>
-                            <th>35 Tuần</th>
-                            <th>36 Tuần</th>
-                            <th>37 Tuần</th>
-                            <th>38 Tuần</th>
-                            <th>39 Tuần</th>
-                            <th>≥ 40 Tuần</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>12 giờ</td><td>6.1</td><td>7.1</td><td>8.1</td><td>9.1</td><td>9.8</td><td>10.4</td></tr>
-                        <tr><td>24 giờ</td><td>10.6</td><td>11.4</td><td>11.7</td><td>12.3</td><td>12.8</td><td>13.3</td></tr>
-                        <tr><td>48 giờ</td><td>14.2</td><td>15.3</td><td>15.7</td><td>16.0</td><td>16.5</td><td>17.0</td></tr>
-                        <tr><td>72 giờ</td><td>16.8</td><td>17.8</td><td>18.3</td><td>18.8</td><td>19.3</td><td>19.8</td></tr>
-                        <tr><td>96 giờ</td><td>18.6</td><td>19.5</td><td>20.0</td><td>20.7</td><td>21.3</td><td>21.8</td></tr>
-                        <tr><td>120 giờ</td><td>19.7</td><td>20.5</td><td>21.0</td><td>21.6</td><td>22.1</td><td>22.6</td></tr>
-                        <tr><td>≥ 144 giờ</td><td>20.0</td><td>20.8</td><td>21.3</td><td>22.0</td><td>22.5</td><td>23.0</td></tr>
-                    </tbody>
-                </table>
-            </div>
+    .guide-hero { padding: clamp(2rem, 5vw, 4.6rem); min-height: 420px; }
+    .hero-orb { position: absolute; border-radius: 999px; filter: blur(4px); opacity: .72; }
+    .hero-orb-a { width: 260px; height: 260px; right: -76px; top: -70px; background: radial-gradient(circle, rgba(15,118,110,.3), transparent 66%); }
+    .hero-orb-b { width: 220px; height: 220px; left: 42%; bottom: -120px; background: radial-gradient(circle, rgba(183,121,31,.2), transparent 70%); }
 
-            <h3 class="mt-4">B. TRẺ CÓ YẾU TỐ NGUY CƠ THẦN KINH</h3>
-            <div class="table-responsive">
-                <table class="table-nomogram table-risk">
-                    <thead>
-                        <tr>
-                            <th>Giờ tuổi</th>
-                            <th>35 Tuần</th>
-                            <th>36 Tuần</th>
-                            <th>37 Tuần</th>
-                            <th>38 Tuần</th>
-                            <th>39 Tuần</th>
-                            <th>≥ 40 Tuần</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>12 giờ</td><td>4.3</td><td>5.2</td><td>6.1</td><td>7.1</td><td>7.8</td><td>8.5</td></tr>
-                        <tr><td>24 giờ</td><td>8.9</td><td>9.5</td><td>10.0</td><td>10.5</td><td>10.5</td><td>10.5</td></tr>
-                        <tr><td>48 giờ</td><td>12.2</td><td>13.0</td><td>13.5</td><td>14.0</td><td>14.0</td><td>14.0</td></tr>
-                        <tr><td>72 giờ</td><td>14.6</td><td>15.3</td><td>15.8</td><td>16.6</td><td>16.6</td><td>16.6</td></tr>
-                        <tr><td>96 giờ</td><td>16.1</td><td>16.9</td><td>17.4</td><td>18.2</td><td>18.2</td><td>18.2</td></tr>
-                        <tr><td>120 giờ</td><td>17.0</td><td>17.8</td><td>18.3</td><td>19.1</td><td>19.1</td><td>19.1</td></tr>
-                        <tr><td>≥ 144 giờ</td><td>17.5</td><td>18.3</td><td>18.8</td><td>19.5</td><td>19.5</td><td>19.5</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <p class="mt-3"><strong>Chuyển đổi đơn vị:</strong> <code>1 mg/dL = 17.104 μmol/L</code></p>
-        </section>
-    </div>
-}
+    .guide-kicker, .section-label { letter-spacing: .13em; text-transform: uppercase; font-size: .78rem; font-weight: 800; color: var(--teal); }
+    .guide-kicker i { margin-right: .45rem; }
+    .guide-hero h1 { max-width: 840px; margin: .8rem 0 1rem; font-size: clamp(2.35rem, 6vw, 5.25rem); line-height: .98; letter-spacing: -.06em; font-weight: 900; }
+    .hero-lead { max-width: 780px; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.78; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin: 1.8rem 0; }
+    .hero-button { display: inline-flex; gap: .55rem; align-items: center; padding: .9rem 1.2rem; border-radius: 999px; font-weight: 800; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+    .hero-button:hover { transform: translateY(-2px); }
+    .hero-button.primary { color: white; background: linear-gradient(135deg, var(--blue), var(--teal)); box-shadow: 0 18px 36px rgba(15,95,143,.24); }
+    .hero-button.ghost { color: var(--blue); background: white; border: 1px solid var(--line); }
+    .hero-disclaimer { display: inline-flex; gap: .6rem; max-width: 880px; padding: .9rem 1rem; border-radius: 18px; background: rgba(180,35,24,.08); color: #7a271a; font-weight: 700; }
+
+    .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+    .metric-card { padding: 1.35rem; }
+    .metric-card span { color: var(--muted); font-weight: 800; font-size: .86rem; }
+    .metric-card strong { display: block; margin: .35rem 0; font-size: 1.45rem; letter-spacing: -.03em; }
+    .metric-card p, .guide-section p { color: var(--muted); line-height: 1.72; }
+
+    .guide-section { margin-top: 1rem; padding: clamp(1.35rem, 3vw, 2.2rem); }
+    .guide-section h2 { margin: .35rem 0 1rem; font-size: clamp(1.65rem, 3vw, 2.55rem); letter-spacing: -.04em; }
+    .section-intro { max-width: 900px; }
+    .timeline-grid, .action-grid, .nice-panel, .red-flag-grid, .reference-grid { display: grid; gap: 1rem; }
+    .timeline-grid { grid-template-columns: repeat(3, 1fr); }
+    .timeline-item, .action-grid article, .nice-panel div { padding: 1rem; border: 1px solid var(--line); border-radius: 22px; background: rgba(255,255,255,.7); }
+    .timeline-item b { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: white; background: var(--blue); }
+    .timeline-item h3, .action-grid h3, .nice-panel h3 { margin: .75rem 0 .35rem; font-size: 1.05rem; }
+
+    .split-section { display: grid; grid-template-columns: .88fr 1.12fr; gap: 1.4rem; align-items: start; }
+    .risk-list { display: grid; gap: .85rem; }
+    .risk-list div { display: flex; gap: .8rem; align-items: flex-start; padding: .95rem; border-radius: 18px; background: rgba(15,118,110,.07); border: 1px solid rgba(15,118,110,.14); }
+    .risk-list i { color: var(--teal); margin-top: .2rem; }
+
+    .action-grid, .nice-panel { grid-template-columns: repeat(4, 1fr); }
+    .badge { display: inline-flex; padding: .35rem .7rem; border-radius: 999px; font-size: .78rem; font-weight: 900; }
+    .safe { background: rgba(23,105,58,.12); color: var(--green); }
+    .treat { background: rgba(15,95,143,.12); color: var(--blue); }
+    .escalate { background: rgba(183,121,31,.16); color: #92400e; }
+    .danger { background: rgba(180,35,24,.13); color: var(--red); }
+
+    .warning-section { background: linear-gradient(145deg, rgba(255,247,237,.96), rgba(255,255,255,.9)); }
+    .red-flag-grid { grid-template-columns: repeat(3, 1fr); }
+    .red-flag-grid span { padding: .9rem 1rem; border-radius: 16px; background: rgba(180,35,24,.08); color: #7a271a; font-weight: 800; }
+
+    .table-title { margin-top: 1.5rem; color: var(--blue); }
+    .elegant-table { border-radius: 20px; border: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    .table-nomogram { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; background: white; overflow: hidden; }
+    .table-nomogram th { background: linear-gradient(135deg, var(--blue), var(--teal)); color: white; padding: .9rem; text-align: center; }
+    .table-nomogram td { padding: .82rem; border-bottom: 1px solid rgba(15,95,143,.1); text-align: center; font-weight: 700; }
+    .table-nomogram td:first-child { text-align: left; color: var(--blue); background: rgba(15,95,143,.04); }
+    .table-risk th { background: linear-gradient(135deg, #92400e, #b42318); }
+
+    .reference-grid { grid-template-columns: repeat(3, 1fr); }
+    .reference-grid a { display: grid; gap: .35rem; padding: 1rem; border: 1px solid var(--line); border-radius: 20px; text-decoration: none; color: var(--ink); background: rgba(255,255,255,.76); transition: transform .2s ease, border-color .2s ease; }
+    .reference-grid a:hover { transform: translateY(-3px); border-color: rgba(15,95,143,.35); }
+    .reference-grid i { color: var(--teal); }
+    .reference-grid span { color: var(--muted); line-height: 1.55; }
+
+    .reveal-card { animation: guideRise .68s ease both; }
+    .delay-1 { animation-delay: .08s; }
+    .delay-2 { animation-delay: .16s; }
+    @@keyframes guideRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+    @@media (max-width: 980px) {
+        .guide-grid, .timeline-grid, .action-grid, .nice-panel, .red-flag-grid, .reference-grid, .split-section { grid-template-columns: 1fr; }
+        .guide-hero { min-height: auto; }
+    }
+
+    @@media (prefers-reduced-motion: reduce) {
+        .reveal-card, .hero-button { animation: none; transition: none; }
+    }
+</style>
