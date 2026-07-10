@@ -1,5 +1,25 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.9] - 2026-07-10
+
+### Changed
+- Added site-wide structured data (`Organization`, `WebSite`, `SoftwareApplication`) for clearer brand/entity understanding by search engines.
+- Rebuilt Open Graph image as a true 1200×630 PNG and added it to service worker precache.
+- Improved sitemap with `lastmod`, image sitemap metadata, privacy policy URL, and removed noindex-only legal page from the sitemap.
+- Hardened `robots.txt` by disallowing API/private routes while explicitly allowing crawlable static brand assets.
+- Consolidated calculator page `HeadContent` so description, canonical, Open Graph, and Twitter metadata render reliably with JSON-LD.
+- Bumped cache/version metadata to `1.3.9`.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- SEO smoke test passed: title, description, canonical, favicon, manifest, `Organization`, `WebSite`, and `SoftwareApplication` JSON-LD.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- Sitemap XML and manifest JSON parse successfully.
+- Open Graph image is a valid 1200×630 PNG served as `image/png`.
+- Vulnerability scan: no vulnerable NuGet packages.
+
 ## [1.3.8] - 2026-07-10
 
 ### Changed

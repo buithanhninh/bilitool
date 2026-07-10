@@ -6,10 +6,17 @@ Allow: /gioi-thieu
 Allow: /cau-hoi-thuong-gap
 Allow: /tich-hop-his
 Allow: /lien-he
-Allow: /mien-tru-trach-nhiem
+Allow: /chinh-sach-bao-mat
+Allow: /favicon.ico
+Allow: /icons/
+Allow: /images/
+Allow: /css/
+Allow: /js/
 
 Disallow: /admin
 Disallow: /admin/*
+Disallow: /api
+Disallow: /api/*
 Disallow: /lich-su
 Disallow: /tai-khoan
 Disallow: /xu-huong

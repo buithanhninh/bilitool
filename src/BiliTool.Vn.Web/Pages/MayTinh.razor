@@ -15,75 +15,64 @@
 
 @{
     var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+    var seoTitle = lang == "en"
+        ? "BiliTool.Vn — Online Neonatal Bilirubin Calculator | AAP 2022 + NICE CG98"
+        : lang == "fr"
+            ? "BiliTool.Vn — Calculateur de Bilirubine Néonatale en Ligne | AAP 2022 + NICE CG98"
+            : "Máy Tính Bilirubin Sơ Sinh Online — Ngưỡng Chiếu Đèn & Thay Máu | AAP 2022 + NICE CG98 | BiliTool.Vn";
+    var seoDescription = lang == "en"
+        ? "Free online medical calculator for neonatal bilirubin thresholds according to AAP 2022 and NICE CG98 guidelines. Determine phototherapy, intensive phototherapy, and exchange transfusion indications based on gestational age and neurotoxicity risk."
+        : lang == "fr"
+            ? "Calculateur médical en ligne gratuit pour les seuils de bilirubine néonatale selon les directives AAP 2022 et NICE CG98. Déterminez les indications de photothérapie et d'exsanguino-transfusion."
+            : "Công cụ y khoa trực tuyến miễn phí tính toán ngưỡng bilirubin sơ sinh theo phác đồ AAP 2022 và NICE CG98. Xác định chỉ định chiếu đèn, chiếu đèn tích cực, thay máu theo tuổi thai và yếu tố nguy cơ thần kinh.";
+    var seoKeywords = lang == "en"
+        ? "neonatal bilirubin calculator, hyperbilirubinemia, phototherapy thresholds, exchange transfusion, AAP 2022, NICE CG98, neonatal jaundice, bilitool"
+        : lang == "fr"
+            ? "calculateur bilirubine, ictère néonatal, seuils photothérapie, exsanguino-transfusion, AAP 2022, NICE CG98, bilitool"
+            : "máy tính bilirubin, vàng da sơ sinh, bilirubin sơ sinh, ngưỡng chiếu đèn, ngưỡng thay máu, AAP 2022, NICE CG98, phototherapy, neonatal jaundice calculator, exchange transfusion, bilitool";
+    var ogTitle = lang == "en"
+        ? "BiliTool.Vn — Online Neonatal Bilirubin Calculator"
+        : lang == "fr"
+            ? "BiliTool.Vn — Calculateur de Bilirubine Néonatale en Ligne"
+            : "BiliTool.Vn — Máy Tính Bilirubin Sơ Sinh Online (AAP 2022 + NICE CG98)";
+    var ogDescription = lang == "en"
+        ? "Calculate phototherapy and exchange transfusion thresholds for infants with jaundice. Free, accurate, and multi-language support."
+        : lang == "fr"
+            ? "Calculez les seuils de photothérapie et d'exsanguino-transfusion pour l'ictère du nouveau-né."
+            : "Tính toán ngưỡng chiếu đèn và thay máu cho trẻ sơ sinh bị vàng da. Miễn phí, chính xác, tiếng Việt. Phác đồ AAP 2022 + NICE CG98.";
+    var ogLocale = lang == "en" ? "en_US" : lang == "fr" ? "fr_FR" : "vi_VN";
+    var twitterTitle = lang == "en"
+        ? "BiliTool.Vn — Neonatal Bilirubin Calculator"
+        : lang == "fr"
+            ? "BiliTool.Vn — Calculateur de Bilirubine"
+            : "BiliTool.Vn — Máy Tính Bilirubin Sơ Sinh";
+    var twitterDescription = lang == "en"
+        ? "Online clinical tool for neonatal bilirubin management according to AAP 2022 & NICE CG98."
+        : lang == "fr"
+            ? "Outil clinique en ligne pour la gestion de la bilirubine néonatale."
+            : "Công cụ y khoa tính ngưỡng bilirubin sơ sinh theo AAP 2022 và NICE CG98. Miễn phí, chính xác.";
 }
 
-@if (lang == "en")
-{
-    <PageTitle>BiliTool.Vn — Online Neonatal Bilirubin Calculator | AAP 2022 + NICE CG98</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="Free online medical calculator for neonatal bilirubin thresholds according to AAP 2022 and NICE CG98 guidelines. Determine phototherapy, intensive phototherapy, and exchange transfusion indications based on gestational age and neurotoxicity risk." />
-        <meta name="keywords" content="neonatal bilirubin calculator, hyperbilirubinemia, phototherapy thresholds, exchange transfusion, AAP 2022, NICE CG98, neonatal jaundice, bilitool" />
-        <link rel="canonical" href="https://bilitool.vn/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="BiliTool.Vn — Online Neonatal Bilirubin Calculator" />
-        <meta property="og:description" content="Calculate phototherapy and exchange transfusion thresholds for infants with jaundice. Free, accurate, and multi-language support." />
-        <meta property="og:url" content="https://bilitool.vn/" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="BiliTool.Vn — Neonatal Bilirubin Calculator" />
-        <meta name="twitter:description" content="Online clinical tool for neonatal bilirubin management according to AAP 2022 & NICE CG98." />
-        <meta name="twitter:image" content="https://bilitool.vn/images/og-bilitool.png" />
-    </HeadContent>
-}
-else if (lang == "fr")
-{
-    <PageTitle>BiliTool.Vn — Calculateur de Bilirubine Néonatale en Ligne | AAP 2022 + NICE CG98</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="Calculateur médical en ligne gratuit pour les seuils de bilirubine néonatale selon les directives AAP 2022 et NICE CG98. Déterminez les indications de photothérapie et d'exsanguino-transfusion." />
-        <meta name="keywords" content="calculateur bilirubine, ictère néonatal, seuils photothérapie, exsanguino-transfusion, AAP 2022, NICE CG98, bilitool" />
-        <link rel="canonical" href="https://bilitool.vn/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="BiliTool.Vn — Calculateur de Bilirubine Néonatale en Ligne" />
-        <meta property="og:description" content="Calculez les seuils de photothérapie et d'exsanguino-transfusion pour l'ictère du nouveau-né." />
-        <meta property="og:url" content="https://bilitool.vn/" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:locale" content="fr_FR" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="BiliTool.Vn — Calculateur de Bilirubine" />
-        <meta name="twitter:description" content="Outil clinique en ligne pour la gestion de la bilirubine néonatale." />
-        <meta name="twitter:image" content="https://bilitool.vn/images/og-bilitool.png" />
-    </HeadContent>
-}
-else
-{
-    <PageTitle>Máy Tính Bilirubin Sơ Sinh Online — Ngưỡng Chiếu Đèn & Thay Máu | AAP 2022 + NICE CG98 | BiliTool.Vn</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="Công cụ y khoa trực tuyến miễn phí tính toán ngưỡng bilirubin sơ sinh (vàng da sơ sinh) theo phác đồ AAP 2022 và NICE CG98. Xác định chỉ định chiếu đèn, chiếu đèn tích cực, thay máu chính xác theo tuổi thai và yếu tố nguy cơ thần kinh." />
-        <meta name="keywords" content="máy tính bilirubin, vàng da sơ sinh, bilirubin sơ sinh, ngưỡng chiếu đèn, ngưỡng thay máu, AAP 2022, NICE CG98, phototherapy, neonatal jaundice calculator, exchange transfusion, bilitool" />
-        <link rel="canonical" href="https://bilitool.vn/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="BiliTool.Vn — Máy Tính Bilirubin Sơ Sinh Online (AAP 2022 + NICE CG98)" />
-        <meta property="og:description" content="Tính toán ngưỡng chiếu đèn và thay máu cho trẻ sơ sinh bị vàng da. Miễn phí, chính xác, tiếng Việt. Phác đồ AAP 2022 + NICE CG98." />
-        <meta property="og:url" content="https://bilitool.vn/" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:locale" content="vi_VN" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="BiliTool.Vn — Máy Tính Bilirubin Sơ Sinh" />
-        <meta name="twitter:description" content="Công cụ y khoa tính ngưỡng bilirubin sơ sinh theo AAP 2022 và NICE CG98. Miễn phí, chính xác." />
-        <meta name="twitter:image" content="https://bilitool.vn/images/og-bilitool.png" />
-    </HeadContent>
-}
+<PageTitle>@seoTitle</PageTitle>
 
 <HeadContent>
+    <meta name="description" content="@seoDescription" />
+    <meta name="keywords" content="@seoKeywords" />
+    <link rel="canonical" href="https://bilitool.vn/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@ogTitle" />
+    <meta property="og:description" content="@ogDescription" />
+    <meta property="og:url" content="https://bilitool.vn/" />
+    <meta property="og:site_name" content="BiliTool.Vn" />
+    <meta property="og:locale" content="@ogLocale" />
+    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BiliTool.Vn — Máy tính Bilirubin sơ sinh" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@twitterTitle" />
+    <meta name="twitter:description" content="@twitterDescription" />
+    <meta name="twitter:image" content="https://bilitool.vn/images/og-bilitool.png" />
 <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
