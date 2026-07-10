@@ -50,11 +50,12 @@ async function switchToEnglishThroughUi(page, context) {
   if (await languageButton.isVisible().catch(() => false)) {
     await languageButton.click();
     await page.getByRole('link', { name: /English/i }).click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForFunction(() => document.documentElement.lang === 'en');
+    await page.waitForLoadState('networkidle').catch(() => {});
     return;
   }
 
-  await context.addCookies([{ name: '.AspNetCore.Culture', value: 'c=en|uic=en', domain: 'localhost', path: '/' }]);
+  await context.addCookies([{ name: '.AspNetCore.Culture', value: 'c=en|uic=en', url: baseURL, path: '/' }]);
   await page.reload({ waitUntil: 'networkidle' });
 }
 
