@@ -1,5 +1,33 @@
 # BiliTool.Vn - Changelog
 
+
+## [1.3.0] - 2026-07-10
+
+### Added
+- Clinical baseline guard tests to prevent bilirubin calculation drift.
+- Clinical facade and trace metadata around the frozen baseline engine.
+- Clinical audit log table and best-effort audit service.
+- API v2 clinical bilirubin endpoint and guideline metadata endpoint.
+- PWA shell, offline fallback page, and guideline metadata cache.
+- Health endpoints for live/ready checks.
+- CI workflow with build, test, and vulnerability scan.
+- Operations, security, API v2, and release governance documentation.
+
+### Changed
+- Hardened HIS API key behavior to fail closed when keys are not configured.
+- Removed unsafe default secrets from appsettings.
+- Hardened OTP generation, password hash comparison, and API error responses.
+- Improved WCAG contrast and accessible names across calculator flows.
+- Removed duplicate security headers from Nginx.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- API v2 smoke test passed.
+- UI calculator deep-link smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- NuGet vulnerability scan: no vulnerable packages.
+
 Tất cả các thay đổi đáng chú ý của dự án sẽ được ghi nhận tại tệp này.
 
 ## [v1.2.0 - Dual-Protocol Clinical Engine] - 2026-05-03
