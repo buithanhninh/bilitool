@@ -1,5 +1,21 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.6] - 2026-07-10
+
+### Changed
+- Redesigned the About page with a premium clinical-academic hero, glass cards, and stronger visual hierarchy.
+- Improved typography, spacing rhythm, protocol badges, scientific references, and clinical advisor profile presentation.
+- Added subtle motion with reduced-motion support for accessible polish.
+- Refactored localized About page markup to reduce repeated layout code across languages.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- About page desktop/mobile smoke test passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- Vulnerability scan: no vulnerable NuGet packages.
+
 ## [1.3.5] - 2026-07-10
 
 ### Changed

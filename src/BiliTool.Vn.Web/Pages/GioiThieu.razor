@@ -2,442 +2,570 @@
 @using System.Globalization
 
 @{
-    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLower();
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLowerInvariant();
+    var isEnglish = lang == "en";
+    var isFrench = lang == "fr";
+
+    var pageTitle = isEnglish
+        ? "About BiliTool.Vn — Medical Advisor ThS. BS. Ninh Thi Phuong Mai | E Hospital"
+        : isFrench
+            ? "À propos de BiliTool.Vn — Conseiller Médical Dr. Ninh Thi Phuong Mai | Hôpital E"
+            : "Giới Thiệu BiliTool.Vn — Cố Vấn Chuyên Môn ThS. BS. Ninh Thị Phương Mai | Bệnh Viện E";
+
+    var heroTitle = isEnglish ? "About BiliTool.Vn" : isFrench ? "À propos de BiliTool.Vn" : "Giới thiệu BiliTool.Vn";
+    var heroLead = isEnglish
+        ? "Clinical decision support software for neonatal jaundice management"
+        : isFrench
+            ? "Logiciel d’aide à la décision clinique pour la prise en charge de l’ictère néonatal"
+            : "Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh";
+
+    var overviewTitle = isEnglish ? "Clinical workflow, not a generic calculator" : isFrench ? "Flux clinique, pas seulement un calculateur" : "Quy trình lâm sàng, không chỉ là máy tính";
+    var overviewBody1 = isEnglish
+        ? "BiliTool.Vn is a web-based medical tool designed to support pediatricians, neonatologists, and healthcare professionals in assessment, monitoring, and treatment decision-making for neonatal jaundice."
+        : isFrench
+            ? "BiliTool.Vn est un outil médical web conçu pour aider les pédiatres, néonatologues et professionnels de santé dans l’évaluation, le suivi et la décision thérapeutique de l’ictère néonatal."
+            : "BiliTool.Vn là công cụ y khoa dạng web hỗ trợ bác sĩ nhi khoa, bác sĩ sơ sinh và nhân viên y tế trong đánh giá, theo dõi và ra quyết định điều trị vàng da sơ sinh.";
+    var overviewBody2 = isEnglish
+        ? "The system combines age in hours, total serum bilirubin, gestational age, and neurotoxicity or clinical risk factors to calculate phototherapy and exchange transfusion thresholds, then presents results in a clear trend-oriented interface."
+        : isFrench
+            ? "Le système combine l’âge en heures, la bilirubine totale, l’âge gestationnel et les facteurs de risque pour calculer les seuils de photothérapie et d’exsanguino-transfusion, puis présente les résultats dans une interface orientée tendance."
+            : "Hệ thống kết hợp giờ tuổi, bilirubin toàn phần, tuổi thai và các yếu tố nguy cơ thần kinh/lâm sàng để tính ngưỡng chiếu đèn, ngưỡng thay máu và trình bày kết quả theo hướng dễ theo dõi xu hướng.";
+
+    var scienceTitle = isEnglish ? "Scientific basis" : isFrench ? "Base scientifique" : "Căn cứ khoa học";
+    var scienceLead = isEnglish
+        ? "Algorithms, configuration constants, and displayed recommendations are cross-referenced from two major clinical guidelines."
+        : isFrench
+            ? "Les algorithmes, constantes de configuration et recommandations affichées sont croisés à partir de deux recommandations cliniques majeures."
+            : "Thuật toán, hằng số cấu hình và khuyến nghị hiển thị được đối chiếu từ hai phác đồ lâm sàng lớn.";
+    var clinicalSupportBadge = isEnglish ? "Clinical Decision Support" : isFrench ? "Aide à la décision clinique" : "Hỗ trợ quyết định lâm sàng";
+    var aapDate = isEnglish ? "Pediatrics, 09/2022" : isFrench ? "Pediatrics, 09/2022" : "Pediatrics, tháng 09/2022";
+    var niceDate = isEnglish ? "Updated 10/2023" : isFrench ? "Mis à jour 10/2023" : "Cập nhật 10/2023";
+
+    var advisorTitle = isEnglish ? "Author & Clinical Advisor" : isFrench ? "Autrice et conseillère clinique" : "Tác giả - Cố vấn chuyên môn";
+    var hospital = isEnglish ? "General Pediatrics Department – E Hospital" : isFrench ? "Pédiatrie générale – Hôpital E" : "Khoa Nội Nhi Tổng Hợp – Bệnh viện E";
+    var bio1 = isEnglish
+        ? "ThS. BS. Ninh Thi Phuong Mai has years of direct clinical experience in pediatric examination and treatment, with strengths in respiratory disease, immunology-allergy, gastroenterology, and pediatric nutrition."
+        : isFrench
+            ? "Dr. Ninh Thi Phuong Mai possède plusieurs années d’expérience clinique directe en pédiatrie, notamment en pathologie respiratoire, immunologie-allergologie, gastroentérologie et nutrition pédiatrique."
+            : "ThS. BS. Ninh Thị Phương Mai có nhiều năm kinh nghiệm trực tiếp thăm khám và điều trị bệnh lý chuyên khoa Nhi, đặc biệt trong hô hấp, miễn dịch – dị ứng, tiêu hóa và dinh dưỡng trẻ em.";
+    var bio2 = isEnglish
+        ? "She contributes to medical translation, algorithm digitization, and clinical workflow review so BiliTool.Vn can serve as a practical support tool for the healthcare community."
+        : isFrench
+            ? "Elle participe à la traduction médicale, à la numérisation de l’algorithme et à la revue du flux clinique afin que BiliTool.Vn devienne un outil pratique pour la communauté soignante."
+            : "Bác sĩ tham gia biên dịch, số hóa thuật toán y khoa và cố vấn quy trình vận hành lâm sàng thực tế để BiliTool.Vn trở thành công cụ hỗ trợ thiết thực cho cộng đồng y tế.";
+
+    var trainingTitle = isEnglish ? "Training" : isFrench ? "Formation" : "Đào tạo";
+    var activityTitle = isEnglish ? "Professional work" : isFrench ? "Activité professionnelle" : "Hoạt động chuyên môn";
+    var websiteLabel = isEnglish ? "Visit DrNinhMai.Com" : isFrench ? "Visiter DrNinhMai.Com" : "Ghé thăm DrNinhMai.Com";
+
+    var trainingItems = isEnglish
+        ? new[] { "General Practitioner, Hanoi Medical University (2017)", "Pediatric Orientation, Vietnam National Children’s Hospital (2018)", "Master of Pediatrics, Hanoi Medical University (2024)" }
+        : isFrench
+            ? new[] { "Médecin généraliste, Université médicale de Hanoï (2017)", "Orientation pédiatrique, Hôpital national pédiatrique (2018)", "Master de pédiatrie, Université médicale de Hanoï (2024)" }
+            : new[] { "Tốt nghiệp Bác sĩ Đa khoa - Đại học Y Hà Nội (2017)", "Bác sĩ Định hướng Nhi - Bệnh viện Nhi Trung ương (2018)", "Thạc sĩ chuyên ngành Nhi khoa - Đại học Y Hà Nội (2024)" };
+
+    var activityItems = isEnglish
+        ? new[] { "Works at E Hospital (2018–present)", "Author of multiple pediatric specialty studies", "Received Certificate of Merit from the Ministry of Health (2024)" }
+        : isFrench
+            ? new[] { "Exerce à l’Hôpital E (2018 à ce jour)", "Autrice de plusieurs études spécialisées en pédiatrie", "Certificat de mérite du ministère de la Santé (2024)" }
+            : new[] { "Công tác tại Bệnh viện E (2018–nay)", "Tác giả nhiều nghiên cứu chuyên ngành Nhi khoa", "Nhận Bằng khen của Bộ Y tế (2024)" };
 }
 
-@if (lang == "en")
-{
-    <PageTitle>About BiliTool.Vn — Medical Advisor ThS. BS. Ninh Thi Phuong Mai | E Hospital</PageTitle>
+<PageTitle>@pageTitle</PageTitle>
 
-    <HeadContent>
-        <meta name="description" content="BiliTool.Vn - clinical software supporting neonatal jaundice management in Vietnam. Advisor: ThS. BS. Ninh Thi Phuong Mai - General Pediatrics Department, E Hospital. Algorithm per AAP 2022 and NICE CG98." />
-        <meta name="keywords" content="BiliTool.Vn, about, ThS BS Ninh Thi Phuong Mai, E Hospital, pediatric medical software, neonatal jaundice, AAP 2022" />
-        <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
-        <meta property="og:type" content="profile" />
-        <meta property="og:title" content="About BiliTool.Vn — ThS. BS. Ninh Thi Phuong Mai" />
-        <meta property="og:description" content="Neonatal jaundice clinical software in Vietnam. Advisor: ThS. BS. Ninh Thi Phuong Mai — E Hospital." />
-        <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="About BiliTool.Vn — ThS. BS. Ninh Thi Phuong Mai" />
-        <meta name="twitter:description" content="Clinical software for neonatal jaundice. Advisor: ThS. BS. Ninh Thi Phuong Mai — E Hospital." />
-    </HeadContent>
+<HeadContent>
+    <meta name="description" content="BiliTool.Vn - phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh tại Việt Nam. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai - Khoa Nội Nhi Tổng Hợp, Bệnh viện E." />
+    <meta name="keywords" content="BiliTool.Vn, vàng da sơ sinh, bilirubin, ThS BS Ninh Thị Phương Mai, Bệnh viện E, AAP 2022, NICE CG98" />
+    <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="@pageTitle" />
+    <meta property="og:description" content="Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
+    <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
+    <meta property="og:site_name" content="BiliTool.Vn" />
+    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@pageTitle" />
+    <meta name="twitter:description" content="BiliTool.Vn hỗ trợ đánh giá và theo dõi vàng da sơ sinh theo AAP 2022 và NICE CG98." />
+</HeadContent>
 
-    <div class="guide-wrapper">
-        <div class="guide-header">
-            <i class="fas fa-info-circle"></i>
-            <div>
-                <h1>About BiliTool.Vn</h1>
-                <p>Clinical decision support software for neonatal jaundice management</p>
+<div class="about-page-shell">
+    <section class="about-hero-panel">
+        <div class="about-hero-orb about-hero-orb-one" aria-hidden="true"></div>
+        <div class="about-hero-orb about-hero-orb-two" aria-hidden="true"></div>
+        <div class="about-kicker"><i class="fas fa-stethoscope"></i> BiliTool.Vn</div>
+        <h1>@heroTitle</h1>
+        <p>@heroLead</p>
+        <div class="about-hero-badges" aria-label="Clinical references">
+            <span><i class="fas fa-shield-alt"></i> AAP 2022</span>
+            <span><i class="fas fa-book-medical"></i> NICE CG98</span>
+            <span><i class="fas fa-chart-line"></i> @clinicalSupportBadge</span>
+        </div>
+    </section>
+
+    <section class="about-grid about-reveal">
+        <article class="about-card about-card-large">
+            <div class="about-section-label"><i class="fas fa-laptop-medical"></i> @overviewTitle</div>
+            <p>@overviewBody1</p>
+            <p>@overviewBody2</p>
+            <div class="about-metric-strip">
+                <div><strong>35+</strong><span>@(isEnglish ? "weeks GA" : isFrench ? "semaines AG" : "tuần tuổi thai")</span></div>
+                <div><strong>28</strong><span>@(isEnglish ? "days window" : isFrench ? "jours suivis" : "ngày theo dõi")</span></div>
+                <div><strong>2</strong><span>@(isEnglish ? "protocols" : isFrench ? "protocoles" : "phác đồ")</span></div>
             </div>
-        </div>
+        </article>
 
-        <div class="guide-content">
-            
-            <!-- Software Introduction -->
-            <section class="mb-5">
-                <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> About BiliTool.Vn</h2>
-                <p>
-                    <strong>BiliTool.Vn</strong> is a web-based medical calculator designed to support pediatricians, neonatologists, and healthcare professionals in assessing, monitoring, and decision-making for neonatal jaundice (including preterms thanks to the combined algorithm).
-                </p>
-                <p>
-                    The system provides an end-to-end workflow from inputting clinical parameters (age in hours, total serum bilirubin, gestational age, and neurotoxicity/clinical risk factors), precisely calculating intervention thresholds (Phototherapy, Exchange Transfusion), and visualizing trend data over time (Trend Chart). In particular, the system handles parallel calculations under multiple protocols to deliver the safest possible clinical recommendation.
-                </p>
-                <div class="card bg-light border-0 shadow-sm mt-4">
-                    <div class="card-body">
-                        <h5 class="text-danger"><i class="fas fa-book-medical"></i> Scientific Basis (Dual-Protocol)</h5>
-                        <p class="mb-2 mt-2">
-                            All algorithms, mathematical configurations, and clinical recommendations are built upon rigorous validation and cross-referencing of 2 leading international guidelines:
-                        </p>
-                        <ul class="mb-0">
-                            <li class="mb-2">
-                                <strong>American Academy of Pediatrics (AAP 2022):</strong><br/>
-                                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
-                                    <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Sept 2022).</em>
-                                </a>
-                            </li>
-                            <li>
-                                <strong>UK National Institute for Health and Care Excellence (NICE CG98):</strong><br/>
-                                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
-                                    <em>"Jaundice in newborn babies under 28 days" (Updated October 2023).</em>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <hr class="my-5" />
-
-            <!-- Author Introduction -->
-            <section>
-                <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Author - Clinical Advisor</h2>
-                
-                <div class="author-card">
-                    <div class="author-image-wrapper">
-                        <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thi Phuong Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
-                    </div>
-                    <div class="author-details">
-                        <h3 class="author-name">ThS. BS. Ninh Thi Phuong Mai</h3>
-                        <p class="author-title"><i class="fas fa-hospital"></i> General Pediatrics Department – E Hospital</p>
-                        
-                        <div class="author-bio">
-                            <p>Dr. Ninh Thi Phuong Mai has many years of clinical experience diagnosing and treating pediatric patients. Her primary specialties include respiratory illnesses, allergy & immunology, gastroenterology, and childhood nutrition.</p>
-                            <p>Dr. Mai translated, digitized the medical algorithms, and advised on the real-world clinical workflow design of <strong>BiliTool.Vn</strong> to provide a helpful tool for the medical community.</p>
-                        </div>
-
-                        <div class="author-credentials mt-4">
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Education</h6>
-                                    <ul class="list-unstyled text-start" style="padding-left:0;">
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> MD degree - Hanoi Medical University (2017)</li>
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Pediatric Residency - National Children's Hospital (2018)</li>
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Master of Science in Pediatrics - Hanoi Medical University (2024)</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Professional Activities</h6>
-                                    <ul class="list-unstyled text-start" style="padding-left:0;">
-                                        <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Pediatrician at E Hospital (2018 - Present)</li>
-                                        <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Author of multiple clinical pediatric research studies</li>
-                                        <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Recipient of Certificate of Merit from the Ministry of Health (2024)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="author-links mt-1">
-                            <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
-                                <i class="fas fa-globe me-2"></i> Visit DrNinhMai.Com Website
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    </div>
-}
-else if (lang == "fr")
-{
-    <PageTitle>À propos de BiliTool.Vn — Conseiller Médical Dr. Ninh Thi Phuong Mai | Hôpital E</PageTitle>
-
-    <HeadContent>
-        <meta name="description" content="BiliTool.Vn - logiciel clinique d'aide à la décision pour l'ictère du nouveau-né au Vietnam. Conseiller : Dr. Ninh Thi Phuong Mai - Pédiatrie Générale, Hôpital E. Algorithmes AAP 2022 et NICE." />
-        <meta name="keywords" content="BiliTool.Vn, à propos, Dr Ninh Thi Phuong Mai, Hôpital E, logiciel médical pédiatrique, ictère néonatal, AAP 2022" />
-        <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
-        <meta property="og:type" content="profile" />
-        <meta property="og:title" content="À propos de BiliTool.Vn — Dr. Ninh Thi Phuong Mai" />
-        <meta property="og:description" content="Logiciel clinique de l'ictère néonatal au Vietnam. Conseiller : Dr. Ninh Thi Phuong Mai — Hôpital E." />
-        <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="À propos de BiliTool.Vn — Dr. Ninh Thi Phuong Mai" />
-        <meta name="twitter:description" content="Logiciel clinique pour l'ictère néonatal. Conseiller : Dr. Ninh Thi Phuong Mai — Hôpital E." />
-    </HeadContent>
-
-    <div class="guide-wrapper">
-        <div class="guide-header">
-            <i class="fas fa-info-circle"></i>
-            <div>
-                <h1>À propos de BiliTool.Vn</h1>
-                <p>Logiciel d'aide à la décision clinique pour la prise en charge de l'ictère néonatal</p>
+        <article class="about-card about-science-card">
+            <div class="about-section-label"><i class="fas fa-flask"></i> @scienceTitle</div>
+            <p>@scienceLead</p>
+            <div class="about-reference-list">
+                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" rel="noopener">
+                    <span>AAP 2022</span>
+                    <strong>Clinical Practice Guideline Revision</strong>
+                    <small>@aapDate</small>
+                </a>
+                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" rel="noopener">
+                    <span>NICE CG98</span>
+                    <strong>Jaundice in newborn babies under 28 days</strong>
+                    <small>@niceDate</small>
+                </a>
             </div>
+        </article>
+    </section>
+
+    <section class="about-advisor-panel about-reveal">
+        <div class="about-advisor-photo">
+            <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thị Phương Mai" onerror="this.src='/images/doctor-placeholder.svg'" />
         </div>
-
-        <div class="guide-content">
-            
-            <!-- Software Introduction -->
-            <section class="mb-5">
-                <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> À propos de BiliTool.Vn</h2>
-                <p>
-                    <strong>BiliTool.Vn</strong> est un outil médical web conçu pour aider les pédiatres, néonatologues et professionnels de santé à évaluer, suivre et traiter l'ictère du nouveau-né (y compris les prématurés grâce à l'algorithme combiné).
-                </p>
-                <p>
-                    Le système propose un flux de travail complet : saisie des paramètres cliniques (heures de vie, bilirubine totale, âge gestationnel et facteurs de risque), calcul précis des seuils d'intervention (Photothérapie, Exsanguino-transfusion) et visualisation de l'évolution (courbe de tendance). De plus, le système traite les calculs en parallèle selon les deux directives pour fournir la recommandation la plus sûre.
-                </p>
-                <div class="card bg-light border-0 shadow-sm mt-4">
-                    <div class="card-body">
-                        <h5 class="text-danger"><i class="fas fa-book-medical"></i> Bases Scientifiques (Double Protocole)</h5>
-                        <p class="mb-2 mt-2">
-                            Tous les algorithmes et recommandations cliniques sont basés sur le croisement rigoureux des 2 protocoles leaders mondiaux :
-                        </p>
-                        <ul class="mb-0">
-                            <li class="mb-2">
-                                <strong>American Academy of Pediatrics (AAP 2022):</strong><br/>
-                                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
-                                    <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Septembre 2022).</em>
-                                </a>
-                            </li>
-                            <li>
-                                <strong>UK National Institute for Health and Care Excellence (NICE CG98):</strong><br/>
-                                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
-                                    <em>"Jaundice in newborn babies under 28 days" (Mis à jour en Octobre 2023).</em>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <hr class="my-5" />
-
-            <!-- Author Introduction -->
-            <section>
-                <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Auteur - Conseiller Médical</h2>
-                
-                <div class="author-card">
-                    <div class="author-image-wrapper">
-                        <img src="/images/bs-mai.jpg" alt="Dr. Ninh Thi Phuong Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
-                    </div>
-                    <div class="author-details">
-                        <h3 class="author-name">Dr. Ninh Thi Phuong Mai</h3>
-                        <p class="author-title"><i class="fas fa-hospital"></i> Département de Pédiatrie Générale – Hôpital E</p>
-                        
-                        <div class="author-bio">
-                            <p>Le Dr. Ninh Thi Phuong Mai possède de nombreuses années d'expérience clinique dans le traitement des nouveau-nés et enfants. Ses domaines d'expertise comprennent les maladies respiratoires, l'allergie/immunologie, la gastro-entérologie et la nutrition pédiatrique.</p>
-                            <p>Le Dr. Mai a participé à la traduction, à la numérisation des algorithmes médicaux et a conseillé sur le flux clinique de <strong>BiliTool.Vn</strong> pour offrir un outil d'aide performant à la communauté médicale.</p>
-                        </div>
-
-                        <div class="author-credentials mt-4">
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Formation</h6>
-                                    <ul class="list-unstyled text-start" style="padding-left:0;">
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Diplôme de Docteur en Médecine - Université de Médecine de Hanoï (2017)</li>
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Résidence en Pédiatrie - Hôpital National de Pédiatrie (2018)</li>
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Master en Sciences Pédiatriques - Université de Médecine de Hanoï (2024)</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Activités Professionnelles</h6>
-                                    <ul class="list-unstyled text-start" style="padding-left:0;">
-                                        <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Pédiatre à l'Hôpital E (2018 - Présent)</li>
-                                        <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Auteur de plusieurs travaux de recherche en pédiatrie clinique</li>
-                                        <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Récipiendaire d'une mention d'honneur du Ministère de la Santé (2024)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="author-links mt-1">
-                            <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
-                                <i class="fas fa-globe me-2"></i> Visiter le site DrNinhMai.Com
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+        <div class="about-advisor-content">
+            <div class="about-section-label"><i class="fas fa-user-md"></i> @advisorTitle</div>
+            <h2>ThS. BS. Ninh Thị Phương Mai</h2>
+            <p class="about-advisor-role"><i class="fas fa-hospital"></i> @hospital</p>
+            <p>@bio1</p>
+            <p>@bio2</p>
+            <a class="about-primary-link" href="https://drninhmai.com/" target="_blank" rel="noopener">
+                <i class="fas fa-globe"></i> @websiteLabel
+            </a>
         </div>
-    </div>
-}
-else
-{
-    <PageTitle>Giới Thiệu BiliTool.Vn — Cố Vấn Chuyên Môn ThS. BS. Ninh Thị Phương Mai | Bệnh Viện E</PageTitle>
+    </section>
 
-    <HeadContent>
-        <meta name="description" content="BiliTool.Vn - phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh tại Việt Nam. Cố vấn chuyên môn: ThS. BS. Ninh Thị Phương Mai — Khoa Nội Nhi Tổng Hợp, Bệnh viện E. Thuật toán dựa trên phác đồ AAP 2022 và NICE CG98." />
-        <meta name="keywords" content="BiliTool.Vn, giới thiệu, ThS BS Ninh Thị Phương Mai, bệnh viện E, phần mềm y khoa sơ sinh, vàng da sơ sinh, AAP 2022" />
-        <link rel="canonical" href="https://bilitool.vn/gioi-thieu" />
-        <meta property="og:type" content="profile" />
-        <meta property="og:title" content="Giới Thiệu BiliTool.Vn — ThS. BS. Ninh Thị Phương Mai" />
-        <meta property="og:description" content="Phần mềm y khoa vàng da sơ sinh Việt Nam. Cố vấn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
-        <meta property="og:url" content="https://bilitool.vn/gioi-thieu" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Giới Thiệu BiliTool.Vn — ThS. BS. Ninh Thị Phương Mai" />
-        <meta name="twitter:description" content="Phần mềm y khoa vàng da sơ sinh. Cố vấn: ThS. BS. Ninh Thị Phương Mai — Bệnh viện E." />
-    </HeadContent>
-
-    <div class="guide-wrapper">
-        <div class="guide-header">
-            <i class="fas fa-info-circle"></i>
-            <div>
-                <h1>Giới thiệu BiliTool.Vn</h1>
-                <p>Phần mềm hỗ trợ lâm sàng quản lý vàng da sơ sinh</p>
-            </div>
-        </div>
-
-        <div class="guide-content">
-            
-            <!-- Giới thiệu phần mềm -->
-            <section class="mb-5">
-                <h2 class="text-primary mb-3"><i class="fas fa-laptop-medical"></i> Về BiliTool.Vn</h2>
-                <p>
-                    <strong>BiliTool.Vn</strong> là một công cụ y khoa dạng web được thiết kế nhằm hỗ trợ các bác sĩ nhi khoa, bác sĩ sơ sinh và nhân viên y tế trong việc đánh giá, theo dõi và ra quyết định điều trị bệnh lý vàng da ở trẻ sơ sinh (hỗ trợ cả trẻ đẻ non nhờ thuật toán kết hợp).
-                </p>
-                <p>
-                    Hệ thống cung cấp một quy trình khép kín từ việc nhập liệu thông số lâm sàng (giờ tuổi, nồng độ Bilirubin toàn phần, tuổi thai, và các yếu tố nguy cơ thần kinh/lâm sàng), tính toán chính xác các ngưỡng can thiệp (Chiếu đèn, Thay máu) và trực quan hóa dữ liệu theo thời gian (Biểu đồ xu hướng). Đặc biệt, hệ thống xử lý tính toán song song đa phác đồ để đưa ra khuyến cáo an toàn nhất.
-                </p>
-                <div class="card bg-light border-0 shadow-sm mt-4">
-                    <div class="card-body">
-                        <h5 class="text-danger"><i class="fas fa-book-medical"></i> Căn cứ khoa học (Dual-Protocol)</h5>
-                        <p class="mb-2 mt-2">
-                            Toàn bộ thuật toán, hằng số cấu hình toán học và các khuyến nghị lâm sàng hiển thị trên phần mềm này được xây dựng dựa trên sự kết hợp đối chiếu khắt khe của 2 phác đồ y khoa hàng đầu thế giới:
-                        </p>
-                        <ul class="mb-0">
-                            <li class="mb-2">
-                                <strong>Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP 2022):</strong><br/>
-                                <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" class="text-decoration-none">
-                                    <em>"Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation" (Pediatrics, Tháng 9/2022).</em>
-                                </a>
-                            </li>
-                            <li>
-                                <strong>Viện Y tế và Chăm sóc Xuất sắc Quốc gia Anh (NICE CG98):</strong><br/>
-                                <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" class="text-decoration-none text-success">
-                                    <em>"Jaundice in newborn babies under 28 days" (Updated October 2023).</em>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <hr class="my-5" />
-
-            <!-- Giới thiệu tác giả -->
-            <section>
-                <h2 class="text-primary mb-4"><i class="fas fa-user-md"></i> Tác giả - Cố vấn chuyên môn</h2>
-                
-                <div class="author-card">
-                    <div class="author-image-wrapper">
-                        <img src="/images/bs-mai.jpg" alt="ThS. BS. Ninh Thị Phương Mai" class="author-avatar" onerror="this.src='/images/doctor-placeholder.svg'" />
-                    </div>
-                    <div class="author-details">
-                        <h3 class="author-name">ThS. BS. Ninh Thị Phương Mai</h3>
-                        <p class="author-title"><i class="fas fa-hospital"></i> Khoa Nội Nhi Tổng Hợp – Bệnh viện E</p>
-                        
-                        <div class="author-bio">
-                            <p>Ths. BS. Ninh Thị Phương Mai đã có nhiều năm kinh nghiệm trực tiếp thăm khám và điều trị các bệnh lý chuyên khoa Nhi. Đặc biệt, bác sĩ có thế mạnh về các bệnh lý hô hấp, miễn dịch – dị ứng, tiêu hóa và dinh dưỡng trẻ em.</p>
-                            <p>Phần mềm <strong>BiliTool.Vn</strong> được bác sĩ tham gia biên dịch, số hóa thuật toán y khoa và cố vấn quy trình vận hành lâm sàng thực tế nhằm mang lại công cụ hỗ trợ cho cộng đồng Y khoa.</p>
-                        </div>
-
-                        <div class="author-credentials mt-4">
-                            <div class="row">
-                                <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-graduation-cap text-muted me-2"></i> Đào tạo</h6>
-                                    <ul class="list-unstyled text-start" style="padding-left:0;">
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Tốt nghiệp BS Đa khoa - ĐH Y Hà Nội (2017)</li>
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> BS Định hướng Nhi - BV Nhi Trung ương (2018)</li>
-                                        <li class="mb-2"><i class="fas fa-check text-success fsz-small me-1"></i> Thạc Sĩ chuyên ngành Nhi Khoa - ĐH Y Hà Nội (2024)</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6 mb-4">
-                                    <h6 class="fw-bold fs-6 mb-3"><i class="fas fa-award text-muted me-2"></i> Hoạt động chuyên môn</h6>
-                                    <ul class="list-unstyled text-start" style="padding-left:0;">
-                                        <li class="mb-2"><i class="fas fa-briefcase text-primary fsz-small me-1"></i> Công tác tại BV E (2018 - Nay)</li>
-                                        <li class="mb-2"><i class="fas fa-flask text-primary fsz-small me-1"></i> Tác giả nhiều nghiên cứu chuyên ngành Nhi khoa.</li>
-                                        <li class="mb-2"><i class="fas fa-medal text-warning fsz-small me-1"></i> Nhận Bằng khen của Bộ Y Tế (2024).</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="author-links mt-1">
-                            <a href="https://drninhmai.com/" target="_blank" class="btn btn-outline-primary shadow-sm hover-elevate">
-                                <i class="fas fa-globe me-2"></i> Ghé thăm Trang web DrNinhMai.Com
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    </div>
-}
+    <section class="about-credentials-grid about-reveal">
+        <article class="about-card about-list-card">
+            <div class="about-section-label"><i class="fas fa-graduation-cap"></i> @trainingTitle</div>
+            <ul>
+                @foreach (var item in trainingItems)
+                {
+                    <li><i class="fas fa-check"></i><span>@item</span></li>
+                }
+            </ul>
+        </article>
+        <article class="about-card about-list-card">
+            <div class="about-section-label"><i class="fas fa-award"></i> @activityTitle</div>
+            <ul>
+                @foreach (var item in activityItems)
+                {
+                    <li><i class="fas fa-check"></i><span>@item</span></li>
+                }
+            </ul>
+        </article>
+    </section>
+</div>
 
 <style>
-    .author-card {
-        background: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-sm);
-        padding: 30px;
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-        border: 1px solid var(--gray-200);
+    .about-page-shell {
+        --about-ink: #07111f;
+        --about-muted: #526070;
+        --about-soft: #eef7fb;
+        --about-line: rgba(15, 95, 143, 0.16);
+        --about-primary: #0f5f8f;
+        --about-teal: #0f766e;
+        --about-green: #17693a;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: clamp(18px, 3vw, 34px);
+        color: var(--about-ink);
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    .about-hero-panel,
+    .about-card,
+    .about-advisor-panel {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        background: linear-gradient(145deg, rgba(255,255,255,0.94), rgba(248,252,255,0.82));
+        box-shadow: 0 24px 70px rgba(8, 34, 55, 0.11), inset 0 1px 0 rgba(255,255,255,0.9);
+        backdrop-filter: blur(18px);
+    }
+
+    .about-hero-panel {
+        min-height: 320px;
+        border-radius: 34px;
+        padding: clamp(34px, 6vw, 76px);
+        isolation: isolate;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(15, 118, 110, 0.18), transparent 28%),
+            radial-gradient(circle at 92% 12%, rgba(15, 95, 143, 0.20), transparent 30%),
+            linear-gradient(135deg, rgba(255,255,255,0.98), rgba(235,248,255,0.88));
+    }
+
+    .about-hero-panel::after {
+        content: "";
+        position: absolute;
+        inset: auto -12% -42% 38%;
+        height: 260px;
+        background: linear-gradient(90deg, rgba(15, 95, 143, 0.10), rgba(15, 118, 110, 0.08));
+        transform: rotate(-8deg);
+        border-radius: 999px;
+        z-index: -1;
+    }
+
+    .about-hero-orb {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(2px);
+        opacity: 0.58;
+        animation: aboutFloat 8s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    .about-hero-orb-one {
+        width: 180px;
+        height: 180px;
+        right: 10%;
+        top: 16%;
+        background: radial-gradient(circle, rgba(15,95,143,0.28), transparent 68%);
+    }
+
+    .about-hero-orb-two {
+        width: 130px;
+        height: 130px;
+        left: 9%;
+        bottom: 12%;
+        background: radial-gradient(circle, rgba(23,105,58,0.18), transparent 70%);
+        animation-delay: -2.5s;
+    }
+
+    .about-kicker,
+    .about-section-label {
+        display: inline-flex;
         align-items: center;
-    }
-    
-    @@media (min-width: 768px) {
-        .author-card {
-            flex-direction: row;
-            align-items: flex-start;
-            padding: 40px;
-            gap: 40px;
-        }
-    }
-    
-    .author-image-wrapper {
-        flex-shrink: 0;
-        display: flex;
-        justify-content: center;
-    }
-    
-    .author-avatar {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 5px solid white;
-        box-shadow: var(--shadow-md);
-    }
-
-    @@media (min-width: 768px) {
-        .author-avatar {
-            width: 180px;
-            height: 180px;
-        }
-    }
-    
-    .author-details {
-        flex: 1;
-        width: 100%;
-        text-align: center;
-    }
-
-    @@media (min-width: 768px) {
-        .author-details {
-            text-align: left;
-        }
-    }
-    
-    .author-name {
-        font-size: 1.6rem;
+        gap: 9px;
+        color: var(--about-primary);
+        font-size: 0.78rem;
         font-weight: 800;
-        color: var(--gray-800);
-        margin-bottom: 8px;
-    }
-    
-    .author-title {
-        color: var(--primary);
-        font-weight: 600;
-        font-size: 1.05rem;
-        margin-bottom: 20px;
-    }
-    
-    .author-bio p {
-        color: var(--gray-700);
-        line-height: 1.7;
-        margin-bottom: 12px;
-        font-size: 1.05rem;
-    }
-    
-    .fsz-small {
-        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
     }
 
-    .hover-elevate {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    .about-hero-panel h1 {
+        max-width: 760px;
+        margin: 16px 0 14px;
+        color: var(--about-ink);
+        font-size: clamp(2.35rem, 6vw, 4.9rem);
+        line-height: 0.96;
+        letter-spacing: -0.065em;
+        font-weight: 900;
+        outline: none !important;
+        border: 0 !important;
     }
-    
-    .hover-elevate:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+
+    .about-hero-panel p {
+        max-width: 650px;
+        margin: 0;
+        color: var(--about-muted);
+        font-size: clamp(1.04rem, 2vw, 1.28rem);
+        line-height: 1.72;
+        font-weight: 500;
+    }
+
+    .about-hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 28px;
+    }
+
+    .about-hero-badges span,
+    .about-primary-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(15,95,143,0.14);
+        background: rgba(255,255,255,0.76);
+        color: var(--about-primary);
+        font-weight: 800;
+        font-size: 0.9rem;
+        padding: 10px 14px;
+        box-shadow: 0 10px 24px rgba(8,34,55,0.07);
+    }
+
+    .about-grid,
+    .about-credentials-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+        gap: 20px;
+        margin-top: 22px;
+    }
+
+    .about-card,
+    .about-advisor-panel {
+        border-radius: 28px;
+        padding: clamp(24px, 4vw, 38px);
+    }
+
+    .about-card p,
+    .about-advisor-content p {
+        color: var(--about-muted);
+        font-size: 1.02rem;
+        line-height: 1.78;
+        margin: 14px 0 0;
+    }
+
+    .about-metric-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 26px;
+    }
+
+    .about-metric-strip div {
+        border: 1px solid var(--about-line);
+        border-radius: 20px;
+        padding: 16px;
+        background: linear-gradient(180deg, rgba(240,249,255,0.9), rgba(255,255,255,0.7));
+    }
+
+    .about-metric-strip strong {
+        display: block;
+        color: var(--about-primary);
+        font-size: 1.65rem;
+        line-height: 1;
+        letter-spacing: -0.04em;
+    }
+
+    .about-metric-strip span {
+        display: block;
+        margin-top: 7px;
+        color: var(--about-muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+    .about-reference-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .about-reference-list a {
+        display: grid;
+        gap: 4px;
+        padding: 16px;
+        border-radius: 20px;
+        border: 1px solid var(--about-line);
+        color: var(--about-ink);
+        text-decoration: none;
+        background: rgba(255,255,255,0.7);
+        transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .about-reference-list a:hover,
+    .about-primary-link:hover {
+        transform: translateY(-3px);
+        border-color: rgba(15,95,143,0.32);
+        box-shadow: 0 18px 34px rgba(8,34,55,0.12);
+        text-decoration: none;
+    }
+
+    .about-reference-list span {
+        color: var(--about-teal);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+    }
+
+    .about-reference-list strong {
+        font-size: 0.98rem;
+        line-height: 1.35;
+    }
+
+    .about-reference-list small {
+        color: var(--about-muted);
+        font-weight: 700;
+    }
+
+    .about-advisor-panel {
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: clamp(22px, 4vw, 44px);
+        align-items: center;
+        margin-top: 22px;
+        background:
+            linear-gradient(135deg, rgba(7,17,31,0.96), rgba(9,55,82,0.93)),
+            radial-gradient(circle at 78% 18%, rgba(45,212,191,0.22), transparent 34%);
+        color: #ffffff;
+    }
+
+    .about-advisor-photo {
+        position: relative;
+        width: min(100%, 240px);
+        aspect-ratio: 1;
+        margin: 0 auto;
+        border-radius: 34px;
+        padding: 10px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.34), rgba(255,255,255,0.08));
+        box-shadow: 0 24px 54px rgba(0,0,0,0.28);
+    }
+
+    .about-advisor-photo::after {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 40px;
+        border: 1px solid rgba(255,255,255,0.18);
+        pointer-events: none;
+    }
+
+    .about-advisor-photo img {
+        width: 100%;
+        height: 100%;
+        border-radius: 26px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .about-advisor-content .about-section-label,
+    .about-advisor-content .about-advisor-role {
+        color: #8ee6dc;
+    }
+
+    .about-advisor-content h2 {
+        margin: 12px 0 8px;
+        color: #ffffff;
+        font-size: clamp(1.75rem, 4vw, 3rem);
+        line-height: 1.04;
+        letter-spacing: -0.045em;
+        font-weight: 900;
+    }
+
+    .about-advisor-content p {
+        color: rgba(255,255,255,0.80);
+    }
+
+    .about-advisor-role {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 0 !important;
+        font-weight: 800;
+    }
+
+    .about-primary-link {
+        margin-top: 22px;
+        background: linear-gradient(135deg, #ffffff, #e8fbff);
+        color: #0a4f78;
+        text-decoration: none;
+    }
+
+    .about-list-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0;
+        display: grid;
+        gap: 12px;
+    }
+
+    .about-list-card li {
+        display: grid;
+        grid-template-columns: 26px 1fr;
+        align-items: start;
+        gap: 10px;
+        color: var(--about-muted);
+        font-weight: 650;
+        line-height: 1.5;
+    }
+
+    .about-list-card li i {
+        display: inline-grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: rgba(15,118,110,0.12);
+        color: var(--about-green);
+        font-size: 0.75rem;
+    }
+
+    .about-reveal {
+        animation: aboutRise 520ms ease both;
+    }
+
+    .about-reveal:nth-of-type(3) {
+        animation-delay: 80ms;
+    }
+
+    .about-reveal:nth-of-type(4) {
+        animation-delay: 140ms;
+    }
+
+    @@keyframes aboutRise {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @@keyframes aboutFloat {
+        0%, 100% { transform: translate3d(0, 0, 0); }
+        50% { transform: translate3d(0, -12px, 0); }
+    }
+
+    @@media (prefers-reduced-motion: reduce) {
+        .about-reveal,
+        .about-hero-orb {
+            animation: none;
+        }
+
+        .about-reference-list a,
+        .about-primary-link {
+            transition: none;
+        }
+    }
+
+    @@media (max-width: 900px) {
+        .about-grid,
+        .about-credentials-grid,
+        .about-advisor-panel {
+            grid-template-columns: 1fr;
+        }
+
+        .about-advisor-panel {
+            text-align: center;
+        }
+
+        .about-advisor-role,
+        .about-primary-link {
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 560px) {
+        .about-page-shell {
+            padding: 14px;
+        }
+
+        .about-hero-panel,
+        .about-card,
+        .about-advisor-panel {
+            border-radius: 24px;
+        }
+
+        .about-metric-strip {
+            grid-template-columns: 1fr;
+        }
+
+        .about-hero-badges span {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
