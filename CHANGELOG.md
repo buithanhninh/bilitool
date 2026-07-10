@@ -1,5 +1,18 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.4] - 2026-07-10
+
+### Changed
+- Restyled contact page to match the premium academic clinical UI system with consistent blue-teal palette, glass surface, and stronger contrast.
+- Removed mixed English text from the Vietnamese contact heading and labels.
+- Updated working-hours copy to Vietnamese 24-hour format.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+
 ## [1.3.3] - 2026-07-10
 
 ### Changed
