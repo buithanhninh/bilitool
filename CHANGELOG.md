@@ -1,5 +1,22 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.1] - 2026-07-10
+
+### Added
+- Premium academic UI layer with refined clinical glass cards, improved navigation polish, responsive spacing, and high-end visual depth.
+- CSS-only motion and hover states with `prefers-reduced-motion` support.
+
+### Changed
+- Improved mobile navigation behavior so sidebar starts closed on small screens and opens only on user action.
+- Added premium UI stylesheet to the PWA service-worker asset cache.
+
+### Verified
+- Release build: 0 warnings, 0 errors.
+- Domain tests: 26/26 passed.
+- UI calculator smoke test passed.
+- Axe WCAG smoke test: 0 violations on home, calculator result, and offline page.
+- API v2 clinical smoke test preserved baseline thresholds and `BaselineMayTinhBilirubin` engine.
+- NuGet vulnerability scan: no vulnerable packages.
 
 ## [1.3.0] - 2026-07-10
 

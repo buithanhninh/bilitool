@@ -6,6 +6,7 @@ const STATIC_ASSETS = [
   '/css/site.css',
   '/css/bilitool.css',
   '/css/admin-premium.css',
+  '/css/premium-ui.css',
   '/js/bilitool-interop.js',
   '/js/admin-charts.js',
   '/datasets/clinical-guidelines.json'

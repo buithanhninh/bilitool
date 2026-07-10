@@ -349,8 +349,9 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  /* Default open: when sidebarCollapsed is false */
-  .sidebar { transform: translateX(0); width: var(--sidebar-width) !important; }
+  /* Default closed on mobile; explicit mobile-open reveals navigation. */
+  .sidebar { transform: translateX(-100%); width: var(--sidebar-width) !important; }
+  .sidebar.mobile-open { transform: translateX(0); }
   
   /* Collapsed: when sidebarCollapsed is true, push it completely off screen */
   .sidebar.collapsed { transform: translateX(-100%); }

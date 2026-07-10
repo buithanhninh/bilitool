@@ -6,13 +6,13 @@
 
 <div class="bilitool-layout">
     <!-- Sidebar Navigation -->
-    <nav class="sidebar @(sidebarCollapsed ? "collapsed" : "mobile-open")" id="sidebar">
+    <nav class="sidebar @(sidebarCollapsed ? "collapsed" : "") @(mobileSidebarOpen ? "mobile-open" : "")" id="sidebar">
         <div class="sidebar-header">
             <a href="/" class="sidebar-logo" style="text-decoration: none;">
                 <i class="fas fa-baby"></i>
                 <div>
                     <span class="logo-name">BiliTool.Vn</span>
-                    <span class="logo-tagline">@T["Version"] 1.3.0</span>
+                    <span class="logo-tagline">@T["Version"] 1.3.1</span>
                 </div>
             </a>
             <button class="sidebar-toggle" @onclick="ToggleSidebar" aria-label="@T["Menu_Toggle"]">
@@ -216,7 +216,7 @@
     </nav>
 
     <!-- Overlay for mobile -->
-    @if (!sidebarCollapsed)
+    @if (mobileSidebarOpen)
     {
         <div class="sidebar-overlay" @onclick="ToggleSidebar"></div>
     }
@@ -285,9 +285,21 @@
 
 @code {
     private bool sidebarCollapsed = false;
+    private bool mobileSidebarOpen = false;
     private bool showLangDropdown = false;
 
-    private void ToggleSidebar() => sidebarCollapsed = !sidebarCollapsed;
+    private async Task ToggleSidebar()
+    {
+        var isMobile = await JS.InvokeAsync<bool>("eval", "window.matchMedia('(max-width: 768px)').matches");
+
+        if (isMobile)
+        {
+            mobileSidebarOpen = !mobileSidebarOpen;
+            return;
+        }
+
+        sidebarCollapsed = !sidebarCollapsed;
+    }
 
     private void ToggleLangDropdown() => showLangDropdown = !showLangDropdown;
 
