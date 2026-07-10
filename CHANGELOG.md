@@ -1,5 +1,14 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.13] - 2026-07-10
+### Added
+- Added a Playwright French-language sweep test covering all public pages after switching the UI to French.
+
+### Changed
+- Added complete French content branches for `/huong-dan` and `/tich-hop-his`.
+- Localized French reference titles on the calculator guidance panel and `/gioi-thieu`.
+- Bumped cache/version metadata to `1.3.13`.
+
 ## [1.3.12] - 2026-07-10
 ### Added
 - Added a Playwright English-language sweep test covering all public pages after switching the UI to English.

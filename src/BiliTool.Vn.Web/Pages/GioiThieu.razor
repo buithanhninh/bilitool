@@ -40,6 +40,8 @@
     var clinicalSupportBadge = isEnglish ? "Clinical Decision Support" : isFrench ? "Aide à la décision clinique" : "Hỗ trợ quyết định lâm sàng";
     var aapDate = isEnglish ? "Pediatrics, 09/2022" : isFrench ? "Pediatrics, 09/2022" : "Pediatrics, tháng 09/2022";
     var niceDate = isEnglish ? "Updated 10/2023" : isFrench ? "Mis à jour 10/2023" : "Cập nhật 10/2023";
+    var aapReferenceTitle = isEnglish ? "Clinical Practice Guideline Revision" : isFrench ? "Révision des recommandations de pratique clinique" : "Clinical Practice Guideline Revision";
+    var niceReferenceTitle = isEnglish ? "Jaundice in newborn babies under 28 days" : isFrench ? "Ictère chez les nouveau-nés de moins de 28 jours" : "Jaundice in newborn babies under 28 days";
 
     var advisorTitle = isEnglish ? "Author & Clinical Advisor" : isFrench ? "Autrice et conseillère clinique" : "Tác giả - Cố vấn chuyên môn";
 
@@ -137,12 +139,12 @@
             <div class="about-reference-list">
                 <a href="https://publications.aap.org/pediatrics/article/150/3/e2022058859/188726/Clinical-Practice-Guideline-Revision-Management-of" target="_blank" rel="noopener">
                     <span>AAP 2022</span>
-                    <strong>Clinical Practice Guideline Revision</strong>
+                    <strong>@aapReferenceTitle</strong>
                     <small>@aapDate</small>
                 </a>
                 <a href="https://www.nice.org.uk/guidance/cg98" target="_blank" rel="noopener">
                     <span>NICE CG98</span>
-                    <strong>Jaundice in newborn babies under 28 days</strong>
+                    <strong>@niceReferenceTitle</strong>
                     <small>@niceDate</small>
                 </a>
             </div>

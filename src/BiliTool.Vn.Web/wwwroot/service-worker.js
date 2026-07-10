@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bilitool-vn-shell-v12';
+const CACHE_NAME = 'bilitool-vn-shell-v13';
 const STATIC_ASSETS = [
   '/',
   '/offline.html',
