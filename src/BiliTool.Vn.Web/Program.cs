@@ -1,6 +1,7 @@
 using BiliTool.Vn.Application;
 using BiliTool.Vn.Infrastructure;
 using BiliTool.Vn.Infrastructure.Persistence;
+using BiliTool.Vn.Web.Localization;
 using Blazored.Toast;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -214,27 +215,28 @@ if (!app.Environment.IsDevelopment())
     // app.UseHsts();
 }
 
-// ----- Thiết lập Đa ngôn ngữ (i18n) Bằng tay qua Cookie -----
+// ----- Thiết lập Đa ngôn ngữ (i18n): Cookie > query > browser language > Cloudflare country -----
 var supportedCultures = new[] { "vi", "en", "fr" };
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture("vi")
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 
-var defaultLangHeader = localizationOptions.RequestCultureProviders.FirstOrDefault(x => x.GetType() == typeof(Microsoft.AspNetCore.Localization.AcceptLanguageHeaderRequestCultureProvider));
-if (defaultLangHeader != null)
-{
-    localizationOptions.RequestCultureProviders.Remove(defaultLangHeader!);
-}
-
-// Ưu tiên cao nhất là CookieProvider
 var cookieProvider = localizationOptions.RequestCultureProviders.OfType<Microsoft.AspNetCore.Localization.CookieRequestCultureProvider>().FirstOrDefault();
+var queryProvider = localizationOptions.RequestCultureProviders.OfType<Microsoft.AspNetCore.Localization.QueryStringRequestCultureProvider>().FirstOrDefault();
+localizationOptions.RequestCultureProviders.Clear();
+
 if (cookieProvider != null)
 {
-    // Cấp ưu tiên số 1
-    localizationOptions.RequestCultureProviders.Remove(cookieProvider!);
-    localizationOptions.RequestCultureProviders.Insert(0, cookieProvider);
+    localizationOptions.RequestCultureProviders.Add(cookieProvider);
 }
+
+if (queryProvider != null)
+{
+    localizationOptions.RequestCultureProviders.Add(queryProvider);
+}
+
+localizationOptions.RequestCultureProviders.Add(new SmartRequestCultureProvider());
 
 app.UseRequestLocalization(localizationOptions);
 // -----------------------------------------------------------

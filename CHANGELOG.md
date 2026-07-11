@@ -1,5 +1,13 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.15] - 2026-07-11
+### Added
+- Added smart language detection using the priority order: user language cookie, query string, browser `Accept-Language`, then Cloudflare/IP country headers.
+- Added unit tests for browser-language and country-code detection across Vietnamese, English, and French mappings.
+
+### Changed
+- Bumped cache/version metadata to `1.3.15`.
+
 ## [1.3.14] - 2026-07-10
 ### Changed
 - Localized the bilirubin result header and nomogram/chart labels for English and French.
