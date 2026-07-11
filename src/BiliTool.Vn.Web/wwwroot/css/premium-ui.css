@@ -940,6 +940,21 @@ body::after {
     font-size: 1.25rem !important;
     padding: 18px 14px !important;
   }
+
+  .nav-link-vn,
+  .lang-dropdown-btn,
+  .mobile-login-btn,
+  .sidebar-toggle,
+  .btn-reset,
+  .btn-icon,
+  .footer-links a {
+    min-height: 44px;
+  }
+
+  .footer-links a {
+    display: inline-flex !important;
+    align-items: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

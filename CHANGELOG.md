@@ -1,5 +1,21 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.16] - 2026-07-11
+
+### Changed
+- Rebuilt responsive layout foundations for 320px–1440px viewports with zero page-level horizontal overflow.
+- Improved mobile navigation, footer, cookie consent, clinical guidance tables, and HIS/EMR technical documentation.
+- Added consistent 44px touch targets and reduced-motion behavior for key controls.
+
+### Accessibility
+- Added valid names and expanded-state semantics to sidebar, language, and mobile navigation controls.
+- Made horizontally scrollable clinical tables, endpoints, and code regions keyboard accessible.
+- Fixed sign-in divider contrast to meet WCAG 2.2 AA.
+
+### Testing
+- Added a 55-case Playwright + axe quality sweep covering 11 public pages at five responsive breakpoints.
+- Quality gate now fails on horizontal overflow, browser console errors, HTTP failures, or serious/critical WCAG violations.
+
 ## [1.3.15] - 2026-07-11
 ### Added
 - Added smart language detection using the priority order: user language cookie, query string, browser `Accept-Language`, then Cloudflare/IP country headers.

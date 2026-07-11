@@ -5,7 +5,7 @@
 
 @if (showBanner)
 {
-    <div class="cookie-consent-card" role="region" aria-labelledby="cookie-consent-title">
+    <div class="cookie-consent-card" role="region" aria-labelledby="cookie-consent-title" aria-live="polite">
         <div class="cookie-content">
             <div class="cookie-header">
                 <i class="fas fa-cookie-bite cookie-icon"></i>
@@ -27,7 +27,7 @@
         position: fixed;
         bottom: 24px;
         left: 24px;
-        width: 380px;
+        width: min(380px, calc(100vw - 32px));
         background: rgba(20, 32, 48, 0.95);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
@@ -101,6 +101,7 @@
         cursor: pointer;
         transition: all 0.25s ease-in-out;
         box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        min-height: 44px;
     }
 
     .btn-accept:hover {
@@ -135,6 +136,18 @@
         }
         .cookie-content {
             padding: 20px;
+        }
+        .cookie-actions,
+        .btn-accept {
+            width: 100%;
+        }
+    }
+
+    @@media (prefers-reduced-motion: reduce) {
+        .cookie-consent-card,
+        .btn-accept {
+            animation: none;
+            transition: none;
         }
     }
 </style>

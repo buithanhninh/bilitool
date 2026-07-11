@@ -213,6 +213,8 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .main-content {
   margin-left: var(--sidebar-width);
   flex: 1;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -242,11 +244,15 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
   background: white;
   border-bottom: 1px solid var(--gray-200);
   box-shadow: var(--shadow-sm);
+  min-width: 0;
 }
 
 .mobile-menu-btn {
-  background: none; border: none; font-size: 1.2rem;
-  cursor: pointer; color: var(--gray-700); padding: 4px;
+  display: inline-grid; place-items: center;
+  width: 44px; height: 44px;
+  background: transparent; border: 1px solid transparent; border-radius: 12px;
+  font-size: 1.2rem; flex: 0 0 44px;
+  cursor: pointer; color: var(--gray-700); padding: 0;
 }
 
 .mobile-logo {
@@ -254,7 +260,13 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
   font-weight: 700; color: var(--primary); font-size: 1rem;
 }
 
-.page-content { flex: 1; padding: 24px; }
+.page-content {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  padding: 24px;
+  overflow-x: clip;
+}
 
 /* ── FOOTER ── */
 .site-footer {
@@ -270,6 +282,12 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
   font-size: 0.78rem;
   color: var(--gray-600);
   gap: 16px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.footer-links {
+  min-width: 0;
   flex-wrap: wrap;
 }
 
@@ -359,8 +377,11 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
   /* On mobile, main content should never have margins */
   .main-content, .main-content.collapsed { margin-left: 0 !important; }
   
-  .mobile-header { display: flex; }
+  .mobile-header { display: flex; position: sticky; top: 0; z-index: 900; }
   .page-content { padding: 16px; }
+  .site-footer { padding: 16px; }
+  .footer-content { align-items: flex-start !important; padding: 0 !important; }
+  .footer-links { width: 100%; gap: 10px 14px !important; }
 }
 
 /* ── CUSTOM RECONNECT MODAL ── */

@@ -44,8 +44,8 @@
         </section>
         <section class="his-method-card"><div class="his-method-heading"><span>Method 1</span><h2>Deep Link to open the calculator UI</h2></div>
             <p>Best when the HIS opens BiliTool.Vn in a new tab or window, pre-fills basic data, and lets the clinician review before calculating. Deep Link does not require an API key because it does not call the JSON endpoint.</p>
-            <div class="his-endpoint"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
-            <div class="table-responsive"><table class="his-table"><thead><tr><th>Parameter</th><th>Required</th><th>Valid format</th><th>Notes</th></tr></thead><tbody>
+            <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
+            <div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Parameter</th><th>Required</th><th>Valid format</th><th>Notes</th></tr></thead><tbody>
                 <tr><td><code>ngaysinh</code></td><td>Yes for auto calculation</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, or <code>ddMMyyyy</code></td><td>Birth date.</td></tr>
                 <tr><td><code>giosinh</code></td><td>Recommended</td><td><code>HH:mm</code> or <code>HHmm</code></td><td>If omitted, the UI uses its default time.</td></tr>
                 <tr><td><code>ngaymau</code></td><td>Yes for auto calculation</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, or <code>ddMMyyyy</code></td><td>Bilirubin sample date.</td></tr>
@@ -72,11 +72,11 @@ window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
         <section class="his-method-card"><div class="his-method-heading"><span>Method 2</span><h2>REST API for headless calculation</h2></div>
             <p>Use this mode when the HIS needs JSON results for storage in the electronic record, display inside an internal screen, or automated workflow. The API requires <code>X-API-Key</code> and currently applies a 30 requests per minute rate limit window.</p>
             <p class="his-note"><i class="fas fa-lock"></i> Production API keys are issued only for integration partners. If no key is configured the API returns 503; missing or invalid keys return 401.</p>
-            <div class="his-endpoint"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
+            <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
             <h3>Required header</h3><pre class="his-code"><code>X-API-Key: {your_api_key}
 Content-Type: application/json</code></pre>
             <h3>Main input fields</h3>
-            <div class="table-responsive"><table class="his-table"><thead><tr><th>JSON field</th><th>Required</th><th>Type</th><th>Limits / meaning</th></tr></thead><tbody>
+            <div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>JSON field</th><th>Required</th><th>Type</th><th>Limits / meaning</th></tr></thead><tbody>
                 <tr><td><code>tuoiTheoGio</code></td><td>Yes if date/time omitted</td><td>number</td><td>Age at sampling, valid <code>1–336</code> hours.</td></tr>
                 <tr><td><code>ngaySinh</code></td><td>Yes if age omitted</td><td>ISO datetime</td><td>May include time, for example <code>2026-03-15T08:30:00+07:00</code>.</td></tr>
                 <tr><td><code>gioSinh</code></td><td>No</td><td><code>HH:mm:ss</code></td><td>If sent separately, system combines it with <code>ngaySinh</code>.</td></tr>
@@ -113,7 +113,7 @@ Content-Type: application/json</code></pre>
   "trangThaiChieuDen": 0
 }</code></pre>
             <h3>Important response fields</h3>
-            <div class="table-responsive"><table class="his-table"><thead><tr><th>Response field</th><th>Meaning</th></tr></thead><tbody>
+            <div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Response field</th><th>Meaning</th></tr></thead><tbody>
                 <tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Patient context after system calculation and normalization.</td></tr>
                 <tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Bilirubin value converted in both units.</td></tr>
                 <tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>AAP 2022 thresholds in mg/dL.</td></tr>
@@ -147,7 +147,7 @@ else if (lang == "fr")
     <div class="his-doc-shell">
         <section class="his-hero-panel"><div class="his-kicker"><i class="fas fa-hospital-alt"></i> Intégration HIS / EMR</div><h1>Intégration aux systèmes HIS / EMR</h1><p>BiliTool.Vn prend en charge deux modes : ouvrir l’interface du calculateur par lien profond pour revue médicale, ou appeler une API REST sécurisée avec <code>X-API-Key</code> afin que le HIS reçoive des résultats JSON structurés.</p><div class="his-status-grid" aria-label="État de revue de la documentation"><div><strong>Vérifié</strong><span>Route, DTO, validateur, réponse</span></div><div><strong>API sécurisée</strong><span><code>X-API-Key</code> + limite de débit</span></div><div><strong>Champ</strong><span>Nouveau-nés ≥35 semaines, âge 1–336 heures</span></div></div></section>
         <section class="his-audit-card"><h2><i class="fas fa-clipboard-check"></i> Conclusion de revue rapide</h2><ul class="his-check-list"><li><i class="fas fa-check"></i><span><strong>Correct :</strong> le lien profond utilise la route <code>/may-tinh</code> et les paramètres <code>ngaysinh</code>, <code>giosinh</code>, <code>ngaymau</code>, <code>giomau</code>, <code>bili</code>, <code>donvi</code>, <code>tuoithai</code>, <code>autocalc</code>.</span></li><li><i class="fas fa-check"></i><span><strong>Correct :</strong> l’endpoint officiel est <code>POST /api/v1/bilirubin/calculate</code>, accepte <code>YeuCauTinhToanBilirubinDto</code> et retourne <code>KetQuaTinhToanDto</code>.</span></li><li><i class="fas fa-triangle-exclamation"></i><span><strong>À clarifier :</strong> le lien profond ne transmet pas encore les facteurs de risque neurologiques ou cliniques. Utiliser l’API REST si le HIS doit envoyer toutes les données de risque.</span></li><li><i class="fas fa-triangle-exclamation"></i><span><strong>À clarifier :</strong> les énumérations JSON doivent être numériques : <code>donViDo: 0</code> = mg/dL et <code>donViDo: 1</code> = µmol/L. Ne pas envoyer <code>"MgDl"</code> dans les requêtes JSON.</span></li><li><i class="fas fa-triangle-exclamation"></i><span><strong>À clarifier :</strong> la validation API limite actuellement l’âge à <code>1–336 heures</code>. Les plages plus larges des anciens documents peuvent induire en erreur.</span></li></ul></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Méthode 1</span><h2>Lien profond vers l’interface du calculateur</h2></div><p>Approprié lorsque le HIS ouvre BiliTool.Vn dans un nouvel onglet ou une nouvelle fenêtre, préremplit les données de base et laisse le clinicien vérifier avant le calcul. Le lien profond ne nécessite pas de clé API car il n’appelle pas l’endpoint JSON.</p><div class="his-endpoint"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div><div class="table-responsive"><table class="his-table"><thead><tr><th>Paramètre</th><th>Obligatoire</th><th>Format valide</th><th>Notes</th></tr></thead><tbody><tr><td><code>ngaysinh</code></td><td>Oui pour calcul automatique</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code> ou <code>ddMMyyyy</code></td><td>Date de naissance.</td></tr><tr><td><code>giosinh</code></td><td>Recommandé</td><td><code>HH:mm</code> ou <code>HHmm</code></td><td>Si absent, l’interface utilise l’heure par défaut.</td></tr><tr><td><code>ngaymau</code></td><td>Oui pour calcul automatique</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code> ou <code>ddMMyyyy</code></td><td>Date du prélèvement de bilirubine.</td></tr><tr><td><code>giomau</code></td><td>Recommandé</td><td><code>HH:mm</code> ou <code>HHmm</code></td><td>Si absent, l’interface utilise l’heure par défaut.</td></tr><tr><td><code>bili</code></td><td>Oui pour calcul automatique</td><td>Nombre décimal avec point, par exemple <code>12.5</code></td><td>Bilirubine totale.</td></tr><tr><td><code>donvi</code></td><td>Non</td><td><code>MgDl</code> ou <code>UmolL</code></td><td>Unité par défaut de l’interface : <code>UmolL</code>.</td></tr><tr><td><code>tuoithai</code></td><td>Oui pour calcul automatique</td><td>Entier <code>35–45</code></td><td>Âge gestationnel en semaines révolues.</td></tr><tr><td><code>autocalc</code></td><td>Non</td><td><code>true</code> ou <code>false</code></td><td><code>true</code> lance le calcul au chargement.</td></tr></tbody></table></div><p class="his-note"><i class="fas fa-info-circle"></i> Le lien profond ne transmet pas encore les facteurs de risque, l’ETCOc ou l’état de photothérapie. Le clinicien doit les sélectionner dans l’interface, ou le HIS doit appeler l’API REST.</p><h3>Exemple JavaScript dans un EMR</h3><pre class="his-code"><code>// Ouvrir BiliTool.Vn depuis un EMR avec un lien profond
+        <section class="his-method-card"><div class="his-method-heading"><span>Méthode 1</span><h2>Lien profond vers l’interface du calculateur</h2></div><p>Approprié lorsque le HIS ouvre BiliTool.Vn dans un nouvel onglet ou une nouvelle fenêtre, préremplit les données de base et laisse le clinicien vérifier avant le calcul. Le lien profond ne nécessite pas de clé API car il n’appelle pas l’endpoint JSON.</p><div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div><div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Paramètre</th><th>Obligatoire</th><th>Format valide</th><th>Notes</th></tr></thead><tbody><tr><td><code>ngaysinh</code></td><td>Oui pour calcul automatique</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code> ou <code>ddMMyyyy</code></td><td>Date de naissance.</td></tr><tr><td><code>giosinh</code></td><td>Recommandé</td><td><code>HH:mm</code> ou <code>HHmm</code></td><td>Si absent, l’interface utilise l’heure par défaut.</td></tr><tr><td><code>ngaymau</code></td><td>Oui pour calcul automatique</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code> ou <code>ddMMyyyy</code></td><td>Date du prélèvement de bilirubine.</td></tr><tr><td><code>giomau</code></td><td>Recommandé</td><td><code>HH:mm</code> ou <code>HHmm</code></td><td>Si absent, l’interface utilise l’heure par défaut.</td></tr><tr><td><code>bili</code></td><td>Oui pour calcul automatique</td><td>Nombre décimal avec point, par exemple <code>12.5</code></td><td>Bilirubine totale.</td></tr><tr><td><code>donvi</code></td><td>Non</td><td><code>MgDl</code> ou <code>UmolL</code></td><td>Unité par défaut de l’interface : <code>UmolL</code>.</td></tr><tr><td><code>tuoithai</code></td><td>Oui pour calcul automatique</td><td>Entier <code>35–45</code></td><td>Âge gestationnel en semaines révolues.</td></tr><tr><td><code>autocalc</code></td><td>Non</td><td><code>true</code> ou <code>false</code></td><td><code>true</code> lance le calcul au chargement.</td></tr></tbody></table></div><p class="his-note"><i class="fas fa-info-circle"></i> Le lien profond ne transmet pas encore les facteurs de risque, l’ETCOc ou l’état de photothérapie. Le clinicien doit les sélectionner dans l’interface, ou le HIS doit appeler l’API REST.</p><h3>Exemple JavaScript dans un EMR</h3><pre class="his-code"><code>// Ouvrir BiliTool.Vn depuis un EMR avec un lien profond
 const url = new URL("https://bilitool.vn/may-tinh");
 url.searchParams.append("ngaysinh", "15/03/2026");
 url.searchParams.append("giosinh", "08:30");
@@ -158,8 +158,8 @@ url.searchParams.append("donvi", "MgDl");
 url.searchParams.append("tuoithai", "38");
 url.searchParams.append("autocalc", "true");
 window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Méthode 2</span><h2>API REST pour calcul sans interface</h2></div><p>Utiliser ce mode lorsque le HIS doit recevoir des résultats JSON pour les enregistrer dans le dossier électronique, les afficher dans un écran interne ou intégrer un flux automatisé. L’API exige <code>X-API-Key</code> et applique actuellement une limite de 30 requêtes par minute.</p><p class="his-note"><i class="fas fa-lock"></i> Les clés API de production sont attribuées uniquement aux partenaires d’intégration. Si aucune clé n’est configurée, l’API retourne 503; une clé absente ou invalide retourne 401.</p><div class="his-endpoint"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div><h3>En-tête obligatoire</h3><pre class="his-code"><code>X-API-Key: {your_api_key}
-Content-Type: application/json</code></pre><h3>Champs d’entrée principaux</h3><div class="table-responsive"><table class="his-table"><thead><tr><th>Champ JSON</th><th>Obligatoire</th><th>Type</th><th>Limites / signification</th></tr></thead><tbody><tr><td><code>tuoiTheoGio</code></td><td>Oui si date/heure absentes</td><td>number</td><td>Âge au prélèvement, valide <code>1–336</code> heures.</td></tr><tr><td><code>ngaySinh</code></td><td>Oui si âge absent</td><td>Date ISO</td><td>Peut inclure l’heure, par exemple <code>2026-03-15T08:30:00+07:00</code>.</td></tr><tr><td><code>gioSinh</code></td><td>Non</td><td><code>HH:mm:ss</code></td><td>Si envoyé séparément, le système le combine avec <code>ngaySinh</code>.</td></tr><tr><td><code>ngayLayMau</code></td><td>Oui si âge absent</td><td>Date ISO</td><td>Doit être après la naissance; l’âge calculé doit être <code>1–336</code> heures.</td></tr><tr><td><code>gioLayMau</code></td><td>Non</td><td><code>HH:mm:ss</code></td><td>Si envoyé séparément, le système le combine avec <code>ngayLayMau</code>.</td></tr><tr><td><code>tongBilirubin</code></td><td>Oui</td><td>number</td><td>Supérieur à 0; maximum 60 pour mg/dL, 1026 pour µmol/L.</td></tr><tr><td><code>donViDo</code></td><td>Non</td><td>enum numérique</td><td><code>0 = MgDl</code>, <code>1 = UmolL</code>. Valeur par défaut : 1.</td></tr><tr><td><code>tuoiThaiTuan</code></td><td>Oui</td><td>integer</td><td>Valide <code>35–45</code> semaines révolues.</td></tr><tr><td><code>yeuToNguyCo</code></td><td>Non</td><td>object</td><td>Si absent, tous les facteurs de risque valent false ou null.</td></tr><tr><td><code>trangThaiChieuDen</code></td><td>Non</td><td>enum numérique</td><td>0 sans photothérapie, 1 en cours, 2 intensive, 3 arrêtée.</td></tr></tbody></table></div><h3>Groupes de facteurs de risque pris en charge</h3><div class="his-risk-grid"><div><strong>AAP 2022 - risque de neurotoxicité</strong><span>Hémolyse iso-immune ou déficit G6PD, sepsis ou suspicion, albumine &lt;3 g/dL, instabilité clinique, ETCOc si disponible.</span></div><div><strong>NICE CG98 - risque clinique et étendu</strong><span>Fratrie ayant reçu une photothérapie, allaitement maternel exclusif prévu, ictère dans les 24 premières heures, hémolyse Rh/ABO, signes d’encéphalopathie bilirubinique aiguë.</span></div></div><h3>Exemple de requête conforme au DTO actuel</h3><pre class="his-code"><code>{
+        <section class="his-method-card"><div class="his-method-heading"><span>Méthode 2</span><h2>API REST pour calcul sans interface</h2></div><p>Utiliser ce mode lorsque le HIS doit recevoir des résultats JSON pour les enregistrer dans le dossier électronique, les afficher dans un écran interne ou intégrer un flux automatisé. L’API exige <code>X-API-Key</code> et applique actuellement une limite de 30 requêtes par minute.</p><p class="his-note"><i class="fas fa-lock"></i> Les clés API de production sont attribuées uniquement aux partenaires d’intégration. Si aucune clé n’est configurée, l’API retourne 503; une clé absente ou invalide retourne 401.</p><div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div><h3>En-tête obligatoire</h3><pre class="his-code"><code>X-API-Key: {your_api_key}
+Content-Type: application/json</code></pre><h3>Champs d’entrée principaux</h3><div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Champ JSON</th><th>Obligatoire</th><th>Type</th><th>Limites / signification</th></tr></thead><tbody><tr><td><code>tuoiTheoGio</code></td><td>Oui si date/heure absentes</td><td>number</td><td>Âge au prélèvement, valide <code>1–336</code> heures.</td></tr><tr><td><code>ngaySinh</code></td><td>Oui si âge absent</td><td>Date ISO</td><td>Peut inclure l’heure, par exemple <code>2026-03-15T08:30:00+07:00</code>.</td></tr><tr><td><code>gioSinh</code></td><td>Non</td><td><code>HH:mm:ss</code></td><td>Si envoyé séparément, le système le combine avec <code>ngaySinh</code>.</td></tr><tr><td><code>ngayLayMau</code></td><td>Oui si âge absent</td><td>Date ISO</td><td>Doit être après la naissance; l’âge calculé doit être <code>1–336</code> heures.</td></tr><tr><td><code>gioLayMau</code></td><td>Non</td><td><code>HH:mm:ss</code></td><td>Si envoyé séparément, le système le combine avec <code>ngayLayMau</code>.</td></tr><tr><td><code>tongBilirubin</code></td><td>Oui</td><td>number</td><td>Supérieur à 0; maximum 60 pour mg/dL, 1026 pour µmol/L.</td></tr><tr><td><code>donViDo</code></td><td>Non</td><td>enum numérique</td><td><code>0 = MgDl</code>, <code>1 = UmolL</code>. Valeur par défaut : 1.</td></tr><tr><td><code>tuoiThaiTuan</code></td><td>Oui</td><td>integer</td><td>Valide <code>35–45</code> semaines révolues.</td></tr><tr><td><code>yeuToNguyCo</code></td><td>Non</td><td>object</td><td>Si absent, tous les facteurs de risque valent false ou null.</td></tr><tr><td><code>trangThaiChieuDen</code></td><td>Non</td><td>enum numérique</td><td>0 sans photothérapie, 1 en cours, 2 intensive, 3 arrêtée.</td></tr></tbody></table></div><h3>Groupes de facteurs de risque pris en charge</h3><div class="his-risk-grid"><div><strong>AAP 2022 - risque de neurotoxicité</strong><span>Hémolyse iso-immune ou déficit G6PD, sepsis ou suspicion, albumine &lt;3 g/dL, instabilité clinique, ETCOc si disponible.</span></div><div><strong>NICE CG98 - risque clinique et étendu</strong><span>Fratrie ayant reçu une photothérapie, allaitement maternel exclusif prévu, ictère dans les 24 premières heures, hémolyse Rh/ABO, signes d’encéphalopathie bilirubinique aiguë.</span></div></div><h3>Exemple de requête conforme au DTO actuel</h3><pre class="his-code"><code>{
   "ngaySinh": "2026-03-15T08:30:00+07:00",
   "ngayLayMau": "2026-03-16T10:00:00+07:00",
   "tongBilirubin": 12.5,
@@ -179,7 +179,7 @@ Content-Type: application/json</code></pre><h3>Champs d’entrée principaux</h3
     "dauHieuBenhNaoBilirubinCap": false
   },
   "trangThaiChieuDen": 0
-}</code></pre><h3>Champs de réponse importants</h3><div class="table-responsive"><table class="his-table"><thead><tr><th>Champ de réponse</th><th>Signification</th></tr></thead><tbody><tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Contexte patient après calcul et normalisation.</td></tr><tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Bilirubine convertie dans les deux unités.</td></tr><tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>Seuils AAP 2022 en mg/dL.</td></tr><tr><td><code>nguongChieuDen_NICE_UmolL</code>, <code>nguongThayCuuMau_NICE_UmolL</code></td><td>Seuils NICE CG98 en µmol/L.</td></tr><tr><td><code>canChieuDenNgay</code>, <code>canChieuDenTichCuc</code>, <code>canXemXetThayCuuMau</code></td><td>Indicateurs décisionnels pour alertes HIS.</td></tr><tr><td><code>gioDoLapTiepTheo</code>, <code>lichDoLapNICE</code></td><td>Suggestion de contrôle répété si retournée par le moteur.</td></tr><tr><td><code>phacDoQuyetDinh</code>, <code>chuThichThamChieu</code></td><td>Recommandation déterminante et note de source.</td></tr><tr><td><code>chartData</code></td><td>Données nomogramme pour un graphique côté HIS si nécessaire.</td></tr></tbody></table></div></section>
+}</code></pre><h3>Champs de réponse importants</h3><div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Champ de réponse</th><th>Signification</th></tr></thead><tbody><tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Contexte patient après calcul et normalisation.</td></tr><tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Bilirubine convertie dans les deux unités.</td></tr><tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>Seuils AAP 2022 en mg/dL.</td></tr><tr><td><code>nguongChieuDen_NICE_UmolL</code>, <code>nguongThayCuuMau_NICE_UmolL</code></td><td>Seuils NICE CG98 en µmol/L.</td></tr><tr><td><code>canChieuDenNgay</code>, <code>canChieuDenTichCuc</code>, <code>canXemXetThayCuuMau</code></td><td>Indicateurs décisionnels pour alertes HIS.</td></tr><tr><td><code>gioDoLapTiepTheo</code>, <code>lichDoLapNICE</code></td><td>Suggestion de contrôle répété si retournée par le moteur.</td></tr><tr><td><code>phacDoQuyetDinh</code>, <code>chuThichThamChieu</code></td><td>Recommandation déterminante et note de source.</td></tr><tr><td><code>chartData</code></td><td>Données nomogramme pour un graphique côté HIS si nécessaire.</td></tr></tbody></table></div></section>
         <section class="his-method-card"><div class="his-method-heading"><span>Référence avancée</span><h2>Endpoint avec enveloppe clinique</h2></div><p>L’endpoint <code>POST /api/v2/clinical/bilirubin/calculate</code> utilise la même entrée que l’API v1, mais enveloppe le résultat dans <code>guideline</code>, <code>patientContext</code>, <code>thresholds</code>, <code>recommendation</code> et <code>legacyResult</code>. Il exige aussi <code>X-API-Key</code>.</p></section>
         <section class="his-method-card"><div class="his-method-heading"><span>Exploitation</span><h2>Codes d’erreur à gérer côté HIS</h2></div><div class="his-error-grid"><div><strong>400</strong><span>Données invalides : âge ou date de prélèvement manquants, âge hors 1–336 heures, gestation hors 35–45 semaines ou bilirubine au-dessus de la limite.</span></div><div><strong>401</strong><span><code>X-API-Key</code> absent ou invalide.</span></div><div><strong>429</strong><span>Limite de débit API dépassée.</span></div><div><strong>503</strong><span>Liste des clés API d’intégration non configurée sur le serveur.</span></div><div><strong>500</strong><span>Erreur système; la réponse inclut <code>traceId</code> pour corrélation des journaux.</span></div></div></section>
     </div>
@@ -215,9 +215,9 @@ else
             <h2>Deep Link mở giao diện máy tính</h2>
         </div>
         <p>Phù hợp khi HIS muốn mở BiliTool.Vn trong tab/cửa sổ mới, tự điền dữ liệu cơ bản, để bác sĩ kiểm tra lại trước khi tính. Deep Link không yêu cầu API key vì không gọi endpoint JSON.</p>
-        <div class="his-endpoint"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
+        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" tabindex="0">
             <table class="his-table">
                 <thead>
                     <tr><th>Tham số</th><th>Bắt buộc</th><th>Định dạng hợp lệ</th><th>Ghi chú</th></tr>
@@ -238,7 +238,7 @@ else
         <div class="his-note warning"><i class="fas fa-circle-info"></i><span>Deep Link hiện chưa hỗ trợ truyền yếu tố nguy cơ, ETCOc hoặc trạng thái chiếu đèn. Dữ liệu này cần bác sĩ chọn trên giao diện hoặc HIS gọi REST API.</span></div>
 
         <h3>Ví dụ JavaScript trong HIS</h3>
-        <pre><code>// Mở BiliTool.Vn từ EMR bằng Deep Link
+        <pre tabindex="0"><code>// Mở BiliTool.Vn từ EMR bằng Deep Link
 const url = new URL("https://bilitool.vn/may-tinh");
 url.searchParams.set("ngaysinh", "15/03/2026");
 url.searchParams.set("giosinh", "08:30");
@@ -258,16 +258,16 @@ window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
             <h2>REST API cho HIS/EMR</h2>
         </div>
         <p>Phù hợp khi HIS cần nhận kết quả JSON để lưu vào bệnh án điện tử, hiển thị trong màn hình nội bộ hoặc tích hợp workflow tự động. API yêu cầu header <code>X-API-Key</code> và đang áp dụng rate limit <code>30 request/phút</code> cho mỗi cửa sổ giới hạn.</p>
-        <div class="his-endpoint"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
+        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
 
         <div class="his-note"><i class="fas fa-lock"></i><span>Production chỉ cấp API key cho đơn vị tích hợp. Nếu chưa cấu hình khóa, API trả <code>503</code>; nếu thiếu hoặc sai khóa, API trả <code>401</code>.</span></div>
 
         <h3>Header bắt buộc</h3>
-        <pre><code>Content-Type: application/json
+        <pre tabindex="0"><code>Content-Type: application/json
 X-API-Key: {integration_api_key}</code></pre>
 
         <h3>Trường đầu vào chính</h3>
-        <div class="table-responsive">
+        <div class="table-responsive" tabindex="0">
             <table class="his-table">
                 <thead>
                     <tr><th>Trường JSON</th><th>Bắt buộc</th><th>Kiểu</th><th>Giới hạn / ý nghĩa</th></tr>
@@ -309,7 +309,7 @@ X-API-Key: {integration_api_key}</code></pre>
         </div>
 
         <h3>Request mẫu đúng theo DTO hiện tại</h3>
-        <pre><code>{
+        <pre tabindex="0"><code>{
   "tuoiTheoGio": null,
   "ngaySinh": "2026-03-15T08:30:00+07:00",
   "ngayLayMau": "2026-03-16T10:00:00+07:00",
@@ -333,7 +333,7 @@ X-API-Key: {integration_api_key}</code></pre>
 }</code></pre>
 
         <h3>Nhóm trường kết quả quan trọng</h3>
-        <div class="table-responsive">
+        <div class="table-responsive" tabindex="0">
             <table class="his-table">
                 <thead><tr><th>Trường trả về</th><th>Ý nghĩa</th></tr></thead>
                 <tbody>
@@ -356,7 +356,7 @@ X-API-Key: {integration_api_key}</code></pre>
             <h2>API v2 clinical wrapper</h2>
         </div>
         <p>Endpoint <code>POST /api/v2/clinical/bilirubin/calculate</code> dùng cùng input như API v1 nhưng bọc kết quả theo cấu trúc clinical wrapper: <code>guideline</code>, <code>patientContext</code>, <code>thresholds</code>, <code>recommendation</code>, <code>legacyResult</code>. Endpoint này cũng yêu cầu <code>X-API-Key</code>.</p>
-        <div class="his-endpoint"><code>GET</code><span>https://bilitool.vn/api/v2/clinical/bilirubin/guidelines/active</span></div>
+        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/api/v2/clinical/bilirubin/guidelines/active</span></div>
     </section>
 
     <section class="his-method-card his-error-card">
@@ -385,6 +385,8 @@ X-API-Key: {integration_api_key}</code></pre>
         --his-teal: #0f766e;
         --his-line: rgba(15, 95, 143, 0.16);
         max-width: 1180px;
+        width: 100%;
+        min-width: 0;
         margin: 0 auto;
         padding: clamp(18px, 3vw, 34px);
         color: var(--his-ink);
@@ -401,6 +403,7 @@ X-API-Key: {integration_api_key}</code></pre>
         padding: clamp(24px, 4vw, 44px);
         margin-bottom: 22px;
         overflow: hidden;
+        min-width: 0;
     }
 
     .his-hero-panel {
@@ -548,6 +551,8 @@ X-API-Key: {integration_api_key}</code></pre>
         border-radius: 18px;
         background: #f8fafc;
         overflow-x: auto;
+        max-width: 100%;
+        overscroll-behavior-inline: contain;
     }
 
     .his-endpoint > code {
@@ -576,6 +581,7 @@ X-API-Key: {integration_api_key}</code></pre>
         border-radius: 18px;
         background: #fff;
         margin: 18px 0;
+        min-width: 760px;
     }
 
     .his-table th,
@@ -665,6 +671,8 @@ X-API-Key: {integration_api_key}</code></pre>
         color: #d9f99d;
         padding: 18px;
         overflow-x: auto;
+        max-width: 100%;
+        overscroll-behavior-inline: contain;
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
     }
 
@@ -684,18 +692,25 @@ X-API-Key: {integration_api_key}</code></pre>
         .his-risk-grid {
             grid-template-columns: 1fr;
         }
+        .his-doc-shell { padding: 8px 0 24px; }
     }
 
     @@media (max-width: 560px) {
         .his-doc-shell {
-            padding: 14px;
+            padding: 6px 0 20px;
         }
 
         .his-hero-panel,
         .his-audit-card,
         .his-method-card {
             border-radius: 24px;
+            padding: 20px 16px;
         }
+
+        .his-hero-panel h1 { font-size: clamp(2rem, 11vw, 3rem); }
+        .his-endpoint { align-items: flex-start; }
+        .his-endpoint span { white-space: normal; overflow-wrap: anywhere; }
+        pre { border-radius: 16px; padding: 14px; }
 
         .his-check-list li,
         .his-note {
