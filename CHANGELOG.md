@@ -4,6 +4,7 @@
 
 ### Changed
 - Rebuilt responsive layout foundations for 320px–1440px viewports with zero page-level horizontal overflow.
+- Versioned every application stylesheet so CDN and browser caches receive responsive fixes immediately.
 - Improved mobile navigation, footer, cookie consent, clinical guidance tables, and HIS/EMR technical documentation.
 - Added consistent 44px touch targets and reduced-motion behavior for key controls.
 
