@@ -414,7 +414,7 @@ else
     .reveal-card { animation: guideRise .68s ease both; }
     .delay-1 { animation-delay: .08s; }
     .delay-2 { animation-delay: .16s; }
-    @@keyframes guideRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @@keyframes guideRise { from { transform: translateY(18px); } to { transform: translateY(0); } }
 
     @@media (max-width: 980px) {
         .guide-grid, .timeline-grid, .action-grid, .nice-panel, .red-flag-grid, .reference-grid, .split-section { grid-template-columns: 1fr; }

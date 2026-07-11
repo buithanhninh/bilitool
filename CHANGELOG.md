@@ -7,6 +7,7 @@
 - Versioned every application stylesheet so CDN and browser caches receive responsive fixes immediately.
 - Improved mobile navigation, footer, cookie consent, clinical guidance tables, and HIS/EMR technical documentation.
 - Added consistent 44px touch targets and reduced-motion behavior for key controls.
+- Preserved full text contrast during entrance motion by removing transient opacity fades.
 
 ### Accessibility
 - Added valid names and expanded-state semantics to sidebar, language, and mobile navigation controls.
