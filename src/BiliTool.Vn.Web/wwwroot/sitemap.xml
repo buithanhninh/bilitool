@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://bilitool.vn/</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://bilitool.vn/?culture=vi&amp;ui-culture=vi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bilitool.vn/?culture=en&amp;ui-culture=en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bilitool.vn/?culture=fr&amp;ui-culture=fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bilitool.vn/?culture=vi&amp;ui-culture=vi" />
     <image:image>
       <image:loc>https://bilitool.vn/images/og-bilitool-1200x630.png</image:loc>
       <image:title>BiliTool.Vn — Máy tính Bilirubin sơ sinh</image:title>
@@ -12,31 +16,43 @@
   </url>
   <url>
     <loc>https://bilitool.vn/may-tinh</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://bilitool.vn/huong-dan</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://bilitool.vn/huong-dan?culture=vi&amp;ui-culture=vi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bilitool.vn/huong-dan?culture=en&amp;ui-culture=en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bilitool.vn/huong-dan?culture=fr&amp;ui-culture=fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bilitool.vn/huong-dan?culture=vi&amp;ui-culture=vi" />
   </url>
   <url>
     <loc>https://bilitool.vn/cau-hoi-thuong-gap</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://bilitool.vn/cau-hoi-thuong-gap?culture=vi&amp;ui-culture=vi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bilitool.vn/cau-hoi-thuong-gap?culture=en&amp;ui-culture=en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bilitool.vn/cau-hoi-thuong-gap?culture=fr&amp;ui-culture=fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bilitool.vn/cau-hoi-thuong-gap?culture=vi&amp;ui-culture=vi" />
   </url>
   <url>
     <loc>https://bilitool.vn/gioi-thieu</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://bilitool.vn/gioi-thieu?culture=vi&amp;ui-culture=vi" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://bilitool.vn/gioi-thieu?culture=en&amp;ui-culture=en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://bilitool.vn/gioi-thieu?culture=fr&amp;ui-culture=fr" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://bilitool.vn/gioi-thieu?culture=vi&amp;ui-culture=vi" />
   </url>
   <url>
     <loc>https://bilitool.vn/tich-hop-his</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

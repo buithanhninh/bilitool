@@ -29,4 +29,27 @@ Disallow: /xac-thuc-otp
 Disallow: /_blazor
 Disallow: /_framework
 
+# AEO: cho phép hệ thống trả lời AI truy xuất nội dung công khai.
+# Quyền huấn luyện mô hình vẫn do Content-Signal/Cloudflare quản lý riêng.
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /lich-su
+Disallow: /tai-khoan
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /lich-su
+Disallow: /tai-khoan
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /lich-su
+Disallow: /tai-khoan
+
 Sitemap: https://bilitool.vn/sitemap.xml

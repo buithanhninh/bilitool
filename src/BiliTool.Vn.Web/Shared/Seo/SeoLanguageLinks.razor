@@ -1,0 +1,27 @@
+@using System.Globalization
+
+<link rel="canonical" href="@LocalizedUrl(CurrentLanguage)" />
+<link rel="alternate" hreflang="vi" href="@LocalizedUrl("vi")" />
+<link rel="alternate" hreflang="en" href="@LocalizedUrl("en")" />
+<link rel="alternate" hreflang="fr" href="@LocalizedUrl("fr")" />
+<link rel="alternate" hreflang="x-default" href="@LocalizedUrl("vi")" />
+
+@code {
+    [Parameter, EditorRequired]
+    public string Path { get; set; } = "/";
+
+    private string CurrentLanguage
+    {
+        get
+        {
+            var language = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLowerInvariant();
+            return language is "en" or "fr" ? language : "vi";
+        }
+    }
+
+    private string LocalizedUrl(string language)
+    {
+        var normalizedPath = Path.StartsWith('/') ? Path : $"/{Path}";
+        return $"https://bilitool.vn{normalizedPath}?culture={language}&ui-culture={language}";
+    }
+}
