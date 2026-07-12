@@ -50,6 +50,9 @@ public class HoSoBenhNhan
 
     public DateTime NgayTao { get; set; } = DateTime.UtcNow;
 
+    /// <summary>Dữ liệu kiểm thử/automation, bị loại khỏi thống kê production.</summary>
+    public bool IsTestData { get; set; }
+
     /// <summary>Danh sách xét nghiệm Bilirubin của bệnh nhân này</summary>
     public List<XetNghiemBilirubin> DsXetNghiem { get; set; } = new();
 

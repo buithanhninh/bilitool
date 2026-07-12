@@ -10,6 +10,8 @@ public class ThongKeHeThongDto
     public int BenhNhanMoiTrongThang { get; set; }
     public int TongPhienTinhToan { get; set; }
     public int PhienTinhToanTrongThang { get; set; }
+    public int PhienTinhToanAnDanhTrongThang { get; set; }
+    public int PhienTinhToanDaDangNhapTrongThang { get; set; }
 }
 
 public class TaiKhoanAdminDto
@@ -55,7 +57,9 @@ public class ThongKeBieuDoAdminDto
     public List<ThongKeTheoNgayDto> LuotTinhToan30Ngay { get; set; } = new();
     public int TiLeBinhThuong { get; set; }
     public int TiLeChieuDen { get; set; }
+    public int TiLeEscalation { get; set; }
     public int TiLeThayMau { get; set; }
+    public int TiLeKhongDuDuLieu { get; set; }
 }
 
 public class TaiKhoanDetailAdminDto
@@ -134,6 +138,14 @@ public class TopBenhNhiNguyCoDto
 
 public class ThongKeBenhNhanAdminDto
 {
+    public int TongLuotTinhToanKhongHoSo { get; set; }
+    public int LuotTinhToanAnDanh { get; set; }
+    public int LuotTinhToanDaDangNhapKhongHoSo { get; set; }
+    public int LuotTinhToanKhongThongTinBacSi { get; set; }
+    public int LuotTinhToanKhongThongTinBenhNhi { get; set; }
+    public int LuotTinhToanKhongHoSo30Ngay { get; set; }
+    public int TongMauLamSang { get; set; }
+
     // 2.1 — Dân số học (Epidemiology)
     public int TongBenhNhi { get; set; }
     public int BenhNhiMoiThangNay { get; set; }

@@ -165,3 +165,5 @@ else if (accounts != null)
         }
     }
 }
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AdminRead")]

@@ -3,6 +3,7 @@ using System;
 using BiliTool.Vn.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiliTool.Vn.Infrastructure.Migrations
 {
     [DbContext(typeof(BiliToolDbContext))]
-    partial class BiliToolDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260711113046_AddAdminAuditLogs")]
+    partial class AddAdminAuditLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

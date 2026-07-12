@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bilitool-vn-shell-v15';
+const CACHE_NAME = 'bilitool-vn-shell-v18';
 const STATIC_ASSETS = [
   '/',
   '/offline.html',
@@ -38,6 +38,8 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
 
+  if (url.pathname.startsWith('/_blazor')) return;
+
   if (request.mode === 'navigate') {
     event.respondWith(fetch(request).catch(() => caches.match('/offline.html')));
     return;
@@ -49,6 +51,6 @@ self.addEventListener('fetch', event => {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
       return response;
-    }))
+    })).catch(() => fetch(request))
   );
 });

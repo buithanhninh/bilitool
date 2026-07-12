@@ -9,149 +9,191 @@
 
 <PageTitle>Command Center — BiliTool.Vn</PageTitle>
 
-@if (thongKe == null || bieuDo == null)
+@if (thongKe == null || bieuDo == null || bacSi == null || benhNhan == null)
 {
-    <div class="text-center" style="margin: 60px;">
-        <i class="fas fa-spinner fa-spin fa-2x text-primary"></i> 
-        <div class="mt-2 text-muted">Đang phân tích dữ liệu hệ thống...</div>
+    <div class="admin-loading-state" role="status" aria-live="polite" aria-busy="true">
+        <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
+        <strong>Đang tổng hợp dữ liệu vận hành và lâm sàng</strong>
+        <span>Kiểm tra chất lượng dữ liệu, mức độ sử dụng và tín hiệu an toàn...</span>
     </div>
 }
 else
 {
-    <div class="admin-container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="admin-container command-center">
+        <header class="command-header">
             <div>
-                <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom:0;">
-                    <i class="fas fa-satellite-dish text-primary"></i> Tổng quan Hệ thống
-                </h2>
-                <div class="text-muted mt-1">Trung tâm kiểm soát dữ liệu lâm sàng BiliTool.Vn</div>
+                <div class="command-eyebrow"><span class="live-dot"></span> Hệ thống đang hoạt động</div>
+                <h1>Trung tâm điều hành lâm sàng</h1>
+                <p>Bức tranh tổng hợp về sử dụng, chất lượng dữ liệu và an toàn hỗ trợ quyết định.</p>
             </div>
-            <div class="btn-group shadow-sm">
-                <a href="/admin/tai-khoan" class="btn btn-light border"><i class="fas fa-users-cog text-primary"></i> Bác sĩ</a>
-                <a href="/admin/benh-nhan" class="btn btn-light border"><i class="fas fa-procedures text-info"></i> Bệnh nhi</a>
-                <a href="/admin/nhat-ky" class="btn btn-light border"><i class="fas fa-history text-success"></i> Nhật ký tính toán</a>
+            <div class="command-actions">
+                <div class="report-time"><i class="far fa-clock"></i><span>Dữ liệu cập nhật<br><strong>@DateTime.Now.ToString("HH:mm · dd/MM/yyyy")</strong></span></div>
+                <a href="/admin/nhat-ky" class="command-button primary"><i class="fas fa-list-check"></i> Nhật ký</a>
             </div>
-        </div>
+        </header>
 
-        <!-- KPIs with Sparklines -->
-        <div class="kpi-grid">
-            <!-- Tài khoản -->
-            <div class="admin-card">
-                <div class="kpi-card-header">
-                    <div>
-                        <div class="kpi-title">Tổng Y Bác sĩ</div>
-                        <div class="kpi-value">@thongKe.TongNguoiDung</div>
-                        <div class="text-success mt-1" style="font-size: 0.8rem; font-weight: 600;">
-                            <i class="fas fa-arrow-trend-up"></i> +@thongKe.NguoiDungMoiTrongThang (30 ngày)
+        <section class="health-strip">
+            <div class="health-score" style="--score:@FollowUpCoverage">
+                <div class="health-ring"><strong>@FollowUpCoverage</strong><span>%</span></div>
+                <div><span class="section-label">Bao phủ theo dõi</span><h3>@FollowUpLabel</h3><p>Tỷ lệ bệnh nhi có từ hai lần đo bilirubin trở lên.</p></div>
+            </div>
+            <div class="health-divider"></div>
+            <div class="health-stat"><span>Bác sĩ hoạt động 30 ngày</span><strong>@bacSi.BacSiHoatDong30Ngay</strong><small>@Percent(bacSi.BacSiHoatDong30Ngay, bacSi.TongBacSi)% tổng tài khoản</small></div>
+            <div class="health-stat"><span>Hệ số khai thác</span><strong>@benhNhan.HeSoKhaiThacHeThong.ToString("0.0")</strong><small>lần xét nghiệm / bệnh nhi</small></div>
+            <div class="health-stat danger"><span>Ca cần chú ý</span><strong>@ClinicalAlerts</strong><small>tín hiệu an toàn đang theo dõi</small></div>
+            @if (operations != null)
+            {
+                <div class="health-stat"><span>API p95 / lỗi 15 phút</span><strong>@operations.LatencyMs.P95 ms</strong><small>@operations.ErrorRatePercent% lỗi máy chủ</small></div>
+            }
+        </section>
+
+        <section class="metric-grid metric-grid-four">
+            <article class="metric-card"><div class="metric-icon indigo"><i class="fas fa-user-doctor"></i></div><div class="metric-copy"><span>Tổng bác sĩ</span><strong>@thongKe.TongNguoiDung</strong><small>+@thongKe.NguoiDungMoiTrongThang trong 30 ngày</small></div><canvas id="sparklineTaiKhoan" role="img" aria-label="Xu hướng tài khoản bác sĩ mới trong 30 ngày"></canvas></article>
+            <article class="metric-card"><div class="metric-icon cyan"><i class="fas fa-baby"></i></div><div class="metric-copy"><span>Tổng bệnh nhi</span><strong>@thongKe.TongBenhNhan</strong><small>+@thongKe.BenhNhanMoiTrongThang trong 30 ngày</small></div><canvas id="sparklineBenhNhan" role="img" aria-label="Xu hướng hồ sơ bệnh nhi mới trong 30 ngày"></canvas></article>
+            <article class="metric-card"><div class="metric-icon emerald"><i class="fas fa-calculator"></i></div><div class="metric-copy"><span>Lượt tính AAP</span><strong>@thongKe.TongPhienTinhToan</strong><small>@thongKe.PhienTinhToanAnDanhTrongThang ẩn danh · @thongKe.PhienTinhToanDaDangNhapTrongThang đã đăng nhập / 30 ngày</small></div><canvas id="sparklineTinhToan" role="img" aria-label="Xu hướng lượt tính toán AAP trong 30 ngày"></canvas></article>
+            <article class="metric-card"><div class="metric-icon amber"><i class="fas fa-vial"></i></div><div class="metric-copy"><span>Tổng xét nghiệm</span><strong>@benhNhan.TongXetNghiem</strong><small>@benhNhan.AvgLanDoPerBenhNhi.ToString("0.0") lần đo / bệnh nhi</small></div><div class="metric-status">Theo dõi liên tục</div></article>
+        </section>
+
+        <section class="command-grid">
+            <article class="admin-card chart-main">
+                <div class="card-heading"><div><span class="section-label">Xu hướng 30 ngày</span><h2>Tăng trưởng và mức độ sử dụng</h2></div><span class="admin-badge badge-neutral">UTC+7</span></div>
+                <div class="chart-wrapper tall"><canvas id="comboChart"></canvas></div>
+            </article>
+            <article class="admin-card risk-panel">
+                <div class="card-heading"><div><span class="section-label">An toàn lâm sàng</span><h2>Phân tầng chỉ định AAP</h2></div><i class="fas fa-shield-heart"></i></div>
+                <div class="chart-wrapper risk-chart"><canvas id="donutChart"></canvas></div>
+                <div class="risk-summary">
+                    <div><span class="risk-dot normal"></span><span>Bình thường</span><strong>@bieuDo.TiLeBinhThuong.ToString("0.#")%</strong></div>
+                    <div><span class="risk-dot warning"></span><span>Cần chiếu đèn</span><strong>@bieuDo.TiLeChieuDen.ToString("0.#")%</strong></div>
+                    <div><span class="risk-dot escalation"></span><span>Escalation of care</span><strong>@bieuDo.TiLeEscalation.ToString("0.#")%</strong></div>
+                    <div><span class="risk-dot critical"></span><span>Ngưỡng thay máu</span><strong>@bieuDo.TiLeThayMau.ToString("0.#")%</strong></div>
+                    <div><span class="risk-dot unavailable"></span><span>Không đủ dữ liệu</span><strong>@bieuDo.TiLeKhongDuDuLieu.ToString("0.#")%</strong></div>
+                </div>
+            </article>
+        </section>
+
+        <section class="metric-grid insight-grid">
+            <article class="insight-card danger"><span class="section-label">An toàn</span><strong>@benhNhan.BenhNhiCritical</strong><h3>Bệnh nhi nguy cơ cao</h3><p>Tuổi thai dưới 35 tuần kèm yếu tố nguy cơ thần kinh.</p><a href="/admin/thong-ke/benh-nhan">Xem phân tích <i class="fas fa-arrow-right"></i></a></article>
+            <article class="insight-card warning"><span class="section-label">Theo dõi</span><strong>@benhNhan.BenhNhiLostFollowUp</strong><h3>Nguy cơ mất theo dõi</h3><p>Hồ sơ mới chỉ có một lần đo bilirubin.</p><a href="/admin/benh-nhan">Mở danh sách <i class="fas fa-arrow-right"></i></a></article>
+            <article class="insight-card blue"><span class="section-label">Tương tác</span><strong>@bacSi.BacSiInactive30Ngay</strong><h3>Bác sĩ ít hoạt động</h3><p>Không phát sinh hoạt động trong 30 ngày gần nhất.</p><a href="/admin/thong-ke/bac-si">Phân tích sử dụng <i class="fas fa-arrow-right"></i></a></article>
+            <article class="insight-card green"><span class="section-label">Chất lượng hồ sơ</span><strong>@Percent(bacSi.BacSiDuHoSo, bacSi.TongBacSi)%</strong><h3>Hồ sơ bác sĩ đầy đủ</h3><p>Có số điện thoại và đơn vị công tác để đối soát.</p><a href="/admin/tai-khoan">Quản lý tài khoản <i class="fas fa-arrow-right"></i></a></article>
+        </section>
+
+        <section class="command-grid lower-grid">
+            <article class="admin-card">
+                <div class="card-heading"><div><span class="section-label">Hành trình sử dụng</span><h2>Funnel dữ liệu lâm sàng</h2></div><a href="/admin/thong-ke/benh-nhan">Chi tiết</a></div>
+                <div class="funnel-list">
+                    @foreach (var item in FunnelItems)
+                    {
+                        <div class="funnel-row">
+                            <div class="funnel-label"><i class="@item.Icon"></i><span>@item.Label</span><strong>@item.Value</strong></div>
+                            <div class="funnel-track"><span style="width:@(Percent(item.Value, item.Total))%"></span></div>
+                            <small>@Percent(item.Value, item.Total)% so với bước tham chiếu</small>
                         </div>
-                    </div>
-                    <div class="kpi-icon primary"><i class="fas fa-user-md"></i></div>
+                    }
                 </div>
-                <div class="sparkline-container">
-                    <canvas id="sparklineTaiKhoan"></canvas>
+            </article>
+            <article class="admin-card">
+                <div class="card-heading"><div><span class="section-label">Ưu tiên xử lý</span><h2>Ca bệnh nguy cơ cao</h2></div><a href="/admin/benh-nhan">Tất cả hồ sơ</a></div>
+                <div class="priority-list">
+                    @foreach (var patient in benhNhan.Top5BenhNhiNguyCoNhat.Take(4))
+                    {
+                        <a class="priority-item" href="/admin/benh-nhan/@patient.Id">
+                            <div class="priority-avatar">@Initials(patient.HoTenBenhNhan)</div>
+                            <div class="priority-copy"><strong>@patient.HoTenBenhNhan</strong><span>@patient.TuoiThaiTuan tuần · @patient.SoLanXetNghiem lần đo · BS @patient.TenBacSi</span></div>
+                            <div class="priority-value"><strong>@patient.BilirubinMax.ToString("0.0")</strong><span>mg/dL</span></div>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    }
+                    @if (!benhNhan.Top5BenhNhiNguyCoNhat.Any())
+                    {
+                        <div class="empty-state"><i class="fas fa-circle-check"></i><strong>Chưa có ca nguy cơ cao</strong><span>Dữ liệu hiện tại không ghi nhận hồ sơ cần ưu tiên.</span></div>
+                    }
                 </div>
-            </div>
+            </article>
+        </section>
 
-            <!-- Bệnh nhi -->
-            <div class="admin-card">
-                <div class="kpi-card-header">
-                    <div>
-                        <div class="kpi-title">Tổng Bệnh Nhi</div>
-                        <div class="kpi-value">@thongKe.TongBenhNhan</div>
-                        <div class="text-info mt-1" style="font-size: 0.8rem; font-weight: 600;">
-                            <i class="fas fa-arrow-trend-up"></i> +@thongKe.BenhNhanMoiTrongThang (30 ngày)
-                        </div>
-                    </div>
-                    <div class="kpi-icon secondary"><i class="fas fa-baby"></i></div>
-                </div>
-                <div class="sparkline-container">
-                    <canvas id="sparklineBenhNhan"></canvas>
-                </div>
-            </div>
-
-            <!-- Lượt tính toán -->
-            <div class="admin-card">
-                <div class="kpi-card-header">
-                    <div>
-                        <div class="kpi-title">Mật độ tương tác (AAP)</div>
-                        <div class="kpi-value">@thongKe.TongPhienTinhToan</div>
-                        <div class="text-success mt-1" style="font-size: 0.8rem; font-weight: 600;">
-                            <i class="fas fa-arrow-trend-up"></i> +@thongKe.PhienTinhToanTrongThang lượt (30 ngày)
-                        </div>
-                    </div>
-                    <div class="kpi-icon success"><i class="fas fa-calculator"></i></div>
-                </div>
-                <div class="sparkline-container">
-                    <canvas id="sparklineTinhToan"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts Grid -->
-        <div class="chart-grid">
-            <!-- Line/Bar Combo Chart -->
-            <div class="admin-card">
-                <div class="kpi-title mb-3"><i class="fas fa-chart-area"></i> Mức độ Tăng trưởng & Tương tác (30 Ngày)</div>
-                <div class="chart-wrapper">
-                    <canvas id="comboChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Donut Chart -->
-            <div class="admin-card">
-                <div class="kpi-title mb-3"><i class="fas fa-chart-pie"></i> Phân bổ Mức độ Rủi ro Lâm sàng (7 Ngày)</div>
-                <div class="chart-wrapper">
-                    <canvas id="donutChart"></canvas>
-                </div>
-                <div class="mt-4 text-center text-muted" style="font-size: 0.85rem;">
-                    * Trích xuất theo phác đồ chiếu đèn/thay máu AAP.
-                </div>
-            </div>
-        </div>
+        <section class="quick-links">
+            <a href="/admin/thong-ke/bac-si"><i class="fas fa-chart-user"></i><span><strong>Hiệu quả bác sĩ</strong><small>Onboarding, giữ chân, cường độ sử dụng</small></span></a>
+            <a href="/admin/thong-ke/benh-nhan"><i class="fas fa-chart-line"></i><span><strong>Phân tích y học</strong><small>Dịch tễ, bilirubin, AAP, chỉ số an toàn</small></span></a>
+            <a href="/admin/nhat-ky"><i class="fas fa-clock-rotate-left"></i><span><strong>Nhật ký tính toán</strong><small>Tra cứu từng quyết định và dữ liệu đầu vào</small></span></a>
+        </section>
     </div>
 }
 
 @code {
     private ThongKeHeThongDto? thongKe;
     private ThongKeBieuDoAdminDto? bieuDo;
+    private ThongKeBacSiAdminDto? bacSi;
+    private ThongKeBenhNhanAdminDto? benhNhan;
+    private bool chartsRendered;
+    private bool operationsLoaded;
+    private OperationsSnapshot? operations;
+
+    private int ClinicalAlerts => (benhNhan?.BenhNhiCritical ?? 0) + (benhNhan?.BenhNhiLostFollowUp ?? 0);
+    private int FollowUpCoverage => Percent(Math.Max(0, (benhNhan?.TongBenhNhi ?? 0) - (benhNhan?.BenhNhiLostFollowUp ?? 0)), benhNhan?.TongBenhNhi ?? 0);
+    private string FollowUpLabel => FollowUpCoverage >= 85 ? "Bao phủ tốt" : FollowUpCoverage >= 70 ? "Cần cải thiện" : "Ưu tiên theo dõi lại";
+    private IEnumerable<(string Label, int Value, int Total, string Icon)> FunnelItems => new[]
+    {
+        ("Tổng bệnh nhi", benhNhan?.TongBenhNhi ?? 0, benhNhan?.TongBenhNhi ?? 0, "fas fa-baby"),
+        ("Có yếu tố nguy cơ thần kinh", benhNhan?.TongCoNguyCoThanKinh ?? 0, benhNhan?.TongBenhNhi ?? 0, "fas fa-brain"),
+        ("Bệnh nhi được theo dõi", Math.Max(0, (benhNhan?.TongBenhNhi ?? 0) - (benhNhan?.BenhNhiLostFollowUp ?? 0)), benhNhan?.TongBenhNhi ?? 0, "fas fa-vial"),
+        ("Chỉ định can thiệp", (benhNhan?.TongPhotoTherapy ?? 0) + (benhNhan?.TongExchangeTransfusion ?? 0), Math.Max(benhNhan?.TongXetNghiem ?? 0, 1), "fas fa-notes-medical")
+    };
 
     protected override async Task OnInitializedAsync()
     {
-        if (!NguoiDung.DaDangNhap)
+        if (!NguoiDung.DaDangNhap || !NguoiDung.LaQuanTriVien)
         {
-            NavManager.NavigateTo("/admin/login", forceLoad: true);
-            return;
-        }
-
-        if (!NguoiDung.LaQuanTriVien)
-        {
-            NavManager.NavigateTo("/");
+            NavManager.NavigateTo(NguoiDung.DaDangNhap ? "/" : "/admin/login", forceLoad: true);
             return;
         }
 
         thongKe = await Mediator.Send(new GetThongKeHeThongQuery());
         bieuDo = await Mediator.Send(new GetThongKeBieuDoAdminQuery());
+        bacSi = await Mediator.Send(new GetThongKeBacSiQuery());
+        benhNhan = await Mediator.Send(new GetThongKeBenhNhanQuery());
     }
-
-    private bool chartsRendered = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (bieuDo != null && !chartsRendered)
+        if (!operationsLoaded)
         {
-            chartsRendered = true;
-            // Call JS Interop to render charts
-            await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineTaiKhoan", bieuDo.TaiKhoanMoi30Ngay.Select(x => x.SoLuong).ToArray(), "primary");
-            await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineBenhNhan", bieuDo.BenhNhanMoi30Ngay.Select(x => x.SoLuong).ToArray(), "secondary");
-            await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineTinhToan", bieuDo.LuotTinhToan30Ngay.Select(x => x.SoLuong).ToArray(), "success");
-
-            var labels = bieuDo.LuotTinhToan30Ngay.Select(x => x.Ngay).ToArray();
-            var lineData = bieuDo.TaiKhoanMoi30Ngay.Select(x => x.SoLuong).ToArray();
-            var barData = bieuDo.LuotTinhToan30Ngay.Select(x => x.SoLuong).ToArray();
-
-            await JS.InvokeVoidAsync("adminCharts.renderComboChart", "comboChart", labels, lineData, barData);
-
-            await JS.InvokeVoidAsync("adminCharts.renderDonutChart", "donutChart", bieuDo.TiLeBinhThuong, bieuDo.TiLeChieuDen, bieuDo.TiLeThayMau);
+            operationsLoaded = true;
+            try
+            {
+                operations = await JS.InvokeAsync<OperationsSnapshot>("adminOps.getSnapshot");
+                StateHasChanged();
+            }
+            catch (JSException)
+            {
+                // Metrics are supplementary; dashboard remains usable if unavailable.
+            }
         }
+
+        if (bieuDo == null || chartsRendered) return;
+        chartsRendered = true;
+        await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineTaiKhoan", bieuDo.TaiKhoanMoi30Ngay.Select(x => x.SoLuong).ToArray(), "primary");
+        await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineBenhNhan", bieuDo.BenhNhanMoi30Ngay.Select(x => x.SoLuong).ToArray(), "secondary");
+        await JS.InvokeVoidAsync("adminCharts.renderSparkline", "sparklineTinhToan", bieuDo.LuotTinhToan30Ngay.Select(x => x.SoLuong).ToArray(), "success");
+        await JS.InvokeVoidAsync("adminCharts.renderComboChart", "comboChart", bieuDo.LuotTinhToan30Ngay.Select(x => x.Ngay).ToArray(), bieuDo.TaiKhoanMoi30Ngay.Select(x => x.SoLuong).ToArray(), bieuDo.LuotTinhToan30Ngay.Select(x => x.SoLuong).ToArray());
+        await JS.InvokeVoidAsync("adminCharts.renderDonutChart", "donutChart", bieuDo.TiLeBinhThuong, bieuDo.TiLeChieuDen, bieuDo.TiLeEscalation, bieuDo.TiLeThayMau, bieuDo.TiLeKhongDuDuLieu);
     }
+
+    private static int Percent(int value, int total) => total <= 0 ? 0 : (int)Math.Round(value * 100d / total);
+    private static string Initials(string name) => string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).TakeLast(2).Select(x => char.ToUpperInvariant(x[0])));
+
+    private sealed class OperationsSnapshot
+    {
+        public double ErrorRatePercent { get; set; }
+        public LatencySnapshot LatencyMs { get; set; } = new();
+    }
+
+    private sealed class LatencySnapshot
+    {
+        public long P95 { get; set; }
+    }
+
 }
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AdminRead")]

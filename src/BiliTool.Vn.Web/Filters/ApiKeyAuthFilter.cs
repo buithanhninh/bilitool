@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace BiliTool.Vn.Web.Filters;
 
@@ -57,7 +59,7 @@ public class ApiKeyAuthFilter : IAsyncActionFilter
         var keyToCheck = extractedApiKey.ToString().Trim();
 
         // Kiểm tra tính chính xác của API Key
-        if (string.IsNullOrEmpty(keyToCheck) || !allowedKeys.Contains(keyToCheck))
+        if (string.IsNullOrEmpty(keyToCheck) || !IsAllowedKey(keyToCheck, allowedKeys))
         {
             context.Result = new ObjectResult(new ProblemDetails
             {
@@ -73,5 +75,21 @@ public class ApiKeyAuthFilter : IAsyncActionFilter
         }
 
         await next();
+    }
+
+    private static bool IsAllowedKey(string candidate, IEnumerable<string> allowedKeys)
+    {
+        var candidateHash = SHA256.HashData(Encoding.UTF8.GetBytes(candidate));
+
+        foreach (var allowedKey in allowedKeys.Where(key => !string.IsNullOrWhiteSpace(key)))
+        {
+            var allowedHash = SHA256.HashData(Encoding.UTF8.GetBytes(allowedKey));
+            if (CryptographicOperations.FixedTimeEquals(candidateHash, allowedHash))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

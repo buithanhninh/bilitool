@@ -6,12 +6,34 @@ on:
       - main
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore BiliTool.Vn.sln
+
+      - name: Test
+        run: dotnet test tests/BiliTool.Vn.Domain.Tests/BiliTool.Vn.Domain.Tests.csproj --no-restore --configuration Release
+
+      - name: Build
+        run: dotnet build BiliTool.Vn.sln --no-restore --configuration Release
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -20,8 +42,42 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -euo pipefail
             cd /root/bilitool
             git pull origin main
-            docker compose down bilitool-web
+            mkdir -p backups
+            backup="backups/pre-github-deploy-$(date +%Y%m%d-%H%M%S).sql.gz"
+            docker exec bilitool-vn-db pg_dump -U bilitool -d bilitool_vn | gzip > "$backup"
+            test -s "$backup"
             docker compose build bilitool-web
-            docker compose up -d
+            docker compose up -d --no-deps bilitool-web
+            for attempt in $(seq 1 12); do
+              if curl --fail --silent --show-error http://localhost:8888/health/ready >/dev/null; then
+                exit 0
+              fi
+              sleep 5
+            done
+            docker logs bilitool-vn-app --tail 120
+            exit 1
+
+  accessibility:
+    needs: deploy
+    if: ${{ secrets.ADMIN_USERNAME != '' && secrets.ADMIN_PASSWORD != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install browser test dependency
+        run: npm install --no-save playwright@1.61.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run admin accessibility smoke test
+        env:
+          BASE_URL: https://bilitool.vn
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: node tests/e2e/admin-accessibility.mjs

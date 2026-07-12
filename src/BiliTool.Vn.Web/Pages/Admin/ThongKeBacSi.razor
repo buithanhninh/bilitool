@@ -1,4 +1,5 @@
 @page "/admin/thong-ke/bac-si"
+@page "/admin/thong-ke-bac-si"
 @using BiliTool.Vn.Application.Queries
 @using BiliTool.Vn.Application.DTOs
 @using MediatR
@@ -250,3 +251,5 @@ else
             "Bác sĩ mới");
     }
 }
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AdminRead")]

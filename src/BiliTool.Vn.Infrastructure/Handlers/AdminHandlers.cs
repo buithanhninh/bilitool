@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 using BiliTool.Vn.Application.Commands;
+using BiliTool.Vn.Domain.Clinical.Bilirubin;
 
 namespace BiliTool.Vn.Infrastructure.Handlers;
 
@@ -33,11 +34,13 @@ public class AdminHandlers :
             TongNguoiDung = await _db.HoSoNguoiDung.CountAsync(cancellationToken),
             NguoiDungMoiTrongThang = await _db.HoSoNguoiDung.CountAsync(x => x.NgayTao >= thirtyDaysAgo, cancellationToken),
             
-            TongBenhNhan = await _db.HoSoBenhNhan.CountAsync(cancellationToken),
-            BenhNhanMoiTrongThang = await _db.HoSoBenhNhan.CountAsync(x => x.NgayTao >= thirtyDaysAgo, cancellationToken),
+            TongBenhNhan = await _db.HoSoBenhNhan.CountAsync(x => !x.IsTestData, cancellationToken),
+            BenhNhanMoiTrongThang = await _db.HoSoBenhNhan.CountAsync(x => !x.IsTestData && x.NgayTao >= thirtyDaysAgo, cancellationToken),
             
             TongPhienTinhToan = await _db.LichSuTinhToan.CountAsync(cancellationToken),
-            PhienTinhToanTrongThang = await _db.LichSuTinhToan.CountAsync(x => x.NgayTinhToan >= thirtyDaysAgo, cancellationToken)
+            PhienTinhToanTrongThang = await _db.LichSuTinhToan.CountAsync(x => x.NgayTinhToan >= thirtyDaysAgo, cancellationToken),
+            PhienTinhToanAnDanhTrongThang = await _db.LichSuTinhToan.CountAsync(x => x.NgayTinhToan >= thirtyDaysAgo && (x.Phien == null || x.Phien.NguoiDungId == null), cancellationToken),
+            PhienTinhToanDaDangNhapTrongThang = await _db.LichSuTinhToan.CountAsync(x => x.NgayTinhToan >= thirtyDaysAgo && x.Phien != null && x.Phien.NguoiDungId != null, cancellationToken)
         };
     }
 
@@ -68,7 +71,7 @@ public class AdminHandlers :
 
     public async Task<List<BenhNhanAdminDto>> Handle(GetDanhSachBenhNhanAdminQuery request, CancellationToken cancellationToken)
     {
-        var query = from b in _db.HoSoBenhNhan
+        var query = from b in _db.HoSoBenhNhan.Where(x => !x.IsTestData)
                     join u in _db.HoSoNguoiDung on b.NguoiDungId equals u.Id into userJoin
                     from u in userJoin.DefaultIfEmpty()
                     select new BenhNhanAdminDto
@@ -134,19 +137,26 @@ public class AdminHandlers :
         var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
         var xetNghiems = await _db.XetNghiemBilirubin
             .Where(x => x.ThoiGianLayMau >= sevenDaysAgo)
-            .GroupBy(x => x.MucDoNguyHiem)
-            .Select(g => new { MucDo = g.Key, Count = g.Count() })
+            .Select(x => new { x.BilirubinMgDl, x.NguongChieuDen, x.NguongThayCuuMau })
             .ToListAsync(cancellationToken);
 
-        var total = xetNghiems.Sum(x => x.Count);
+        var categories = xetNghiems
+            .Select(x => ClinicalInterventionClassifier.Classify(x.BilirubinMgDl, x.NguongChieuDen, x.NguongThayCuuMau))
+            .ToList();
+        var total = categories.Count;
         if (total > 0)
         {
-            var canChieuDen = xetNghiems.Where(x => x.MucDo != null && x.MucDo.Contains("chiếu đèn")).Sum(x => x.Count);
-            var canThayMau = xetNghiems.Where(x => x.MucDo != null && x.MucDo.Contains("thay máu", StringComparison.OrdinalIgnoreCase)).Sum(x => x.Count);
+            var binhThuong = categories.Count(x => x == ClinicalInterventionCategory.BinhThuong);
+            var canChieuDen = categories.Count(x => x == ClinicalInterventionCategory.ChieuDen);
+            var escalation = categories.Count(x => x == ClinicalInterventionCategory.EscalationOfCare);
+            var canThayMau = categories.Count(x => x == ClinicalInterventionCategory.ThayMau);
+            var khongDuDuLieu = categories.Count(x => x == ClinicalInterventionCategory.KhongDuDuLieu);
 
             result.TiLeChieuDen = (int)Math.Round((double)canChieuDen / total * 100);
+            result.TiLeEscalation = (int)Math.Round((double)escalation / total * 100);
             result.TiLeThayMau = (int)Math.Round((double)canThayMau / total * 100);
-            result.TiLeBinhThuong = 100 - result.TiLeChieuDen - result.TiLeThayMau;
+            result.TiLeKhongDuDuLieu = (int)Math.Round((double)khongDuDuLieu / total * 100);
+            result.TiLeBinhThuong = (int)Math.Round((double)binhThuong / total * 100);
         }
 
         return result;
@@ -416,8 +426,25 @@ public class AdminHandlers :
         var thangTruoc = thangNay.AddMonths(-1);
         var ba30Ngay = now.Date.AddDays(-30);
 
+        var lichSuKhongHoSo = await _db.LichSuTinhToan
+            .Select(x => new
+            {
+                x.TuoiGio,
+                x.TuoiThaiTuan,
+                x.BilirubinMgDl,
+                x.NguongChieuDen,
+                x.NguongThayCuuMau,
+                x.NgayTinhToan,
+                NguoiDungId = x.Phien != null ? x.Phien.NguoiDungId : null
+            })
+            .ToListAsync(cancellationToken);
+        var tongLuotKhongHoSo = lichSuKhongHoSo.Count;
+        var luotAnDanh = lichSuKhongHoSo.Count(x => string.IsNullOrEmpty(x.NguoiDungId));
+        var luotDaDangNhapKhongHoSo = tongLuotKhongHoSo - luotAnDanh;
+        var luotKhongHoSo30Ngay = lichSuKhongHoSo.Count(x => x.NgayTinhToan >= ba30Ngay);
+
         // --- 2.1 Dân số học ---
-        var allBN = await _db.HoSoBenhNhan.ToListAsync(cancellationToken);
+        var allBN = await _db.HoSoBenhNhan.Where(x => !x.IsTestData).ToListAsync(cancellationToken);
         var tongBN = allBN.Count;
         var bnMoiThangNay = allBN.Count(b => b.NgayTao >= thangNay);
         var bnMoiThangTruoc = allBN.Count(b => b.NgayTao >= thangTruoc && b.NgayTao < thangNay);
@@ -449,13 +476,19 @@ public class AdminHandlers :
             .AverageAsync(m => (double?)m.TocDoThayDoi, cancellationToken) ?? 0;
 
         // --- 2.3 AAP Outcome ---
-        var allXN = await _db.XetNghiemBilirubin.ToListAsync(cancellationToken);
+        var allXN = await _db.XetNghiemBilirubin.Where(x => !x.BenhNhan.IsTestData).ToListAsync(cancellationToken);
         var tongXN = allXN.Count;
+        var tongMauLamSang = tongXN + tongLuotKhongHoSo;
         var avgLanDo = tongBN > 0 ? (double)tongXN / tongBN : 0;
-        var tongPhotoTherapy = allXN.Count(x => x.MucDoNguyHiem != null && x.MucDoNguyHiem.Contains("chiếu đèn", StringComparison.OrdinalIgnoreCase));
-        var tongExchange = allXN.Count(x => x.MucDoNguyHiem != null && x.MucDoNguyHiem.Contains("thay máu", StringComparison.OrdinalIgnoreCase));
-        var tiLePhoto = tongXN > 0 ? (double)tongPhotoTherapy / tongXN * 100 : 0;
-        var tiLeExchange = tongXN > 0 ? (double)tongExchange / tongXN * 100 : 0;
+        var interventionCategories = allXN.ToDictionary(
+            x => x.Id,
+            x => ClinicalInterventionClassifier.Classify(x.BilirubinMgDl, x.NguongChieuDen, x.NguongThayCuuMau));
+        var validCategoryCount = interventionCategories.Values.Count(x => x != ClinicalInterventionCategory.KhongDuDuLieu);
+        var tongPhotoTherapy = interventionCategories.Values.Count(x => x is ClinicalInterventionCategory.ChieuDen or ClinicalInterventionCategory.EscalationOfCare);
+        var tongEscalation = interventionCategories.Values.Count(x => x == ClinicalInterventionCategory.EscalationOfCare);
+        var tongExchange = interventionCategories.Values.Count(x => x == ClinicalInterventionCategory.ThayMau);
+        var tiLePhoto = validCategoryCount > 0 ? (double)tongPhotoTherapy / validCategoryCount * 100 : 0;
+        var tiLeExchange = validCategoryCount > 0 ? (double)tongExchange / validCategoryCount * 100 : 0;
 
         // --- 2.4 Safety Indicators ---
         var xnCountPerBN = allXN.GroupBy(x => x.BenhNhanId).ToDictionary(g => g.Key, g => g.Count());
@@ -502,9 +535,11 @@ public class AdminHandlers :
         // Donut AAP - tổng all-time
         var phanBoAAP = new List<PhanBoNhomDto>
         {
-            new() { NhanNhom = "Bình thường", SoLuong = tongXN - tongPhotoTherapy - tongExchange },
-            new() { NhanNhom = "Cần chiếu đèn", SoLuong = tongPhotoTherapy },
+            new() { NhanNhom = "Bình thường", SoLuong = interventionCategories.Values.Count(x => x == ClinicalInterventionCategory.BinhThuong) },
+            new() { NhanNhom = "Cần chiếu đèn", SoLuong = interventionCategories.Values.Count(x => x == ClinicalInterventionCategory.ChieuDen) },
+            new() { NhanNhom = "Escalation of care", SoLuong = tongEscalation },
             new() { NhanNhom = "Cần thay máu", SoLuong = tongExchange },
+            new() { NhanNhom = "Không đủ dữ liệu", SoLuong = interventionCategories.Values.Count(x => x == ClinicalInterventionCategory.KhongDuDuLieu) },
         };
         phanBoAAP.ForEach(p => p.PhanTram = tongXN > 0 ? p.SoLuong * 100.0 / tongXN : 0);
 
@@ -542,7 +577,7 @@ public class AdminHandlers :
 
         // Top 5 bệnh nhi nguy cơ cao nhất
         var top5 = await (
-            from b in _db.HoSoBenhNhan
+            from b in _db.HoSoBenhNhan.Where(x => !x.IsTestData)
             join u in _db.HoSoNguoiDung on b.NguoiDungId equals u.Id into uJoin
             from u in uJoin.DefaultIfEmpty()
             select new
@@ -551,10 +586,17 @@ public class AdminHandlers :
                 TenBacSi = u != null ? u.HoTen : "Không rõ",
                 EmailBacSi = u != null ? u.Email : "",
                 BilirubinMax = (decimal?)_db.XetNghiemBilirubin.Where(x => x.BenhNhanId == b.Id).Max(x => (decimal?)x.BilirubinMgDl) ?? 0,
+                RiskMargin = (decimal?)_db.XetNghiemBilirubin
+                    .Where(x => x.BenhNhanId == b.Id && x.NguongThayCuuMau.HasValue)
+                    .Max(x => (decimal?)(x.BilirubinMgDl - x.NguongThayCuuMau!.Value)) ?? decimal.MinValue,
                 SoLanXN = _db.XetNghiemBilirubin.Count(x => x.BenhNhanId == b.Id),
-                SoLanVuotThayMau = _db.XetNghiemBilirubin.Count(x => x.BenhNhanId == b.Id && x.MucDoNguyHiem != null && x.MucDoNguyHiem.Contains("thay máu"))
+                SoLanVuotThayMau = _db.XetNghiemBilirubin.Count(x => x.BenhNhanId == b.Id && x.NguongThayCuuMau.HasValue && x.BilirubinMgDl >= x.NguongThayCuuMau.Value)
             }
-        ).OrderByDescending(x => x.BilirubinMax).Take(5).ToListAsync(cancellationToken);
+        ).OrderByDescending(x => x.RiskMargin)
+         .ThenByDescending(x => x.CoNguyCoThanKinh)
+         .ThenBy(x => x.TuoiThaiTuan)
+         .Take(5)
+         .ToListAsync(cancellationToken);
 
         var top5Dto = top5.Select(x => new TopBenhNhiNguyCoDto
         {
@@ -572,6 +614,13 @@ public class AdminHandlers :
 
         return new ThongKeBenhNhanAdminDto
         {
+            TongLuotTinhToanKhongHoSo = tongLuotKhongHoSo,
+            LuotTinhToanAnDanh = luotAnDanh,
+            LuotTinhToanDaDangNhapKhongHoSo = luotDaDangNhapKhongHoSo,
+            LuotTinhToanKhongThongTinBacSi = luotAnDanh,
+            LuotTinhToanKhongThongTinBenhNhi = tongLuotKhongHoSo,
+            LuotTinhToanKhongHoSo30Ngay = luotKhongHoSo30Ngay,
+            TongMauLamSang = tongMauLamSang,
             TongBenhNhi = tongBN,
             BenhNhiMoiThangNay = bnMoiThangNay,
             BenhNhiMoiThangTruoc = bnMoiThangTruoc,

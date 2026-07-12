@@ -12,7 +12,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=bilitool_vn;Username=bilitool;Password=bilitool_secure_2024
+      - ConnectionStrings__PostgreSQL=Host=postgres;Port=5432;Database=bilitool_vn;Username=bilitool;Password=${DB_PASSWORD:-change-me-for-local-development}
     ports:
       - "5050:8080"
     depends_on:

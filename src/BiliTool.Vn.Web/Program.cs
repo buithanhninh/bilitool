@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 using System.Threading.RateLimiting;
+using Serilog;
+using BiliTool.Vn.Web.Security;
+using BiliTool.Vn.Web.Services.Operations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +38,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 // ── Blazor Server & API ───────────────────────────────────────
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AddPageApplicationModelConvention("/AdminLogin", model =>
+        model.EndpointMetadata.Add(new EnableRateLimitingAttribute("AdminLoginPolicy")));
+});
 builder.Services.AddServerSideBlazor(options =>
 {
     options.DisconnectedCircuitMaxRetained = 100;
@@ -49,7 +55,7 @@ builder.Services.AddServerSideBlazor(options =>
     options.EnableDetailedErrors = false;
     options.HandshakeTimeout = TimeSpan.FromSeconds(30);
     options.KeepAliveInterval = TimeSpan.FromSeconds(15);
-    options.MaximumReceiveMessageSize = 32 * 1024 * 1024; // 32MB
+    options.MaximumReceiveMessageSize = 1024 * 1024;
 });
 builder.Services.AddControllers();
 
@@ -79,6 +85,9 @@ var authBuilder = builder.Services.AddAuthentication(options =>
     options.Cookie.Name       = "BiliToolVn.Auth";
     options.ExpireTimeSpan    = TimeSpan.FromDays(30);
     options.SlidingExpiration = true;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 if (coGoogleAuth)
@@ -152,8 +161,15 @@ if (coGoogleAuth)
     });
 }
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminRead", policy => policy.RequireAuthenticatedUser().RequireRole("Admin"));
+    options.AddPolicy("AdminWrite", policy => policy.RequireAuthenticatedUser().RequireRole("SuperAdmin"));
+});
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<AdminCredentialVerifier>();
+builder.Services.AddSingleton<OperationalMetrics>();
+builder.Services.AddHostedService<OperationalAlertService>();
 
 // ── Cấu hình HttpContext cho Blazor ──────────────────────────
 builder.Services.AddScoped<BiliTool.Vn.Web.Services.NguoiDungHienTaiService>();
@@ -168,13 +184,27 @@ builder.Services.AddScoped<BiliTool.Vn.Web.Filters.ApiKeyAuthFilter>();
 // ── Rate Limiting (Chống Spam/DDoS API) ──────────────────────
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddFixedWindowLimiter("ApiPolicy", opt =>
-    {
-        opt.PermitLimit = 30; // Max 30 requests
-        opt.Window = TimeSpan.FromMinutes(1); // Per 1 minute
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 2;
-    });
+    options.AddPolicy("ApiPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2,
+                AutoReplenishment = true
+            }));
+    options.AddPolicy("AdminLoginPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
@@ -201,6 +231,10 @@ app.UseForwardedHeaders();
 
 app.Use(async (context, next) =>
 {
+    if (context.Request.IsHttps)
+    {
+        context.Response.Headers.TryAdd("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    }
     context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
     context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
     context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -246,11 +280,49 @@ app.UseRequestLocalization(localizationOptions);
 app.UseStaticFiles();
 app.UseRouting();
 
+app.Use(async (context, next) =>
+{
+    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+    await next();
+    stopwatch.Stop();
+    var bucket = context.Request.Path.StartsWithSegments("/admin") ? "/admin" :
+        context.Request.Path.StartsWithSegments("/api") ? "/api" :
+        context.Request.Path.StartsWithSegments("/health") ? "/health" : "/other";
+    context.RequestServices.GetRequiredService<OperationalMetrics>().Record(bucket, context.Response.StatusCode, stopwatch.ElapsedMilliseconds);
+});
+
 // Sử dụng Rate Limiter sau UseRouting và trước các Endpoint mapping
 app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (!context.Request.Path.StartsWithSegments("/admin") ||
+        context.Request.Path.StartsWithSegments("/admin/login") ||
+        context.User.Identity?.IsAuthenticated != true ||
+        !context.User.IsInRole("Admin"))
+    {
+        return;
+    }
+
+    var audit = context.RequestServices.GetRequiredService<BiliTool.Vn.Application.Services.IAdminAuditService>();
+    var actorId = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "unknown";
+    var actorEmail = context.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? string.Empty;
+    await audit.RecordAsync(
+        actorId,
+        actorEmail,
+        context.Request.Method == HttpMethods.Get ? "admin.page.view" : "admin.request",
+        "admin.route",
+        context.Request.Path.Value,
+        context.Response.StatusCode < 400,
+        context.Connection.RemoteIpAddress?.ToString(),
+        context.TraceIdentifier,
+        context.RequestAborted);
+});
 
 app.MapGet("/health/live", () => Results.Ok(new
 {
@@ -266,15 +338,12 @@ app.MapGet("/health/ready", async (IServiceProvider services) =>
     var canConnect = await db.Database.CanConnectAsync();
 
     return canConnect
-        ? Results.Ok(new
-        {
-            status = "Ready",
-            database = "Connected",
-            clinicalEngine = "BaselineMayTinhBilirubin",
-            checkedAt = DateTimeOffset.UtcNow
-        })
+        ? Results.Ok(new { status = "Ready", checkedAt = DateTimeOffset.UtcNow })
         : Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
 });
+
+app.MapGet("/admin/operations/metrics", (OperationalMetrics metrics) => Results.Ok(metrics.Snapshot()))
+    .RequireAuthorization("AdminRead");
 
 app.MapRazorPages();
 app.MapBlazorHub();

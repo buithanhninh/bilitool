@@ -119,3 +119,5 @@ else if (patients != null)
         isLoading = false;
     }
 }
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AdminRead")]

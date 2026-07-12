@@ -1,4 +1,5 @@
 @page "/admin/thong-ke/benh-nhan"
+@page "/admin/thong-ke-benh-nhan"
 @using BiliTool.Vn.Application.Queries
 @using BiliTool.Vn.Application.DTOs
 @using MediatR
@@ -37,11 +38,29 @@ else
                 <h2 style="font-weight: 800; color: var(--admin-text-main); margin-bottom: 2px; font-size:1.4rem;">
                     <i class="fas fa-procedures" style="color:#0ea5e9;"></i> Thống kê Bệnh Nhi Lâm sàng
                 </h2>
-                <div class="text-muted" style="font-size:0.8rem;">Epidemiology &amp; Clinical Intelligence — 23 chỉ số y tế | Real-time @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
+                <div class="text-muted" style="font-size:0.8rem;">Hồ sơ bệnh nhi + lượt tính không hồ sơ | Real-time @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</div>
             </div>
             <a href="/admin/benh-nhan" class="btn btn-sm btn-light border" style="font-size:0.8rem;">
                 <i class="fas fa-list"></i> Danh sách BN
             </a>
+        </div>
+
+        <div class="admin-card" style="padding:16px; margin-bottom:20px; border-left:4px solid #0ea5e9;">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <div>
+                    <div class="kpi-title" style="font-size:0.9rem;"><i class="fas fa-database text-info"></i> Phạm vi dữ liệu thống kê</div>
+                    <div class="text-muted" style="font-size:0.76rem;">Ca không khai báo danh tính vẫn được thống kê theo lượt tính. Không quy đổi lượt ẩn danh thành số bệnh nhi duy nhất.</div>
+                </div>
+                <span class="admin-badge badge-neutral">@data.TongMauLamSang mẫu/lượt lâm sàng</span>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px;">
+                <div class="p-2 rounded" style="background:#f0f9ff;"><div class="text-muted" style="font-size:.7rem;">Hồ sơ bệnh nhi đã lưu</div><strong style="font-size:1.35rem;color:#0369a1;">@data.TongBenhNhi</strong></div>
+                <div class="p-2 rounded" style="background:#f5f3ff;"><div class="text-muted" style="font-size:.7rem;">Lượt tính không hồ sơ</div><strong style="font-size:1.35rem;color:#6d28d9;">@data.TongLuotTinhToanKhongHoSo</strong></div>
+                <div class="p-2 rounded" style="background:#fff7ed;"><div class="text-muted" style="font-size:.7rem;">Không thông tin bác sĩ</div><strong style="font-size:1.35rem;color:#c2410c;">@data.LuotTinhToanKhongThongTinBacSi</strong></div>
+                <div class="p-2 rounded" style="background:#f0fdf4;"><div class="text-muted" style="font-size:.7rem;">Đã đăng nhập, không hồ sơ</div><strong style="font-size:1.35rem;color:#15803d;">@data.LuotTinhToanDaDangNhapKhongHoSo</strong></div>
+                <div class="p-2 rounded" style="background:#fef2f2;"><div class="text-muted" style="font-size:.7rem;">Không thông tin bệnh nhi</div><strong style="font-size:1.35rem;color:#b91c1c;">@data.LuotTinhToanKhongThongTinBenhNhi</strong></div>
+                <div class="p-2 rounded" style="background:#f8fafc;"><div class="text-muted" style="font-size:.7rem;">Không hồ sơ trong 30 ngày</div><strong style="font-size:1.35rem;color:#334155;">@data.LuotTinhToanKhongHoSo30Ngay</strong></div>
+            </div>
         </div>
 
         <!-- ── KPI BAND: 10 chỉ số ── -->
@@ -306,3 +325,5 @@ else
             data.PhanBoGioTuoiLanDoDau.Select(x => x.SoLuong).ToArray(), "#8b5cf6");
     }
 }
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AdminRead")]

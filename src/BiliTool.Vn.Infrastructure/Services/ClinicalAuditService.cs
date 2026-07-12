@@ -31,8 +31,8 @@ public class ClinicalAuditService : IClinicalAuditService
             {
                 GuidelineCode = trace.GuidelineCode,
                 EngineMode = trace.EngineMode,
-                RequestJson = JsonSerializer.Serialize(request, JsonOptions),
-                ResponseJson = JsonSerializer.Serialize(response, JsonOptions),
+                RequestJson = ClinicalAuditPayloadRedactor.Redact(request, JsonOptions),
+                ResponseJson = ClinicalAuditPayloadRedactor.Redact(response, JsonOptions),
                 TraceJson = JsonSerializer.Serialize(trace, JsonOptions),
             };
 

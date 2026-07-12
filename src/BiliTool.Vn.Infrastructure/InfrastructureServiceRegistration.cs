@@ -30,6 +30,8 @@ public static class InfrastructureServiceRegistration
         services.AddTransient<BiliTool.Vn.Application.Services.IEmailService, BiliTool.Vn.Infrastructure.Services.SmtpEmailService>();
         services.AddScoped<BiliTool.Vn.Application.Services.IAuthService, BiliTool.Vn.Infrastructure.Services.AuthService>();
         services.AddScoped<BiliTool.Vn.Application.Services.IClinicalAuditService, BiliTool.Vn.Infrastructure.Services.ClinicalAuditService>();
+        services.AddScoped<BiliTool.Vn.Application.Services.IAdminAuditService, BiliTool.Vn.Infrastructure.Services.AdminAuditService>();
+        services.AddHostedService<BiliTool.Vn.Infrastructure.Services.ClinicalAuditRetentionService>();
 
         // ── CQRS Handlers trong Infrastructure ────────────────
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(InfrastructureServiceRegistration).Assembly));

@@ -16,6 +16,7 @@ public class BiliToolDbContext : DbContext
     public DbSet<HoSoBenhNhan> HoSoBenhNhan => Set<HoSoBenhNhan>();
     public DbSet<XetNghiemBilirubin> XetNghiemBilirubin => Set<XetNghiemBilirubin>();
     public DbSet<ClinicalAuditLog> ClinicalAuditLogs => Set<ClinicalAuditLog>();
+    public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -124,6 +125,7 @@ public class BiliToolDbContext : DbContext
             e.Property(h => h.CoNguyCoThanKinh).HasColumnName("co_nguon_co_than_kinh");
             e.Property(h => h.GhiChu).HasColumnName("ghi_chu");
             e.Property(h => h.NgayTao).HasColumnName("ngay_tao").IsRequired();
+            e.Property(h => h.IsTestData).HasColumnName("is_test_data").HasDefaultValue(false);
 
             e.HasMany(h => h.DsXetNghiem)
              .WithOne(x => x.BenhNhan)
@@ -131,6 +133,7 @@ public class BiliToolDbContext : DbContext
              .OnDelete(DeleteBehavior.Cascade);
 
             e.HasIndex(h => h.NguoiDungId).HasDatabaseName("ix_ho_so_benh_nhan_nguoi_dung_id");
+            e.HasIndex(h => new { h.IsTestData, h.NgayTao }).HasDatabaseName("ix_ho_so_benh_nhan_test_ngay_tao");
         });
 
         // ── XetNghiemBilirubin ──────────────────────────────────────────
@@ -166,6 +169,26 @@ public class BiliToolDbContext : DbContext
             e.Property(a => a.TraceJson).HasColumnName("trace_json").HasColumnType("jsonb").IsRequired();
             e.HasIndex(a => a.CalculatedAt).HasDatabaseName("ix_clinical_audit_logs_calculated_at");
             e.HasIndex(a => a.GuidelineCode).HasDatabaseName("ix_clinical_audit_logs_guideline_code");
+        });
+
+        modelBuilder.Entity<AdminAuditLog>(e =>
+        {
+            e.ToTable("admin_audit_logs");
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Id).HasColumnName("id");
+            e.Property(a => a.OccurredAt).HasColumnName("occurred_at").IsRequired();
+            e.Property(a => a.ActorId).HasColumnName("actor_id").HasMaxLength(256).IsRequired();
+            e.Property(a => a.ActorEmail).HasColumnName("actor_email").HasMaxLength(320).IsRequired();
+            e.Property(a => a.Action).HasColumnName("action").HasMaxLength(100).IsRequired();
+            e.Property(a => a.TargetType).HasColumnName("target_type").HasMaxLength(100).IsRequired();
+            e.Property(a => a.TargetId).HasColumnName("target_id").HasMaxLength(256);
+            e.Property(a => a.Succeeded).HasColumnName("succeeded").IsRequired();
+            e.Property(a => a.RemoteIp).HasColumnName("remote_ip").HasMaxLength(45);
+            e.Property(a => a.CorrelationId).HasColumnName("correlation_id").HasMaxLength(128);
+            e.Property(a => a.MetadataJson).HasColumnName("metadata_json").HasColumnType("jsonb");
+            e.HasIndex(a => a.OccurredAt).HasDatabaseName("ix_admin_audit_logs_occurred_at");
+            e.HasIndex(a => new { a.ActorId, a.OccurredAt }).HasDatabaseName("ix_admin_audit_logs_actor_occurred_at");
+            e.HasIndex(a => new { a.Action, a.OccurredAt }).HasDatabaseName("ix_admin_audit_logs_action_occurred_at");
         });
     }
 }

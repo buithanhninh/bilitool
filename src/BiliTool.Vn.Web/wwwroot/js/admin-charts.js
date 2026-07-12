@@ -74,7 +74,7 @@ window.adminCharts = {
         });
     },
 
-    renderDonutChart: function (canvasId, normal, phototherapy, exchange) {
+    renderDonutChart: function (canvasId, normal, phototherapy, escalation, exchange, unavailable) {
         var ctx = document.getElementById(canvasId);
         if (!ctx) return;
         var existingChart = Chart.getChart(ctx);
@@ -83,8 +83,8 @@ window.adminCharts = {
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Bình thường', 'Cần chiếu đèn', 'Thay máu'],
-                datasets: [{ data: [normal, phototherapy, exchange], backgroundColor: [this.colors.success, this.colors.warning, this.colors.danger], borderWidth: 0, hoverOffset: 4 }]
+                labels: ['Bình thường', 'Cần chiếu đèn', 'Escalation of care', 'Thay máu', 'Không đủ dữ liệu'],
+                datasets: [{ data: [normal, phototherapy, escalation, exchange, unavailable], backgroundColor: [this.colors.success, this.colors.warning, '#f97316', this.colors.danger, '#94a3b8'], borderWidth: 0, hoverOffset: 4 }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false, cutout: '75%',
@@ -211,6 +211,14 @@ window.adminCharts = {
                 scales: { x: { grid: { display: false }, ticks: { font: { size: 10 } } }, y: { grid: { color: '#e2e8f0', borderDash: [4, 4] }, beginAtZero: true, ticks: { precision: 0 } } }
             }
         });
+    }
+};
+
+window.adminOps = {
+    getSnapshot: async function () {
+        const response = await fetch('/admin/operations/metrics', { credentials: 'same-origin' });
+        if (!response.ok) throw new Error('metrics unavailable');
+        return await response.json();
     }
 };
 

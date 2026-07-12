@@ -3,6 +3,7 @@ using System;
 using BiliTool.Vn.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiliTool.Vn.Infrastructure.Migrations
 {
     [DbContext(typeof(BiliToolDbContext))]
-    partial class BiliToolDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260711110515_AddPatientDataClassification")]
+    partial class AddPatientDataClassification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,78 +24,6 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.AdminAuditLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("action");
-
-                    b.Property<string>("ActorEmail")
-                        .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("character varying(320)")
-                        .HasColumnName("actor_email");
-
-                    b.Property<string>("ActorId")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("actor_id");
-
-                    b.Property<string>("CorrelationId")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("correlation_id");
-
-                    b.Property<string>("MetadataJson")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("metadata_json");
-
-                    b.Property<DateTime>("OccurredAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("occurred_at");
-
-                    b.Property<string>("RemoteIp")
-                        .HasMaxLength(45)
-                        .HasColumnType("character varying(45)")
-                        .HasColumnName("remote_ip");
-
-                    b.Property<bool>("Succeeded")
-                        .HasColumnType("boolean")
-                        .HasColumnName("succeeded");
-
-                    b.Property<string>("TargetId")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("target_id");
-
-                    b.Property<string>("TargetType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("target_type");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OccurredAt")
-                        .HasDatabaseName("ix_admin_audit_logs_occurred_at");
-
-                    b.HasIndex("Action", "OccurredAt")
-                        .HasDatabaseName("ix_admin_audit_logs_action_occurred_at");
-
-                    b.HasIndex("ActorId", "OccurredAt")
-                        .HasDatabaseName("ix_admin_audit_logs_actor_occurred_at");
-
-                    b.ToTable("admin_audit_logs", (string)null);
-                });
 
             modelBuilder.Entity("BiliTool.Vn.Domain.Entities.ClinicalAuditLog", b =>
                 {

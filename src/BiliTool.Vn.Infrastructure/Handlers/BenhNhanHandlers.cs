@@ -70,7 +70,7 @@ public class BenhNhanHandlers :
             Id = Guid.NewGuid(),
             MaBenhNhan = maBenhNhan,
             NguoiDungId = request.NguoiDungId,
-            HoTenBenhNhan = dto.HoTenBenhNhan.Trim(),
+            HoTenBenhNhan = dto.HoTenBenhNhan.Trim().Normalize(System.Text.NormalizationForm.FormC),
             NgayGioSinh = ngayGioSinh.ToUniversalTime(),
             TuoiThaiTuan = dto.TuoiThaiTuan,
             CoNguyCoThanKinh = dto.CoNguyCoThanKinh,
@@ -79,7 +79,7 @@ public class BenhNhanHandlers :
             VangDaTrong24hDau = dto.VangDaTrong24hDau,
             BenhTanHuyetRh = dto.BenhTanHuyetRh,
             BenhTanHuyetABO = dto.BenhTanHuyetABO,
-            GhiChu = dto.GhiChu?.Trim(),
+            GhiChu = dto.GhiChu?.Trim().Normalize(System.Text.NormalizationForm.FormC),
             NgayTao = DateTime.UtcNow
         };
 
