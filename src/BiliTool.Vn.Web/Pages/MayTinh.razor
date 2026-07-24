@@ -97,7 +97,30 @@
     </script>
 </HeadContent>
 
-<div class="may-tinh-wrapper">
+
+<div class="may-tinh-wrapper @(cheDoTapTrungKetQua ? "is-result-focus" : "")">
+    @if (cheDoTapTrungKetQua && ketQua != null)
+    {
+        <section class="result-focus-toolbar" aria-label="@T["Focus_ResultSummary"]">
+            <div class="result-focus-heading">
+                <span class="result-focus-icon"><i class="fas fa-chart-line"></i></span>
+                <div>
+                    <span class="result-focus-eyebrow">@T["Focus_ResultMode"]</span>
+                    <strong>@T["Focus_ResultReady"]</strong>
+                </div>
+            </div>
+            <div class="result-focus-metrics">
+                <span><small>Bilirubin</small><strong>@FormatBilirubinTomTat()</strong></span>
+                <span><small>@T["Age"]</small><strong>@string.Format(T["Age_Hours"], ketQua.TuoiGio)</strong></span>
+                <span><small>@T["GestationalAge"]</small><strong>@ketQua.TuoiThaiTuan @T["Weeks_Short"]</strong></span>
+            </div>
+            <button type="button" class="btn-edit-calculator" @onclick="MoLaiMayTinh">
+                <i class="fas fa-sliders-h"></i>
+                <span>@T["Focus_EditParameters"]</span>
+            </button>
+        </section>
+    }
+
     <!-- CỘT TRÁI: Form nhập liệu -->
     <div class="panel-nhap-lieu">
         <div class="card-form">
@@ -488,6 +511,7 @@
 
     private KetQuaTinhToanDto? ketQua;
     private bool dangTinhToan;
+    private bool cheDoTapTrungKetQua;
     private bool dungNgayGio = true;
     private decimal? etcoc;
     private string donViDoStr = "UmolL";
@@ -618,7 +642,19 @@
         GioLayMauStr = "16:00";
         donViDoStr = "UmolL";
         dungNgayGio = true;
+        cheDoTapTrungKetQua = false;
     }
+
+    private async Task MoLaiMayTinh()
+    {
+        cheDoTapTrungKetQua = false;
+        await InvokeAsync(StateHasChanged);
+        await JS.InvokeVoidAsync("bilitool.focusCalculatorForm");
+    }
+
+    private string FormatBilirubinTomTat() => donViDoStr == "UmolL"
+        ? $"{ketQua?.BilirubinUmolL:F0} μmol/L"
+        : $"{ketQua?.BilirubinMgDl:F1} mg/dL";
 
     private async Task TinhToan()
     {
@@ -636,7 +672,10 @@
 
             var cmd = new TinhToanBilirubinCommand(model);
             ketQua = await Mediator.Send(cmd);
+            cheDoTapTrungKetQua = true;
             Toast.ShowSuccess(T["Calc_Success"] ?? "Tính toán thành công!");
+            await InvokeAsync(StateHasChanged);
+            await JS.InvokeVoidAsync("bilitool.scrollToTop");
 
             // Lưu lịch sử
             try 

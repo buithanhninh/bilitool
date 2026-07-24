@@ -233,12 +233,43 @@
                     <!-- Biểu đồ xu hướng -->
                     @if (benhNhanChon.DsXetNghiem.Any())
                     {
+                        var xetNghiemMoiNhat = benhNhanChon.DsXetNghiem.OrderByDescending(x => x.ThoiGianLayMau).First();
+                        var bilirubinHienTai = GiaTriTheoDonVi(xetNghiemMoiNhat.BilirubinMgDl);
+                        var nguongChieuDenHienTai = GiaTriTheoDonVi(xetNghiemMoiNhat.NguongChieuDen);
+                        var nguongThayMauHienTai = GiaTriTheoDonVi(xetNghiemMoiNhat.NguongThayCuuMau);
                         <div class="section-divider">
                             <span><i class="fas fa-chart-line"></i> @T["Trend_ChartTitle"]</span>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="bilirubinBenhNhanChart"></canvas>
-                        </div>
+                        <section class="trend-chart-card" aria-label="Biểu đồ xu hướng bilirubin">
+                            <div class="trend-chart-toolbar">
+                                <div>
+                                    <span class="trend-chart-eyebrow">THEO DÕI LÂM SÀNG</span>
+                                    <h3>Diễn tiến bilirubin và ngưỡng can thiệp</h3>
+                                    <p>So sánh trực tiếp chỉ số của bé với ngưỡng chiếu đèn và thay máu.</p>
+                                </div>
+                                <span class="trend-chart-count"><i class="fas fa-vial"></i> @benhNhanChon.DsXetNghiem.Count lần đo</span>
+                            </div>
+
+                            <div class="trend-metric-grid">
+                                <article class="trend-metric trend-metric--baby">
+                                    <span class="trend-metric__icon"><i class="fas fa-child"></i></span>
+                                    <div><small>Chỉ số của bé</small><strong>@FormatChartValue(bilirubinHienTai) <em>@ChartUnit</em></strong><span>@xetNghiemMoiNhat.TuoiGioTuDong.ToString("F0") giờ tuổi</span></div>
+                                </article>
+                                <article class="trend-metric trend-metric--photo">
+                                    <span class="trend-metric__icon"><i class="fas fa-lightbulb"></i></span>
+                                    <div><small>Ngưỡng chiếu đèn</small><strong>@FormatChartValue(nguongChieuDenHienTai) <em>@ChartUnit</em></strong><span>@FormatDistance(nguongChieuDenHienTai, bilirubinHienTai)</span></div>
+                                </article>
+                                <article class="trend-metric trend-metric--exchange">
+                                    <span class="trend-metric__icon"><i class="fas fa-exchange-alt"></i></span>
+                                    <div><small>Ngưỡng thay máu</small><strong>@FormatChartValue(nguongThayMauHienTai) <em>@ChartUnit</em></strong><span>@FormatDistance(nguongThayMauHienTai, bilirubinHienTai)</span></div>
+                                </article>
+                            </div>
+
+                            <div class="chart-container trend-chart-canvas">
+                                <canvas id="bilirubinBenhNhanChart"></canvas>
+                            </div>
+                            <div class="trend-chart-note"><i class="fas fa-info-circle"></i> Vùng xanh: dưới ngưỡng điều trị · Vùng vàng: cần đánh giá chiếu đèn · Vùng đỏ: sát/ngang ngưỡng thay máu.</div>
+                        </section>
 
                         <!-- Bảng lịch sử -->
                         <div class="section-divider">
@@ -656,6 +687,25 @@
         
         string unitSuffix = donViDoStr == "UmolL" ? "μmol/L" : "mg/dL";
         await JS.InvokeVoidAsync("bilitool.initXuHuongChart", "bilirubinBenhNhanChart", labels, values, cd, tm, unitSuffix);
+    }
+
+    private string ChartUnit => donViDoStr == "UmolL" ? "μmol/L" : "mg/dL";
+
+    private double? GiaTriTheoDonVi(decimal? mgDl) => mgDl.HasValue
+        ? donViDoStr == "UmolL" ? (double)Math.Round(mgDl.Value * 17.104m, 0) : (double)mgDl.Value
+        : null;
+
+    private string FormatChartValue(double? value) => value.HasValue
+        ? value.Value.ToString(donViDoStr == "UmolL" ? "F0" : "F1")
+        : "—";
+
+    private string FormatDistance(double? threshold, double? value)
+    {
+        if (!threshold.HasValue || !value.HasValue) return "Chưa đủ dữ liệu ngưỡng";
+        var distance = threshold.Value - value.Value;
+        return distance >= 0
+            ? $"Còn {distance.ToString(donViDoStr == "UmolL" ? "F0" : "F1")} {ChartUnit}"
+            : $"Vượt {Math.Abs(distance).ToString(donViDoStr == "UmolL" ? "F0" : "F1")} {ChartUnit}";
     }
 
     private void ToggleTungChonThoiGian()

@@ -1,5 +1,74 @@
 # BiliTool.Vn - Changelog
 
+## [1.3.28] - 2026-07-24
+
+### Fixed
+- Fix PDF export surface being shifted and clipped by application sidebar width.
+
+## [1.3.27] - 2026-07-24
+
+### Added
+- Added result-focus mode: successful calculations scroll to page top, collapse the input form, and expand the clinical chart/report to full width.
+- Added a compact parameter summary with an accessible action to reopen and focus the calculator form.
+
+### Fixed
+- Bumped stylesheet and service-worker cache versions so production browsers and Cloudflare receive the new calculator layout immediately.
+
+## [1.3.26] - 2026-07-24
+
+### Fixed
+- Replaced the broken PDF export that captured the live result card and did not reliably complete the browser download.
+
+### Added
+- Added a dedicated A4 clinical report layout with BiliTool.Vn header, exact logo assets, export timestamp, clinical disclaimer, and protocol footer.
+- Added PDF-specific chart, page-break, typography, spacing, and color rules for clear multi-page rendering.
+- Added localized export progress labels and descriptive timestamped filenames.
+
+## [1.3.25] - 2026-07-24
+
+### Changed
+- Tuned the animated loading intro to an observed 4–5 second experience on standard-motion devices.
+- Reworked the splash palette around BiliTool.Vn navy, clinical teal, cyan, and bilirubin amber.
+- Smoothed all orbital, logo, icon, progress, and exit motion with GPU-friendly transforms.
+
+### Added
+- Added inline neonatal, bilirubin-drop, phototherapy, and treatment-chart icons around the loading orbits.
+- Added responsive icon placement and scale rules for phone, tablet, and desktop viewports.
+
+## [1.3.24] - 2026-07-24
+
+### Fixed
+- Kept the animated logo sheen clipped inside the splash logo surface.
+- Bumped stylesheet cache metadata so the corrected loading intro is served immediately.
+
+## [1.3.23] - 2026-07-24
+
+### Changed
+- Removed the in-page Clinical Orbit hero introduced in `1.3.22`.
+- Restored the calculator as the first application content.
+
+### Added
+- Added a full-viewport animated BiliTool.Vn logo splash inspired by Crossian's loading intro.
+- The splash renders immediately while the prerendered application, assets, and Blazor connection load behind it.
+- Added automatic readiness transition, minimum display timing, reduced-motion behavior, and an eight-second safety fallback.
+
+## [1.3.22] - 2026-07-24
+
+### Added
+- Added the Clinical Orbit homepage intro with treatment-threshold visualization, clinical references, and direct calculator navigation.
+- Added responsive compositions for mobile, tablet, and desktop, plus reduced-motion and print behavior.
+- Refined mobile display typography and intrinsic grid sizing to preserve the full headline at narrow widths.
+
+### Changed
+- Improved homepage heading structure so the intro owns the primary heading and the calculator form uses a secondary heading.
+- Added the missing Vietnamese HIS/EMR document title and improved privacy contact-link accessibility.
+- Bumped application and stylesheet cache metadata to `1.3.22`.
+
+### Verified
+- Release build completed with 0 warnings and 0 errors.
+- Domain test suite passed 50/50 tests.
+- NuGet vulnerability scan found no vulnerable direct or transitive packages.
+
 ## [1.3.16] - 2026-07-11
 
 ### Changed

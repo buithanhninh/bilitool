@@ -110,6 +110,7 @@ public class TinhToanBilirubinHandler
             LichDoLapNICE = ketQua.LichDoLapNICE,
             GioDoLapTiepTheo = ketQua.GioDoLapTiepTheo,
             ChuThichThamChieu = ketQua.ChuThichThamChieu,
+            ThoiGianLayMau = LayThoiGianLayMau(yc),
             ThoiGianTinhToan = ketQua.ThoiGianTinhToan,
         };
 
@@ -175,6 +176,14 @@ public class TinhToanBilirubinHandler
 
         throw new InvalidOperationException(
             "Phải cung cấp hoặc ngày giờ sinh + ngày giờ lấy mẫu, hoặc tuổi tính theo giờ.");
+    }
+
+    private static DateTime? LayThoiGianLayMau(YeuCauTinhToanBilirubinDto yc)
+    {
+        if (!yc.NgayLayMau.HasValue) return null;
+        return yc.GioLayMau.HasValue
+            ? yc.NgayLayMau.Value.Date + yc.GioLayMau.Value
+            : yc.NgayLayMau.Value;
     }
 
     private static string LayMauHienThi(MucDoNguyHiem mucDo) => mucDo switch

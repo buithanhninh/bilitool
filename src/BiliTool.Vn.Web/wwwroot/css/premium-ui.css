@@ -227,7 +227,8 @@ body::after {
   border-bottom: 1px solid rgba(15, 23, 42, .08) !important;
 }
 
-.card-form-header h1 {
+.card-form-header h1,
+.card-form-header h2 {
   font-size: clamp(1.15rem, 1.5vw, 1.55rem) !important;
   font-weight: 900 !important;
   color: var(--premium-ink) !important;

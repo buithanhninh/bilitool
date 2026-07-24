@@ -117,6 +117,7 @@ public class KetQuaTinhToanDto
 
     // Chú thích nguồn tham chiếu
     public List<string> ChuThichThamChieu { get; set; } = new();
+    public DateTime? ThoiGianLayMau { get; set; }
     public DateTime ThoiGianTinhToan { get; set; }
     
     // Dữ liệu vẽ biểu đồ nomogram

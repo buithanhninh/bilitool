@@ -46,6 +46,12 @@
                                 <span class="contact-value">093 6626 007</span>
                             </div>
                         </div>
+
+                        <a class="contact-card contact-card-link contact-card-zalo" href="https://zalo.me/0936626007" target="_blank" rel="noopener noreferrer" aria-label="Open Zalo chat with BiliTool.Vn at 093 6626 007">
+                            <span class="contact-icon contact-icon-zalo" aria-hidden="true">Zalo</span>
+                            <span class="contact-info"><span class="contact-label">Zalo consultation</span><strong class="contact-value">093 6626 007</strong><span class="contact-action">Open Zalo chat <i class="fas fa-external-link-alt"></i></span></span>
+                            <i class="fas fa-chevron-right contact-chevron" aria-hidden="true"></i>
+                        </a>
                         
                         <div class="contact-card">
                             <div class="contact-icon"><i class="fas fa-business-time"></i></div>
@@ -58,7 +64,7 @@
                         <div class="contact-card">
                             <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
                             <div class="contact-info">
-                                <span class="contact-label">Electronic Medical Portal</span>
+                                <span class="contact-label">Author's Website</span>
                                 <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
@@ -110,6 +116,12 @@ else if (lang == "fr")
                                 <span class="contact-value">093 6626 007</span>
                             </div>
                         </div>
+
+                        <a class="contact-card contact-card-link contact-card-zalo" href="https://zalo.me/0936626007" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir Zalo avec BiliTool.Vn au 093 6626 007">
+                            <span class="contact-icon contact-icon-zalo" aria-hidden="true">Zalo</span>
+                            <span class="contact-info"><span class="contact-label">Conseil via Zalo</span><strong class="contact-value">093 6626 007</strong><span class="contact-action">Ouvrir la conversation Zalo <i class="fas fa-external-link-alt"></i></span></span>
+                            <i class="fas fa-chevron-right contact-chevron" aria-hidden="true"></i>
+                        </a>
                         
                         <div class="contact-card">
                             <div class="contact-icon"><i class="fas fa-business-time"></i></div>
@@ -122,7 +134,7 @@ else if (lang == "fr")
                         <div class="contact-card">
                             <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
                             <div class="contact-info">
-                                <span class="contact-label">Portail Médical Électronique</span>
+                                <span class="contact-label">Site web de l'auteur</span>
                                 <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
@@ -174,6 +186,12 @@ else
                                 <span class="contact-value">093 6626 007</span>
                             </div>
                         </div>
+
+                        <a class="contact-card contact-card-link contact-card-zalo" href="https://zalo.me/0936626007" target="_blank" rel="noopener noreferrer" aria-label="Mở Zalo BiliTool.Vn theo số 093 6626 007">
+                            <span class="contact-icon contact-icon-zalo" aria-hidden="true">Zalo</span>
+                            <span class="contact-info"><span class="contact-label">Tư vấn qua Zalo</span><strong class="contact-value">093 6626 007</strong><span class="contact-action">Nhấn để mở Zalo và nhắn tin ngay <i class="fas fa-external-link-alt"></i></span></span>
+                            <i class="fas fa-chevron-right contact-chevron" aria-hidden="true"></i>
+                        </a>
                         
                         <div class="contact-card">
                             <div class="contact-icon"><i class="fas fa-business-time"></i></div>
@@ -186,7 +204,7 @@ else
                         <div class="contact-card">
                             <div class="contact-icon"><i class="fas fa-globe-asia"></i></div>
                             <div class="contact-info">
-                                <span class="contact-label">Cổng Đăng Ký Y tế Điện tử</span>
+                                <span class="contact-label">Website của tác giả</span>
                                 <a href="https://drninhmai.com/lien-he/" target="_blank" class="contact-link">DrNinhMai.Com <i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
@@ -288,6 +306,16 @@ else
         box-shadow: 0 18px 38px rgba(8, 45, 77, .12);
     }
 
+    .contact-card-link { position: relative; color: inherit; text-decoration: none; cursor: pointer; }
+    .contact-card-link:focus-visible { outline: 3px solid rgba(0, 104, 255, .28); outline-offset: 3px; }
+    .contact-card-zalo { border-color: rgba(0, 104, 255, .18); background: linear-gradient(100deg, rgba(238, 247, 255, .96), rgba(255, 255, 255, .86)); }
+    .contact-card-zalo:hover { border-color: rgba(0, 104, 255, .38); box-shadow: 0 18px 38px rgba(0, 104, 255, .12); }
+    .contact-card-zalo .contact-icon-zalo { color: #fff; background: #0068ff; border-color: #0068ff; font-family: Arial, sans-serif; font-size: .92rem; font-weight: 800; letter-spacing: -.04em; box-shadow: 0 10px 24px rgba(0, 104, 255, .22); }
+    .contact-action { margin-top: 3px; color: #0068ff; font-size: .78rem; font-weight: 700; }
+    .contact-action i { margin-left: 4px; font-size: .7rem; }
+    .contact-chevron { margin-left: auto; padding-left: 18px; color: #0068ff; font-size: .9rem; transition: transform .2s ease; }
+    .contact-card-link:hover .contact-chevron { transform: translateX(4px); }
+
     .contact-icon {
         width: 60px;
         height: 60px;
@@ -363,5 +391,7 @@ else
             font-size: 1.2rem;
             margin-right: 15px;
         }
+        .contact-action { font-size: .72rem; }
+        .contact-chevron { padding-left: 8px; }
     }
 </style>

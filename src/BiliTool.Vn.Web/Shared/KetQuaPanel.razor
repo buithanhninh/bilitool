@@ -3,7 +3,7 @@
 <div class="ket-qua-card" style="border-left: 6px solid @KetQua.MauNguyHiem;">
     <div class="ket-qua-header" style="background: @LayMauNen(); justify-content: right;">
         <span class="ket-qua-title">@T["ClinicalResult"]</span>
-        <span class="thoi-gian-tinh">@KetQua.ThoiGianTinhToan.ToString("HH:mm dd/MM/yyyy")</span>
+        <span class="thoi-gian-tinh">@((KetQua.ThoiGianLayMau ?? KetQua.ThoiGianTinhToan).ToString("HH:mm dd/MM/yyyy"))</span>
     </div>
 
     <div class="ket-qua-body" id="ket-qua-pdf">
@@ -324,7 +324,8 @@
     {
         var sb = new System.Text.StringBuilder();
         sb.AppendLine($"=== {T["CalcBili_ReportHeader"]} ===");
-        sb.AppendLine($"{T["SampleTime"]}: {KetQua.ThoiGianTinhToan:dd/MM/yyyy HH:mm}");
+        if (KetQua.ThoiGianLayMau.HasValue)
+            sb.AppendLine($"{T["SampleTime"]}: {KetQua.ThoiGianLayMau.Value:dd/MM/yyyy HH:mm}");
         sb.AppendLine($"{T["GestationalAge"]}: {KetQua.TuoiThaiTuan} {T["WeeksTerm"].Split(' ')[0]}");
         sb.AppendLine($"{T["AgeSampleHours"]}: {KetQua.TuoiGio:F1} {T["Hours"]}");
         if (DonVi == "UmolL")
