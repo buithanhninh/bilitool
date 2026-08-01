@@ -30,12 +30,30 @@ jobs:
   deploy:
     needs: verify
     runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.credentials.outputs.available }}
 
     steps:
+      - name: Check production deployment credentials
+        id: credentials
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          if [[ -n "$SERVER_IP" && -n "$SERVER_USER" && -n "$SSH_PRIVATE_KEY" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Production deployment skipped because SERVER_IP, SERVER_USER or SSH_PRIVATE_KEY is not configured."
+          fi
+
       - name: Checkout code
+        if: steps.credentials.outputs.available == 'true'
         uses: actions/checkout@v4
 
       - name: Deploy via SSH
+        if: steps.credentials.outputs.available == 'true'
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -62,6 +80,7 @@ jobs:
 
   accessibility:
     needs: deploy
+    if: needs.deploy.outputs.configured == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check accessibility test credentials
