@@ -1,0 +1,12 @@
+{
+  "name": "vn.bilitool.fhir.r4",
+  "version": "1.0.0",
+  "description": "BiliTool.Vn bilirubin decision support FHIR R4 implementation guide",
+  "type": "fhir.ig",
+  "canonical": "https://bilitool.vn/fhir",
+  "url": "https://bilitool.vn/fhir/ImplementationGuide/vn.bilitool.fhir.r4",
+  "fhirVersions": ["4.0.1"],
+  "dependencies": {
+    "hl7.fhir.r4.core": "4.0.1"
+  }
+}

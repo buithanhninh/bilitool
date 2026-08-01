@@ -1,0 +1,9 @@
+{
+  "source": { "system": "SANDBOX-HIS", "facility": "SANDBOX-FAC", "messageId": "sandbox-msg-001" },
+  "patient": { "identifier": "TEST-PATIENT-001", "assigningAuthority": "SANDBOX-FAC", "birthTime": null, "ageHours": 48, "gestationalAgeWeeks": 38, "phototherapyStatus": "none" },
+  "encounter": { "identifier": "TEST-ENC-001" },
+  "order": { "identifier": "TEST-ORDER-001" },
+  "specimen": { "identifier": "TEST-SPEC-001", "collectedAt": "2026-07-31T08:00:00Z" },
+  "observation": { "identifier": "TEST-OBS-001", "effectiveAt": "2026-07-31T08:00:00Z", "value": 12, "unit": "mg/dL" },
+  "riskFactors": {}
+}

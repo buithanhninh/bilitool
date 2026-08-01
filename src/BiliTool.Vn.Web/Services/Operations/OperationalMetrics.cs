@@ -3,11 +3,12 @@ using System.Diagnostics;
 
 namespace BiliTool.Vn.Web.Services.Operations;
 
-public sealed class OperationalMetrics
+public sealed class OperationalMetrics : BiliTool.Vn.Application.Services.IHisIntegrationMetrics
 {
     private readonly ConcurrentQueue<RequestSample> _samples = new();
     private long _totalRequests;
     private long _failedRequests;
+    private readonly ConcurrentDictionary<string, long> _hisEvents = new(StringComparer.Ordinal);
 
     public void Record(string bucket, int statusCode, long elapsedMilliseconds)
     {
@@ -31,9 +32,14 @@ public sealed class OperationalMetrics
             errorRatePercent = recent.Length == 0 ? 0 : Math.Round(recent.Count(x => x.StatusCode >= 500) * 100d / recent.Length, 2),
             latencyMs = new { p50 = Percentile(latencies, .50), p95 = Percentile(latencies, .95), p99 = Percentile(latencies, .99) },
             routes = recent.GroupBy(x => x.Bucket).Select(x => new { route = x.Key, requests = x.Count(), serverErrors = x.Count(y => y.StatusCode >= 500) }),
+            his = _hisEvents.OrderBy(item => item.Key).ToDictionary(item => item.Key, item => item.Value),
             lifetime = new { requests = Interlocked.Read(ref _totalRequests), serverErrors = Interlocked.Read(ref _failedRequests) }
         };
     }
+
+    public void Increment(string eventName) => _hisEvents.AddOrUpdate(eventName, 1, (_, current) => current + 1);
+
+    public long GetEventCount(string eventName) => _hisEvents.TryGetValue(eventName, out var value) ? value : 0;
 
     public MonitoringSnapshot GetMonitoringSnapshot()
     {

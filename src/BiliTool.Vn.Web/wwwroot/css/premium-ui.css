@@ -26,6 +26,17 @@
   --premium-ease: cubic-bezier(.2, .8, .2, 1);
 }
 
+@media (max-width: 768px) {
+  .site-footer .footer-links a,
+  .site-footer .footer-ref a {
+    display: inline-flex !important;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 4px;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -956,6 +967,70 @@ body::after {
     display: inline-flex !important;
     align-items: center;
   }
+
+  .mobile-header {
+    min-height: 68px;
+    padding: 10px 14px !important;
+  }
+
+  .mobile-logo {
+    min-height: 44px;
+    flex: 1 1 auto;
+  }
+
+  .mobile-login-btn {
+    width: 44px !important;
+    height: 44px !important;
+    flex: 0 0 44px;
+  }
+
+  .toggle-btn,
+  .btn-to-calc,
+  .ref-link a,
+  .faq-link,
+  .privacy-link,
+  .contact-link,
+  .about-primary-link {
+    min-height: 44px;
+  }
+
+  .faq-link,
+  .privacy-link,
+  .contact-link {
+    display: inline-flex !important;
+    align-items: center;
+    padding-block: 8px;
+  }
+
+  .ref-link a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+
+  .optional-badge,
+  .footer-content,
+  .footer-content a,
+  .privacy-content > .text-muted {
+    font-size: .8rem !important;
+  }
+
+  .site-footer {
+    padding-block: 18px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .page-content {
+    padding-inline: 10px !important;
+  }
+
+  .form-section,
+  .ket-qua-body,
+  .card-form-header {
+    padding-inline: 14px !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -964,5 +1039,15 @@ body::after {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  a[href="/chinh-sach-bao-mat"],
+  .btn-primary-vn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px !important;
   }
 }

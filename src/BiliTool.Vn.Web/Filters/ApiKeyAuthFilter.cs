@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using BiliTool.Vn.Application.Services;
+using BiliTool.Vn.Web.Services;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace BiliTool.Vn.Web.Filters;
 
@@ -10,38 +11,22 @@ namespace BiliTool.Vn.Web.Filters;
 /// </summary>
 public class ApiKeyAuthFilter : IAsyncActionFilter
 {
-    private readonly IConfiguration _configuration;
+    private readonly IHisApiClientAuthenticator _authenticator;
+    private readonly IHisIntegrationMetrics _metrics;
     private const string ApiKeyHeaderName = "X-API-Key";
 
-    public ApiKeyAuthFilter(IConfiguration configuration)
+    public ApiKeyAuthFilter(IHisApiClientAuthenticator authenticator, IHisIntegrationMetrics metrics)
     {
-        _configuration = configuration;
+        _authenticator = authenticator;
+        _metrics = metrics;
     }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        // Lấy danh sách khóa được cấu hình
-        var allowedKeys = _configuration.GetSection("ApiSettings:AllowedApiKeys").Get<string[]>();
-
-        // Không có cấu hình khóa nghĩa là tích hợp HIS chưa sẵn sàng; không mở public mặc định.
-        if (allowedKeys == null || allowedKeys.Length == 0)
-        {
-            context.Result = new ObjectResult(new ProblemDetails
-            {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.4",
-                Title = "Dịch vụ API chưa được cấu hình (API key configuration missing)",
-                Status = StatusCodes.Status503ServiceUnavailable,
-                Detail = "API tích hợp HIS chưa được cấu hình khóa truy cập. Vui lòng liên hệ quản trị hệ thống."
-            })
-            {
-                StatusCode = StatusCodes.Status503ServiceUnavailable
-            };
-            return;
-        }
-
         // Kiểm tra xem Header X-API-Key có được gửi lên không
         if (!context.HttpContext.Request.Headers.TryGetValue(ApiKeyHeaderName, out var extractedApiKey))
         {
+            _metrics.Increment("auth.missing_key");
             context.Result = new ObjectResult(new ProblemDetails
             {
                 Type = "https://tools.ietf.org/html/rfc7235#section-3.1",
@@ -52,15 +37,36 @@ public class ApiKeyAuthFilter : IAsyncActionFilter
             {
                 StatusCode = StatusCodes.Status401Unauthorized
             };
+            AddProblemExtensions((context.Result as ObjectResult)!, "missing_api_key", context.HttpContext.TraceIdentifier, false);
             return;
         }
 
         // Trích xuất và cắt khoảng trắng thừa (nếu có) để tránh lỗi sao chép thừa khoảng trắng
         var keyToCheck = extractedApiKey.ToString().Trim();
 
-        // Kiểm tra tính chính xác của API Key
-        if (string.IsNullOrEmpty(keyToCheck) || !IsAllowedKey(keyToCheck, allowedKeys))
+        HisApiClientIdentity? identity;
+        try
         {
+            var certificate = await context.HttpContext.Connection.GetClientCertificateAsync(context.HttpContext.RequestAborted);
+            var certificateFingerprint = certificate == null ? null : Convert.ToHexString(SHA256.HashData(certificate.RawData));
+            identity = await _authenticator.AuthenticateAsync(keyToCheck, certificateFingerprint, context.HttpContext.RequestAborted);
+        }
+        catch
+        {
+            _metrics.Increment("auth.unavailable");
+            context.Result = new ObjectResult(new ProblemDetails
+            {
+                Title = "Dịch vụ xác thực HIS tạm thời không khả dụng",
+                Status = StatusCodes.Status503ServiceUnavailable,
+                Detail = "Không thể xác thực hệ thống tích hợp tại thời điểm này."
+            }) { StatusCode = StatusCodes.Status503ServiceUnavailable };
+            AddProblemExtensions((context.Result as ObjectResult)!, "authentication_unavailable", context.HttpContext.TraceIdentifier, true);
+            return;
+        }
+
+        if (identity == null)
+        {
+            _metrics.Increment("auth.invalid_key");
             context.Result = new ObjectResult(new ProblemDetails
             {
                 Type = "https://tools.ietf.org/html/rfc7235#section-3.1",
@@ -71,25 +77,40 @@ public class ApiKeyAuthFilter : IAsyncActionFilter
             {
                 StatusCode = StatusCodes.Status401Unauthorized
             };
+            AddProblemExtensions((context.Result as ObjectResult)!, "invalid_api_key", context.HttpContext.TraceIdentifier, false);
             return;
         }
+
+        var requiredScope = context.HttpContext.Request.Method == HttpMethods.Get
+            ? "bilirubin:metadata"
+            : "bilirubin:calculate";
+        if (!identity.Scopes.Contains(requiredScope))
+        {
+            _metrics.Increment("auth.insufficient_scope");
+            context.Result = new ObjectResult(new ProblemDetails
+            {
+                Title = "API client không có quyền truy cập",
+                Status = StatusCodes.Status403Forbidden,
+                Detail = $"Credential không có scope bắt buộc '{requiredScope}'."
+            }) { StatusCode = StatusCodes.Status403Forbidden };
+            AddProblemExtensions((context.Result as ObjectResult)!, "insufficient_scope", context.HttpContext.TraceIdentifier, false);
+            return;
+        }
+
+        context.HttpContext.Items[ClinicalRequestContext.TenantIdItem] = identity.TenantId;
+        context.HttpContext.Items[ClinicalRequestContext.TenantCodeItem] = identity.TenantCode;
+        context.HttpContext.Items[ClinicalRequestContext.ApiClientIdItem] = identity.ApiClientId;
+        _metrics.Increment(identity.IsLegacy ? "auth.success.legacy" : "auth.success.registry");
 
         await next();
     }
 
-    private static bool IsAllowedKey(string candidate, IEnumerable<string> allowedKeys)
+    private static void AddProblemExtensions(ObjectResult result, string errorCode, string correlationId, bool retryable)
     {
-        var candidateHash = SHA256.HashData(Encoding.UTF8.GetBytes(candidate));
-
-        foreach (var allowedKey in allowedKeys.Where(key => !string.IsNullOrWhiteSpace(key)))
-        {
-            var allowedHash = SHA256.HashData(Encoding.UTF8.GetBytes(allowedKey));
-            if (CryptographicOperations.FixedTimeEquals(candidateHash, allowedHash))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        if (result.Value is not ProblemDetails problem) return;
+        problem.Type = $"https://bilitool.vn/problems/{errorCode}";
+        problem.Extensions["errorCode"] = errorCode;
+        problem.Extensions["correlationId"] = correlationId;
+        problem.Extensions["retryable"] = retryable;
     }
 }

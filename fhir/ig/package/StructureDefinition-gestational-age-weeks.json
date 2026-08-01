@@ -1,0 +1,13 @@
+{
+  "resourceType": "StructureDefinition", "id": "gestational-age-weeks",
+  "url": "https://bilitool.vn/fhir/StructureDefinition/gestational-age-weeks", "version": "1.0.0",
+  "name": "BiliToolGestationalAgeWeeks", "status": "active", "fhirVersion": "4.0.1",
+  "kind": "complex-type", "abstract": false, "context": [{ "type": "element", "expression": "ServiceRequest" }],
+  "type": "Extension", "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Extension", "derivation": "constraint",
+  "differential": { "element": [
+    { "id": "Extension", "path": "Extension" },
+    { "id": "Extension.extension", "path": "Extension.extension", "max": "0" },
+    { "id": "Extension.url", "path": "Extension.url", "fixedUri": "https://bilitool.vn/fhir/StructureDefinition/gestational-age-weeks" },
+    { "id": "Extension.value[x]", "path": "Extension.value[x]", "min": 1, "type": [{ "code": "integer" }] }
+  ] }
+}

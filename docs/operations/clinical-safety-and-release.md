@@ -21,8 +21,9 @@
 
 - Tắt dataset engine nếu sau này bật: `ClinicalEngine__UseDatasetEngine=false`.
 - API v1 luôn giữ nguyên route `/api/v1/bilirubin/calculate`.
-- API v2 có thể disable ở reverse proxy nếu cần mà không ảnh hưởng UI/API v1.
-- Migration audit hiện chỉ additive; rollback an toàn bằng drop table `clinical_audit_logs` nếu cần.
+- REST v3/FHIR/HL7 có tenant allowlist/denylist và emergency kill switch tại `HisRollout`.
+- Không drop audit/outbox/legal-hold tables khi rollback; dữ liệu traceability phải giữ nguyên.
+- Migration rollback chỉ chạy sau rehearsal trên bản restore production-like và xác nhận không mất dữ liệu.
 
 ## Checklist release
 
@@ -33,3 +34,6 @@
 - [ ] Không có secret trong `appsettings.json` hoặc git diff.
 - [ ] Nếu thay clinical path, baseline/golden tests pass.
 - [ ] Backup DB trước deploy production.
+- [ ] `RELEASE_VERSION=<version> ./scripts/release/build-evidence.sh`
+- [ ] `SHA256SUMS` được verify, `sbom.cdx.json` parse hợp lệ và `release-manifest.json` đúng commit.
+- [ ] GitHub build provenance attestation tồn tại cho artifact phát hành từ `main`.

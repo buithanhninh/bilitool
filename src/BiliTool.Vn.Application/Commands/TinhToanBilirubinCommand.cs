@@ -1,4 +1,5 @@
 using BiliTool.Vn.Application.DTOs;
+using BiliTool.Vn.Application.Clinical;
 using BiliTool.Vn.Application.Services;
 using BiliTool.Vn.Domain.Clinical.Bilirubin;
 using BiliTool.Vn.Domain.Enums;
@@ -42,7 +43,7 @@ public class TinhToanBilirubinHandler
         var yc = request.YeuCau;
 
         // Tính tuổi theo giờ
-        double tuoiGio = TinhTuoiGio(yc);
+        double tuoiGio = BilirubinRequestTimeNormalizer.CalculateAgeHours(yc);
 
         // Chuyển đổi bilirubin sang mg/dL
         decimal bilirubinMgDl = _mayTinh.ChuyenDoiSangMgDl(yc.TongBilirubin, yc.DonViDo);
@@ -110,7 +111,7 @@ public class TinhToanBilirubinHandler
             LichDoLapNICE = ketQua.LichDoLapNICE,
             GioDoLapTiepTheo = ketQua.GioDoLapTiepTheo,
             ChuThichThamChieu = ketQua.ChuThichThamChieu,
-            ThoiGianLayMau = LayThoiGianLayMau(yc),
+            ThoiGianLayMau = BilirubinRequestTimeNormalizer.GetSampleTime(yc),
             ThoiGianTinhToan = ketQua.ThoiGianTinhToan,
         };
 
@@ -154,36 +155,6 @@ public class TinhToanBilirubinHandler
         }
 
         return dto;
-    }
-
-    private static double TinhTuoiGio(YeuCauTinhToanBilirubinDto yc)
-    {
-        if (yc.TuoiTheoGio.HasValue)
-            return yc.TuoiTheoGio.Value;
-
-        if (yc.NgaySinh.HasValue && yc.NgayLayMau.HasValue)
-        {
-            var thoiGianSinh = yc.GioSinh.HasValue
-                ? yc.NgaySinh.Value.Date + yc.GioSinh.Value
-                : yc.NgaySinh.Value;
-
-            var thoiGianLayMau = yc.GioLayMau.HasValue
-                ? yc.NgayLayMau.Value.Date + yc.GioLayMau.Value
-                : yc.NgayLayMau.Value;
-
-            return (thoiGianLayMau - thoiGianSinh).TotalHours;
-        }
-
-        throw new InvalidOperationException(
-            "Phải cung cấp hoặc ngày giờ sinh + ngày giờ lấy mẫu, hoặc tuổi tính theo giờ.");
-    }
-
-    private static DateTime? LayThoiGianLayMau(YeuCauTinhToanBilirubinDto yc)
-    {
-        if (!yc.NgayLayMau.HasValue) return null;
-        return yc.GioLayMau.HasValue
-            ? yc.NgayLayMau.Value.Date + yc.GioLayMau.Value
-            : yc.NgayLayMau.Value;
     }
 
     private static string LayMauHienThi(MucDoNguyHiem mucDo) => mucDo switch

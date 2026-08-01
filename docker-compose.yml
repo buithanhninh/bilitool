@@ -18,6 +18,14 @@ services:
       - AdminAuth__Username=${ADMIN_USERNAME}
       - AdminAuth__PasswordHash=${ADMIN_PASSWORD_HASH}
       - ApiSettings__AllowedApiKeys__0=${ApiSettings__AllowedApiKeys__0}
+      - ApiSettings__EnableLegacyApiKeys=${ApiSettings__EnableLegacyApiKeys:-false}
+      - ApiSettings__BootstrapClient__TenantCode=${ApiSettings__BootstrapClient__TenantCode:-}
+      - ApiSettings__BootstrapClient__TenantName=${ApiSettings__BootstrapClient__TenantName:-}
+      - ApiSettings__BootstrapClient__ClientCode=${ApiSettings__BootstrapClient__ClientCode:-}
+      - ApiSettings__BootstrapClient__DisplayName=${ApiSettings__BootstrapClient__DisplayName:-}
+      - ApiSettings__BootstrapClient__ApiKey=${ApiSettings__BootstrapClient__ApiKey:-}
+      - ApiSettings__BootstrapClient__Scopes=${ApiSettings__BootstrapClient__Scopes:-bilirubin:calculate bilirubin:metadata}
+      - ReverseProxy__KnownNetworks__0=${ReverseProxy__KnownNetworks__0:-172.16.0.0/12}
     depends_on:
       postgres:
         condition: service_healthy

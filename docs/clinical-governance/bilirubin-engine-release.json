@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "guidelineCode": "AAP2022+NICECG98",
+  "guidelineRevision": "AAP-2022+NICE-CG98-2023-10-31",
+  "guidelineEffectiveDate": "2023-10-31",
+  "engineMode": "BaselineMayTinhBilirubin",
+  "engineVersion": "baseline-1",
+  "datasetMode": "embedded-baseline-thresholds",
+  "datasetRevision": "embedded-baseline-2026-07-31",
+  "usesExternalDatasetEngine": false,
+  "scope": {
+    "gestationalAgeWeeks": { "minimum": 35, "maximum": 42 },
+    "postnatalAgeHours": { "minimum": 1, "maximum": 336 },
+    "supportedUnits": ["mg/dL", "umol/L"]
+  },
+  "sources": [
+    {
+      "code": "AAP2022",
+      "title": "Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation",
+      "published": "2022-08-05"
+    },
+    {
+      "code": "NICE_CG98",
+      "title": "Jaundice in newborn babies under 28 days",
+      "revision": "2023-10-31"
+    }
+  ],
+  "approval": {
+    "status": "pending-clinical-review",
+    "reviewerName": null,
+    "reviewerRole": null,
+    "approvedAt": null,
+    "evidenceReference": null
+  }
+}

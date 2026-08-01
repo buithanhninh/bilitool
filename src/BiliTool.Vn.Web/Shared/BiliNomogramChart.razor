@@ -233,8 +233,15 @@
         .bili-nomogram-container { padding: 14px; border-radius: 20px; }
         .nomogram-legend { gap: 6px; }
         .legend-item { width: calc(50% - 3px); justify-content: center; padding: 7px 8px; }
-        .bili-nomogram-svg-wrapper { padding: 4px; overflow-x: auto; }
-        .bili-nomogram-svg { min-width: 520px; }
+        .bili-nomogram-svg-wrapper {
+            justify-content: flex-start;
+            padding: 4px;
+            overflow-x: auto;
+            overscroll-behavior-inline: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(15, 95, 143, .34) transparent;
+        }
+        .bili-nomogram-svg { flex: 0 0 520px; min-width: 520px; }
     }
 </style>
 

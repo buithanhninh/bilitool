@@ -4,8 +4,12 @@ namespace BiliTool.Vn.Domain.Clinical.Bilirubin;
 
 public record BilirubinCalculationTrace
 {
-    public string GuidelineCode { get; init; } = "AAP2022+NICECG98";
-    public string EngineMode { get; init; } = "BaselineMayTinhBilirubin";
+    public string GuidelineCode { get; init; } = BilirubinEngineMetadata.GuidelineCode;
+    public string GuidelineRevision { get; init; } = BilirubinEngineMetadata.GuidelineRevision;
+    public string GuidelineEffectiveDate { get; init; } = BilirubinEngineMetadata.GuidelineEffectiveDate;
+    public string EngineMode { get; init; } = BilirubinEngineMetadata.EngineMode;
+    public string EngineVersion { get; init; } = BilirubinEngineMetadata.EngineVersion;
+    public string DatasetRevision { get; init; } = BilirubinEngineMetadata.DatasetRevision;
     public double TuoiGio { get; init; }
     public int TuoiThaiTuan { get; init; }
     public bool CoNguyCoThanKinh { get; init; }

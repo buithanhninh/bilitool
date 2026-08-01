@@ -22,6 +22,8 @@ appsettings.Local.json
 ## Logs and Backups
 logs/
 backups/
+artifacts/
+output/
 *.log
 *.sql
 *.sql.gz

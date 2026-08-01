@@ -30,8 +30,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 16px;
         }
         .login-card {
             background: white;
@@ -45,6 +46,14 @@
             text-align: center;
             margin-bottom: 1.5rem;
             color: #2b3954;
+        }
+        .form-control { min-height: 44px; }
+        .btn-primary { min-height: 48px; font-weight: 600; }
+        .text-center a { display: inline-flex; align-items: center; min-height: 44px; }
+        @@media (max-width: 480px) {
+            body { align-items: flex-start; padding: 12px; }
+            .login-card { margin-top: 12px; padding: 28px 20px; border-radius: 16px; }
+            .login-card h3 { font-size: 1.25rem; line-height: 1.35; }
         }
     </style>
 </head>

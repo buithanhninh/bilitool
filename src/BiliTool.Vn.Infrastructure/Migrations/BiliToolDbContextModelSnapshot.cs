@@ -17,7 +17,7 @@ namespace BiliTool.Vn.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.28")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -94,6 +94,57 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                     b.ToTable("admin_audit_logs", (string)null);
                 });
 
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.ClinicalAuditLegalHold", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("PlacedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("placed_at");
+
+                    b.Property<string>("PlacedBy")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("placed_by");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("reason");
+
+                    b.Property<DateTime?>("ReleasedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("released_at");
+
+                    b.Property<string>("ReleasedBy")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("released_by");
+
+                    b.Property<string>("ResultId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("result_id");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "ResultId", "ReleasedAt")
+                        .HasDatabaseName("ix_clinical_audit_legal_holds_scope");
+
+                    b.ToTable("clinical_audit_legal_holds", (string)null);
+                });
+
             modelBuilder.Entity("BiliTool.Vn.Domain.Entities.ClinicalAuditLog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -121,6 +172,12 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("engine_mode");
 
+                    b.Property<string>("EngineVersion")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("engine_version");
+
                     b.Property<string>("GuidelineCode")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -136,6 +193,16 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("response_json");
+
+                    b.Property<string>("ResultId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("result_id");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tenant_id");
 
                     b.Property<string>("TraceJson")
                         .IsRequired()
@@ -155,7 +222,413 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                     b.HasIndex("GuidelineCode")
                         .HasDatabaseName("ix_clinical_audit_logs_guideline_code");
 
+                    b.HasIndex("TenantId", "ResultId")
+                        .HasDatabaseName("ix_clinical_audit_logs_tenant_result");
+
                     b.ToTable("clinical_audit_logs", (string)null);
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.ClinicalAuditPurgeReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CutoffAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("cutoff_at");
+
+                    b.Property<int>("DeletedCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("deleted_count");
+
+                    b.Property<bool>("DryRun")
+                        .HasColumnType("boolean")
+                        .HasColumnName("dry_run");
+
+                    b.Property<int>("EligibleCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("eligible_count");
+
+                    b.Property<DateTime>("ExecutedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("executed_at");
+
+                    b.Property<int>("ProtectedByLegalHoldCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("protected_by_legal_hold_count");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExecutedAt")
+                        .HasDatabaseName("ix_clinical_audit_purge_reports_executed_at");
+
+                    b.ToTable("clinical_audit_purge_reports", (string)null);
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisApiClient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<byte[]>("ApiKeyHash")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("api_key_hash");
+
+                    b.Property<string>("CertificateFingerprint")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("certificate_fingerprint");
+
+                    b.Property<string>("ClientCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("client_code");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("display_name");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("KeyFingerprint")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("key_fingerprint");
+
+                    b.Property<DateTime?>("LastUsedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_used_at");
+
+                    b.Property<byte[]>("PreviousApiKeyHash")
+                        .HasColumnType("bytea")
+                        .HasColumnName("previous_api_key_hash");
+
+                    b.Property<DateTime?>("PreviousCertificateExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("previous_certificate_expires_at");
+
+                    b.Property<string>("PreviousCertificateFingerprint")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("previous_certificate_fingerprint");
+
+                    b.Property<DateTime?>("PreviousKeyExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("previous_key_expires_at");
+
+                    b.Property<string>("PreviousKeyFingerprint")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("previous_key_fingerprint");
+
+                    b.Property<bool>("RequireMutualTls")
+                        .HasColumnType("boolean")
+                        .HasColumnName("require_mutual_tls");
+
+                    b.Property<string>("Scopes")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("scopes");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("KeyFingerprint")
+                        .HasDatabaseName("ix_his_api_clients_key_fingerprint");
+
+                    b.HasIndex("PreviousKeyFingerprint")
+                        .HasDatabaseName("ix_his_api_clients_previous_key_fingerprint");
+
+                    b.HasIndex("TenantId", "ClientCode")
+                        .IsUnique()
+                        .HasDatabaseName("ux_his_api_clients_tenant_client_code");
+
+                    b.ToTable("his_api_clients", (string)null);
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisIdempotencyRecord", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ApiClientId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("api_client_id");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("idempotency_key");
+
+                    b.Property<string>("RequestHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("request_hash");
+
+                    b.Property<string>("ResponseContentType")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("response_content_type");
+
+                    b.Property<string>("ResponseJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("response_json");
+
+                    b.Property<int?>("ResponseStatusCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("response_status_code");
+
+                    b.Property<string>("ResultId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("result_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAt")
+                        .HasDatabaseName("ix_his_idempotency_expires_at");
+
+                    b.HasIndex("TenantId", "ApiClientId", "IdempotencyKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_his_idempotency_client_key");
+
+                    b.ToTable("his_idempotency_records", (string)null);
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisOutboxEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ApiClientId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("api_client_id");
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempt_count");
+
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("DeliveredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("delivered_at");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("event_type");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("last_error");
+
+                    b.Property<string>("LockId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("lock_id");
+
+                    b.Property<DateTime?>("LockedUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("locked_until");
+
+                    b.Property<DateTime>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_attempt_at");
+
+                    b.Property<string>("PayloadJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload_json");
+
+                    b.Property<string>("ResultId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("result_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("WebhookSubscriptionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("webhook_subscription_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResultId")
+                        .HasDatabaseName("ix_his_outbox_result_id");
+
+                    b.HasIndex("WebhookSubscriptionId");
+
+                    b.HasIndex("Status", "NextAttemptAt")
+                        .HasDatabaseName("ix_his_outbox_delivery_queue");
+
+                    b.ToTable("his_outbox_events", (string)null);
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisTenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ux_his_tenants_code");
+
+                    b.ToTable("his_tenants", (string)null);
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisWebhookSubscription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ApiClientId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("api_client_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("EndpointUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("endpoint_url");
+
+                    b.Property<string>("EventTypes")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
+                        .HasColumnName("event_types");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("SecretProtected")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("secret_protected");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "ApiClientId", "EndpointUrl")
+                        .IsUnique()
+                        .HasDatabaseName("ux_his_webhook_subscription_endpoint");
+
+                    b.ToTable("his_webhook_subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HoSoBenhNhan", b =>
@@ -508,6 +981,28 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                     b.ToTable("xet_nghiem_bilirubin", (string)null);
                 });
 
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisApiClient", b =>
+                {
+                    b.HasOne("BiliTool.Vn.Domain.Entities.HisTenant", "Tenant")
+                        .WithMany("ApiClients")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisOutboxEvent", b =>
+                {
+                    b.HasOne("BiliTool.Vn.Domain.Entities.HisWebhookSubscription", "WebhookSubscription")
+                        .WithMany("OutboxEvents")
+                        .HasForeignKey("WebhookSubscriptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("WebhookSubscription");
+                });
+
             modelBuilder.Entity("BiliTool.Vn.Domain.Entities.LichSuTinhToan", b =>
                 {
                     b.HasOne("BiliTool.Vn.Domain.Entities.PhienLamViec", "Phien")
@@ -539,6 +1034,16 @@ namespace BiliTool.Vn.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("BenhNhan");
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisTenant", b =>
+                {
+                    b.Navigation("ApiClients");
+                });
+
+            modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HisWebhookSubscription", b =>
+                {
+                    b.Navigation("OutboxEvents");
                 });
 
             modelBuilder.Entity("BiliTool.Vn.Domain.Entities.HoSoBenhNhan", b =>

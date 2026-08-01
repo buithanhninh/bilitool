@@ -1,0 +1,16 @@
+{
+  "resourceType": "Bundle",
+  "meta": {
+    "profile": ["https://bilitool.vn/fhir/StructureDefinition/bilitool-bilirubin-bundle"],
+    "tag": [{ "system": "https://bilitool.vn/fhir/CodeSystem/facility", "code": "FAC-A" }]
+  },
+  "type": "transaction",
+  "identifier": { "system": "https://hospital.example/his", "value": "msg-fhir-001" },
+  "entry": [
+    { "fullUrl": "https://hospital.example/fhir/Patient/patient-fhir-001", "resource": { "resourceType": "Patient", "id": "patient-fhir-001", "identifier": [{ "system": "https://hospital.example/mrn", "value": "MRN-001" }], "extension": [{ "url": "https://bilitool.vn/fhir/StructureDefinition/age-hours", "valueDecimal": 48 }] }, "request": { "method": "PUT", "url": "Patient/patient-fhir-001" } },
+    { "fullUrl": "https://hospital.example/fhir/Encounter/enc-fhir-001", "resource": { "resourceType": "Encounter", "id": "enc-fhir-001", "status": "finished", "class": { "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode", "code": "IMP" } }, "request": { "method": "PUT", "url": "Encounter/enc-fhir-001" } },
+    { "fullUrl": "https://hospital.example/fhir/ServiceRequest/order-fhir-001", "resource": { "resourceType": "ServiceRequest", "id": "order-fhir-001", "status": "active", "intent": "order", "subject": { "reference": "Patient/patient-fhir-001" }, "extension": [{ "url": "https://bilitool.vn/fhir/StructureDefinition/gestational-age-weeks", "valueInteger": 38 }, { "url": "https://bilitool.vn/fhir/StructureDefinition/phototherapy-status", "valueString": "none" }] }, "request": { "method": "PUT", "url": "ServiceRequest/order-fhir-001" } },
+    { "fullUrl": "https://hospital.example/fhir/Specimen/spec-fhir-001", "resource": { "resourceType": "Specimen", "id": "spec-fhir-001", "status": "available", "subject": { "reference": "Patient/patient-fhir-001" }, "collection": { "collectedDateTime": "2026-07-31T08:00:00Z" } }, "request": { "method": "PUT", "url": "Specimen/spec-fhir-001" } },
+    { "fullUrl": "https://hospital.example/fhir/Observation/obs-fhir-001", "resource": { "resourceType": "Observation", "id": "obs-fhir-001", "status": "final", "code": { "coding": [{ "system": "http://loinc.org", "code": "1975-2" }] }, "subject": { "reference": "Patient/patient-fhir-001" }, "encounter": { "reference": "Encounter/enc-fhir-001" }, "specimen": { "reference": "Specimen/spec-fhir-001" }, "effectiveDateTime": "2026-07-31T08:00:00Z", "valueQuantity": { "value": 12, "system": "http://unitsofmeasure.org", "code": "mg/dL" } }, "request": { "method": "PUT", "url": "Observation/obs-fhir-001" } }
+  ]
+}

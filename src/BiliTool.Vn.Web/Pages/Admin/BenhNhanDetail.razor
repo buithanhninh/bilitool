@@ -30,7 +30,7 @@ else
             </div>
             <div class="text-end d-flex align-items-center gap-3">
                 <div>
-                    <select class="form-select form-select-sm" style="width: 120px;" @bind="donViDoStr">
+                    <select class="form-select form-select-sm admin-unit-select" aria-label="Đơn vị bilirubin" @bind="donViDoStr">
                         <option value="MgDl">mg/dL (Mỹ)</option>
                         <option value="UmolL">μmol/L (Quốc tế)</option>
                     </select>
@@ -153,7 +153,7 @@ else
             <div class="kpi-title mb-3"><i class="fas fa-vial"></i> Dữ liệu Xét nghiệm Thô (Raw Data)</div>
             
             <div class="premium-table-container mt-2">
-                <div class="table-responsive">
+                <div class="table-responsive" tabindex="0" aria-label="Danh sách xét nghiệm bilirubin">
                     <table class="premium-table">
                         <thead>
                             <tr>

@@ -1,6 +1,7 @@
 using BiliTool.Vn.Application;
 using BiliTool.Vn.Application.Commands;
 using BiliTool.Vn.Application.DTOs;
+using BiliTool.Vn.Application.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -10,16 +11,21 @@ namespace BiliTool.Vn.Web.Controllers;
 [ApiController]
 [Route("api/v1/bilirubin")]
 [EnableRateLimiting("ApiPolicy")]
-[TypeFilter(typeof(Filters.ApiKeyAuthFilter))]
+[TypeFilter(typeof(Filters.ApiKeyAuthFilter), Order = -100)]
 public class BilirubinApiController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ILogger<BilirubinApiController> _logger;
+    private readonly IClinicalRequestContext _requestContext;
 
-    public BilirubinApiController(IMediator mediator, ILogger<BilirubinApiController> logger)
+    public BilirubinApiController(
+        IMediator mediator,
+        ILogger<BilirubinApiController> logger,
+        IClinicalRequestContext requestContext)
     {
         _mediator = mediator;
         _logger = logger;
+        _requestContext = requestContext;
     }
 
     [HttpPost("calculate")]
@@ -30,6 +36,7 @@ public class BilirubinApiController : ControllerBase
     {
         try
         {
+            _requestContext.ResultId = $"calc_{Guid.NewGuid():N}";
             var command = new TinhToanBilirubinCommand(request);
             var result = await _mediator.Send(command);
             return Ok(result);

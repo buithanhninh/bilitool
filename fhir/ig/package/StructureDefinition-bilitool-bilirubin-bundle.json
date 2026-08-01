@@ -1,0 +1,25 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "bilitool-bilirubin-bundle",
+  "url": "https://bilitool.vn/fhir/StructureDefinition/bilitool-bilirubin-bundle",
+  "version": "1.0.0",
+  "name": "BiliToolBilirubinBundle",
+  "status": "active",
+  "fhirVersion": "4.0.1",
+  "kind": "resource",
+  "abstract": false,
+  "type": "Bundle",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Bundle",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      { "id": "Bundle", "path": "Bundle" },
+      { "id": "Bundle.type", "path": "Bundle.type", "fixedCode": "transaction" },
+      { "id": "Bundle.identifier", "path": "Bundle.identifier", "min": 1 },
+      { "id": "Bundle.meta", "path": "Bundle.meta", "min": 1 },
+      { "id": "Bundle.meta.profile", "path": "Bundle.meta.profile", "min": 1 },
+      { "id": "Bundle.meta.tag", "path": "Bundle.meta.tag", "min": 1 },
+      { "id": "Bundle.entry", "path": "Bundle.entry", "min": 5 }
+    ]
+  }
+}

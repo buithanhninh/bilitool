@@ -1,5 +1,10 @@
 name: CI
 
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
 on:
   pull_request:
   push:
@@ -19,6 +24,12 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Setup Java for HL7 FHIR validator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Restore
         run: dotnet restore BiliTool.Vn.sln
 
@@ -26,7 +37,47 @@ jobs:
         run: dotnet build BiliTool.Vn.sln --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test BiliTool.Vn.sln --no-build --configuration Release
+        run: dotnet test BiliTool.Vn.sln --no-build --configuration Release --logger "trx;LogFileName=tests.trx" --results-directory artifacts/test-results
+
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: artifacts/test-results
+
+      - name: Verify formatting and whitespace
+        run: git diff --check
 
       - name: Vulnerability scan
-        run: dotnet list ${{ github.workspace }}/BiliTool.Vn.sln package --vulnerable --include-transitive
+        run: dotnet list "${{ github.workspace }}/BiliTool.Vn.sln" package --vulnerable --include-transitive
+
+      - name: Validate FHIR R4 implementation guide
+        run: ./scripts/fhir/validate-r4.sh
+
+      - name: Reliability smoke and sandbox conformance
+        run: ./scripts/reliability/run-ci-smoke.sh
+
+      - name: Upload reliability evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reliability-evidence
+          path: artifacts/reliability
+
+      - name: Build release evidence
+        env:
+          RELEASE_VERSION: 0.0.0-${{ github.sha }}
+        run: ./scripts/release/build-evidence.sh
+
+      - name: Upload release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-evidence
+          path: artifacts/release
+
+      - name: Attest release artifact provenance
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: artifacts/release/*.tar.gz

@@ -7,11 +7,11 @@
     --admin-primary-light: #e0e7ff;
     --admin-secondary: #0ea5e9;
     --admin-text-main: #0f172a;
-    --admin-text-muted: #64748b;
+    --admin-text-muted: #475569;
     --admin-border: #e2e8f0;
     --admin-success: #10b981;
     --admin-warning: #f59e0b;
-    --admin-danger: #ef4444;
+    --admin-danger: #b91c1c;
     --admin-radius: 16px;
     --admin-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     --admin-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
@@ -289,3 +289,45 @@ body.admin-mode {
 @media (max-width: 1200px) { .health-strip { grid-template-columns: 1.5fr repeat(3, 1fr); }.health-divider { display:none }.metric-grid-four,.insight-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 900px) { .command-header { align-items:flex-start; flex-direction:column }.command-actions { width:100%; justify-content:space-between }.health-strip,.command-grid,.lower-grid { grid-template-columns:1fr }.health-strip { align-items:start }.health-score { grid-column:1/-1 }.command-grid { display:grid }.quick-links { grid-template-columns:1fr } }
 @media (max-width: 600px) { .admin-container.command-center { padding:1rem }.metric-grid-four,.insight-grid { grid-template-columns:1fr }.report-time { display:none }.health-strip { gap:1rem }.command-actions { justify-content:flex-end } }
+
+@media (max-width: 768px) {
+    .admin-container { padding: 14px 10px; }
+    .admin-container > .d-flex.justify-content-between { align-items: flex-start !important; flex-direction: column; gap: 12px; }
+    .admin-container > .d-flex.justify-content-between > .d-flex { width: 100%; flex-wrap: wrap; }
+    .admin-container h1, .admin-container h2 { font-size: clamp(1.25rem, 6vw, 1.7rem) !important; line-height: 1.25; }
+    .admin-card { padding: 1rem; border-radius: 14px; }
+    .premium-table-container { overflow: hidden; }
+    .premium-table-container .table-responsive { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+    .premium-table { min-width: 760px; }
+    .premium-table th { padding: .75rem .8rem; font-size: 12px; color: #334155; white-space: nowrap; }
+    .premium-table td { padding: .75rem .8rem; font-size: .8125rem; }
+    .premium-table td [style*="font-size"], .premium-table td small { font-size: 12px !important; }
+    .admin-badge { min-height: 28px; padding: .35rem .6rem; font-size: 12px !important; }
+    .admin-container .btn, .admin-container .btn-sm, .command-button, .quick-links a, .priority-item { min-height: 44px; }
+    .admin-container .btn-sm { min-width: 44px; padding: .55rem .75rem; }
+    .admin-container .page-link { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    .admin-unit-select { width: 100% !important; min-width: 150px; min-height: 44px; font-size: .875rem; }
+    .text-muted { color: #475569 !important; }
+    .metric-copy span, .metric-copy small, .health-stat span, .health-stat small,
+    .section-label, .insight-card p, .insight-card a, .funnel-row small,
+    .priority-copy span, .priority-value span, .quick-links small,
+    .empty-state span { font-size: 12px !important; line-height: 1.45; }
+    .health-ring span, .health-score p, .risk-summary, .metric-status,
+    .report-time, .command-eyebrow, .priority-avatar { font-size: 12px !important; }
+    .funnel-label { font-size: 12px !important; }
+    .risk-summary > div, .priority-copy strong, .card-heading > a,
+    .admin-container .text-muted, .admin-container .badge { font-size: 12px !important; }
+    .insight-card a, .card-heading > a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; padding: 8px 4px; }
+    .insight-card a { color: #1d4ed8 !important; }
+    .insight-card.danger a { color: #b91c1c !important; }
+    .insight-card.warning a { color: #a16207 !important; }
+    .insight-card.blue a { color: #0369a1 !important; }
+    .insight-card.green a { color: #047857 !important; }
+    .btn-outline-info { color: #0369a1 !important; border-color: #0369a1 !important; }
+    .admin-container [style*="font-size:0.6"], .admin-container [style*="font-size: 0.6"],
+    .admin-container [style*="font-size:0.7"], .admin-container [style*="font-size: 0.7"],
+    .admin-container [style*="font-size:0.8"], .admin-container [style*="font-size: 0.8"] { font-size: 12px !important; line-height: 1.4; }
+    .admin-container .text-danger { color: #991b1b !important; }
+    body footer a { display: inline-flex; align-items: center; min-height: 44px; }
+    .table-responsive:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+}

@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "dynamicValueAllowlist": [
+    "$.resultId",
+    "$.correlationId",
+    "$.traceId",
+    "$.timestamp",
+    "$.instance"
+  ],
+  "contracts": {
+    "v1.calculate.200": {
+      "mediaType": "application/json",
+      "required": {
+        "$.tuoiGio": "number",
+        "$.tuoiThaiTuan": "number",
+        "$.bilirubinMgDl": "number",
+        "$.bilirubinUmolL": "number",
+        "$.nguongChieuDen": "number",
+        "$.nguongThayCuuMau": "number",
+        "$.mucDoNguyHiemEnum": "number"
+      }
+    },
+    "v2.calculate.200": {
+      "mediaType": "application/json",
+      "required": {
+        "$.resultId": "string",
+        "$.guideline.code": "string",
+        "$.guideline.revision": "string",
+        "$.guideline.effectiveDate": "string",
+        "$.guideline.engineVersion": "string",
+        "$.guideline.datasetRevision": "string",
+        "$.patientContext.ageHours": "number",
+        "$.thresholds.phototherapyMgDl": "number",
+        "$.recommendation.level": "string",
+        "$.legacyResult": "object"
+      }
+    },
+    "v3.calculate.200": {
+      "mediaType": "application/json",
+      "required": {
+        "$.resultId": "string",
+        "$.correlationId": "string",
+        "$.references.messageId": "string",
+        "$.references.patientId": "string",
+        "$.provenance.guidelineCode": "string",
+        "$.provenance.guidelineRevision": "string",
+        "$.provenance.guidelineEffectiveDate": "string",
+        "$.provenance.engineVersion": "string",
+        "$.provenance.datasetRevision": "string",
+        "$.observation.ageHours": "number",
+        "$.thresholds.phototherapyMgDl": "number",
+        "$.recommendation.level": "string"
+      }
+    },
+    "problem.400": {
+      "mediaType": "application/problem+json",
+      "required": {
+        "$.type": "string",
+        "$.title": "string",
+        "$.status": "number",
+        "$.errorCode": "string",
+        "$.correlationId": "string",
+        "$.retryable": "boolean"
+      }
+    },
+    "problem.401": {
+      "mediaType": "application/problem+json",
+      "required": {
+        "$.type": "string",
+        "$.title": "string",
+        "$.status": "number",
+        "$.errorCode": "string",
+        "$.correlationId": "string",
+        "$.retryable": "boolean"
+      }
+    },
+    "problem.429": {
+      "mediaType": "application/problem+json",
+      "required": {
+        "$.type": "string",
+        "$.title": "string",
+        "$.status": "number",
+        "$.errorCode": "string",
+        "$.correlationId": "string",
+        "$.retryable": "boolean"
+      }
+    },
+    "problem.500": {
+      "mediaType": "application/problem+json",
+      "required": {
+        "$.title": "string",
+        "$.status": "number",
+        "$.detail": "string"
+      }
+    },
+    "problem.503": {
+      "mediaType": "application/problem+json",
+      "required": {
+        "$.type": "string",
+        "$.title": "string",
+        "$.status": "number",
+        "$.errorCode": "string",
+        "$.correlationId": "string",
+        "$.retryable": "boolean"
+      }
+    }
+  }
+}

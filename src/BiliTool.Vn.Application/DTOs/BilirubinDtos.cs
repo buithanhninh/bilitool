@@ -34,6 +34,7 @@ public class YeuCauTinhToanBilirubinDto
 
     /// <summary>Trạng thái chiếu đèn hiện tại (NICE §1.4.5)</summary>
     public TrangThaiChieuDen TrangThaiChieuDen { get; set; } = TrangThaiChieuDen.KhongChieuDen;
+    public HisIntegrationContextDto? IntegrationContext { get; set; }
 }
 
 public class YeuToNguyCoThanKinhDto

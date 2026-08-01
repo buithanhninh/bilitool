@@ -1,27 +1,33 @@
 using BiliTool.Vn.Application;
 using BiliTool.Vn.Application.Commands;
 using BiliTool.Vn.Application.DTOs;
+using BiliTool.Vn.Application.Services;
+using BiliTool.Vn.Domain.Clinical.Bilirubin;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Http.Timeouts;
 
 namespace BiliTool.Vn.Web.Controllers.V2;
 
 [ApiController]
 [Route("api/v2/clinical/bilirubin")]
 [EnableRateLimiting("ApiPolicy")]
-[TypeFilter(typeof(Filters.ApiKeyAuthFilter))]
+[TypeFilter(typeof(Filters.ApiKeyAuthFilter), Order = -100)]
 public class ClinicalBilirubinController : ControllerBase
 {
-    private const string GuidelineCode = "AAP2022+NICECG98";
-    private const string EngineMode = "BaselineMayTinhBilirubin";
     private readonly IMediator _mediator;
     private readonly ILogger<ClinicalBilirubinController> _logger;
+    private readonly IClinicalRequestContext _requestContext;
 
-    public ClinicalBilirubinController(IMediator mediator, ILogger<ClinicalBilirubinController> logger)
+    public ClinicalBilirubinController(
+        IMediator mediator,
+        ILogger<ClinicalBilirubinController> logger,
+        IClinicalRequestContext requestContext)
     {
         _mediator = mediator;
         _logger = logger;
+        _requestContext = requestContext;
     }
 
     [HttpGet("guidelines/active")]
@@ -29,26 +35,31 @@ public class ClinicalBilirubinController : ControllerBase
     public IActionResult GetActiveGuidelines()
     {
         return Ok(new ClinicalGuidelineMetadataResponse(
-            EngineMode,
-            "shadow-metadata-only",
-            false,
+            BilirubinEngineMetadata.EngineMode,
+            BilirubinEngineMetadata.EngineVersion,
+            BilirubinEngineMetadata.DatasetMode,
+            BilirubinEngineMetadata.UsesExternalDatasetEngine,
             new[]
             {
-                new ClinicalGuidelineDto("AAP2022", "combined-threshold-source", EngineMode),
-                new ClinicalGuidelineDto("NICE_CG98", "combined-threshold-source", EngineMode)
+                new ClinicalGuidelineDto("AAP2022", BilirubinEngineMetadata.GuidelineRevision, BilirubinEngineMetadata.GuidelineEffectiveDate, "combined-threshold-source", BilirubinEngineMetadata.EngineMode, BilirubinEngineMetadata.EngineVersion, BilirubinEngineMetadata.DatasetRevision),
+                new ClinicalGuidelineDto("NICE_CG98", BilirubinEngineMetadata.GuidelineRevision, BilirubinEngineMetadata.GuidelineEffectiveDate, "combined-threshold-source", BilirubinEngineMetadata.EngineMode, BilirubinEngineMetadata.EngineVersion, BilirubinEngineMetadata.DatasetRevision)
             }));
     }
 
     [HttpPost("calculate")]
+    [TypeFilter(typeof(Filters.HisIdempotencyFilter), Order = -50)]
+    [RequestTimeout("HisApi")]
     [ProducesResponseType(typeof(ClinicalBilirubinV2Response), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Calculate([FromBody] YeuCauTinhToanBilirubinDto request)
+    public async Task<IActionResult> Calculate([FromBody] YeuCauTinhToanBilirubinDto request, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _mediator.Send(new TinhToanBilirubinCommand(request));
-            return Ok(ClinicalBilirubinV2Response.From(result));
+            var resultId = $"calc_{Guid.NewGuid():N}";
+            _requestContext.ResultId = resultId;
+            var result = await _mediator.Send(new TinhToanBilirubinCommand(request), cancellationToken);
+            return Ok(ClinicalBilirubinV2Response.From(resultId, result));
         }
         catch (LoiXacThucException ex)
         {
@@ -60,6 +71,10 @@ public class ClinicalBilirubinController : ControllerBase
                 Detail = "Dữ liệu đầu vào không hợp lệ hoặc thiếu bắt buộc.",
                 Extensions = { { "errors", ex.LoiXacThuc } }
             });
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -84,11 +99,18 @@ public class ClinicalBilirubinController : ControllerBase
         ClinicalRecommendationDto Recommendation,
         KetQuaTinhToanDto LegacyResult)
     {
-        public static ClinicalBilirubinV2Response From(KetQuaTinhToanDto result)
+        public static ClinicalBilirubinV2Response From(string resultId, KetQuaTinhToanDto result)
         {
             return new ClinicalBilirubinV2Response(
-                ResultId: $"calc_{Guid.NewGuid():N}",
-                Guideline: new ClinicalGuidelineDto(GuidelineCode, result.PhacDoQuyetDinh.ToString(), EngineMode),
+                ResultId: resultId,
+                Guideline: new ClinicalGuidelineDto(
+                    BilirubinEngineMetadata.GuidelineCode,
+                    BilirubinEngineMetadata.GuidelineRevision,
+                    BilirubinEngineMetadata.GuidelineEffectiveDate,
+                    result.PhacDoQuyetDinh.ToString(),
+                    BilirubinEngineMetadata.EngineMode,
+                    BilirubinEngineMetadata.EngineVersion,
+                    BilirubinEngineMetadata.DatasetRevision),
                 PatientContext: new ClinicalPatientContextDto(result.TuoiGio, result.TuoiThaiTuan, result.CoNguyCoThanKinh),
                 Thresholds: new ClinicalThresholdDto(
                     result.NguongChieuDen,
@@ -107,9 +129,17 @@ public class ClinicalBilirubinController : ControllerBase
         }
     }
 
-    public record ClinicalGuidelineDto(string Code, string DecisionProtocol, string EngineMode);
+    public record ClinicalGuidelineDto(
+        string Code,
+        string Revision,
+        string EffectiveDate,
+        string DecisionProtocol,
+        string EngineMode,
+        string EngineVersion,
+        string DatasetRevision);
     public record ClinicalGuidelineMetadataResponse(
         string ActiveEngine,
+        string EngineVersion,
         string DatasetMode,
         bool UseDatasetEngine,
         IReadOnlyList<ClinicalGuidelineDto> Guidelines);

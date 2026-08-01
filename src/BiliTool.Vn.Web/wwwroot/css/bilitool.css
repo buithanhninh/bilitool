@@ -963,6 +963,8 @@
 }
 
 .btn-to-calc {
+  display: inline-flex;
+  align-items: center;
   background: var(--primary);
   color: white;
   padding: 10px 24px;
@@ -2390,6 +2392,12 @@
   cursor: pointer; font-size: 0.85rem;
   display: flex; align-items: center; justify-content: center;
   transition: var(--transition-fast);
+}
+
+@media (max-width: 640px) {
+  .btn-to-calc {
+    min-height: 44px;
+  }
 }
 .btn-them-bn:hover { background: var(--primary-dark); transform: scale(1.1); }
 .bn-loading { padding: 24px; text-align: center; color: var(--gray-500); }

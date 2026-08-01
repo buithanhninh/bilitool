@@ -8,7 +8,8 @@ internal static class ClinicalAuditPayloadRedactor
     private static readonly HashSet<string> SensitiveProperties = new(StringComparer.OrdinalIgnoreCase)
     {
         "name", "hoten", "hotenbenhnhan", "email", "phone", "sodienthoai",
-        "address", "diachi", "patientid", "mabenhnhan", "googleid", "ip", "diachiip"
+        "address", "diachi", "patientid", "patientidentifier", "mabenhnhan", "googleid", "ip", "diachiip",
+        "encounteridentifier", "orderidentifier", "specimenidentifier", "observationidentifier"
     };
 
     public static string Redact(object value, JsonSerializerOptions options)

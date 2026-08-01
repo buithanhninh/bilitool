@@ -20,12 +20,9 @@
     {
         <title>Đăng nhập — BiliTool.Vn</title>
     }
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Be Vietnam Pro', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-card { background: white; border-radius: 20px; padding: 48px 40px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.12); }
         .logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 28px; }
         .logo i { font-size: 2rem; color: #1a6b9a; }
@@ -38,7 +35,7 @@
         .form-control { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; color: #1f2937; transition: border-color 0.2s; font-family: inherit; }
         .form-control:focus { outline: none; border-color: #1a6b9a; box-shadow: 0 0 0 3px rgba(26, 107, 154, 0.1); }
         
-        .btn-primary { width: 100%; padding: 12px; background: #1a6b9a; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        .btn-primary { width: 100%; min-height: 48px; padding: 12px; background: #1a6b9a; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
         .btn-primary:hover { background: #15557a; }
         
         .error-message { background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 20px; border: 1px solid #fca5a5; }
@@ -59,11 +56,11 @@
         .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
         
         .links-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-top: -10px; margin-bottom: 20px; }
-        .links-row a { color: #1a6b9a; text-decoration: none; font-weight: 500; }
+        .links-row a { min-height: 44px; display: inline-flex; align-items: center; color: #1a6b9a; text-decoration: none; font-weight: 500; }
         .links-row a:hover { text-decoration: underline; }
 
         .register-text { margin-top: 24px; font-size: 0.9rem; color: #6b7280; }
-        .register-text a { color: #1a6b9a; text-decoration: none; font-weight: 600; }
+        .register-text a { min-height: 44px; display: inline-flex; align-items: center; color: #1a6b9a; text-decoration: none; font-weight: 600; }
         .register-text a:hover { text-decoration: underline; }
 
         /* Config warning */
@@ -71,14 +68,14 @@
         .config-warning h3 { color: #92400e; font-size: 0.95rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .config-warning p { color: #78350f; font-size: 0.83rem; line-height: 1.6; }
         
-        .btn-anon { display: inline-flex; align-items: center; gap: 8px; color: #6b7280; font-size: 0.9rem; text-decoration: none; padding: 10px 20px; border-radius: 8px; border: 1.5px solid #e5e7eb; width: 100%; justify-content: center; transition: all 0.2s; margin-top: 20px;}
+        .btn-anon { min-height: 48px; display: inline-flex; align-items: center; gap: 8px; color: #6b7280; font-size: 0.9rem; text-decoration: none; padding: 10px 20px; border-radius: 8px; border: 1.5px solid #e5e7eb; width: 100%; justify-content: center; transition: all 0.2s; margin-top: 20px;}
         .btn-anon:hover { background: #f9fafb; color: #374151; }
     </style>
 </head>
 <body>
     <div class="login-card">
         <div class="logo">
-            <i class="fas fa-baby"></i>
+            <span aria-hidden="true">◉</span>
             <span>BiliTool.Vn</span>
         </div>
 
@@ -101,7 +98,7 @@
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
             <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i> @Model.ErrorMessage
+                <span aria-hidden="true">!</span> @Model.ErrorMessage
             </div>
         }
 
@@ -187,17 +184,17 @@
                 <div class="config-warning">
                     @if (lang == "en")
                     {
-                        <h3><i class="fas fa-exclamation-triangle"></i> Google OAuth not configured</h3>
+                        <h3><span aria-hidden="true">!</span> Google OAuth not configured</h3>
                         <p>This feature is disabled because the system ClientId has not been set.</p>
                     }
                     else if (lang == "fr")
                     {
-                        <h3><i class="fas fa-exclamation-triangle"></i> Google OAuth non configuré</h3>
+                        <h3><span aria-hidden="true">!</span> Google OAuth non configuré</h3>
                         <p>Cette fonctionnalité est désactivée car le ClientId du système n'est pas configuré.</p>
                     }
                     else
                     {
-                        <h3><i class="fas fa-exclamation-triangle"></i> Chưa cấu hình Google OAuth</h3>
+                        <h3><span aria-hidden="true">!</span> Chưa cấu hình Google OAuth</h3>
                         <p>Tính năng này đang bị vô hiệu hóa vì hệ thống chưa thiết lập ClientId.</p>
                     }
                 </div>
@@ -245,15 +242,15 @@
         <a href="/" class="btn-anon" style="border:none; margin-top: 10px; background: none;">
             @if (lang == "en")
             {
-                <span><i class="fas fa-arrow-left"></i> Back to homepage</span>
+                <span><span aria-hidden="true">←</span> Back to homepage</span>
             }
             else if (lang == "fr")
             {
-                <span><i class="fas fa-arrow-left"></i> Retour à l'accueil</span>
+                <span><span aria-hidden="true">←</span> Retour à l'accueil</span>
             }
             else
             {
-                <span><i class="fas fa-arrow-left"></i> Về trang chủ</span>
+                <span><span aria-hidden="true">←</span> Về trang chủ</span>
             }
         </a>
     </div>

@@ -17,6 +17,25 @@ public class BiliToolDbContext : DbContext
     public DbSet<XetNghiemBilirubin> XetNghiemBilirubin => Set<XetNghiemBilirubin>();
     public DbSet<ClinicalAuditLog> ClinicalAuditLogs => Set<ClinicalAuditLog>();
     public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
+    public DbSet<HisTenant> HisTenants => Set<HisTenant>();
+    public DbSet<HisApiClient> HisApiClients => Set<HisApiClient>();
+    public DbSet<HisIdempotencyRecord> HisIdempotencyRecords => Set<HisIdempotencyRecord>();
+    public DbSet<HisWebhookSubscription> HisWebhookSubscriptions => Set<HisWebhookSubscription>();
+    public DbSet<HisOutboxEvent> HisOutboxEvents => Set<HisOutboxEvent>();
+    public DbSet<ClinicalAuditLegalHold> ClinicalAuditLegalHolds => Set<ClinicalAuditLegalHold>();
+    public DbSet<ClinicalAuditPurgeReport> ClinicalAuditPurgeReports => Set<ClinicalAuditPurgeReport>();
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        RejectAuditMutation();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        RejectAuditMutation();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -161,14 +180,18 @@ public class BiliToolDbContext : DbContext
             e.Property(a => a.CalculatedAt).HasColumnName("calculated_at").IsRequired();
             e.Property(a => a.GuidelineCode).HasColumnName("guideline_code").HasMaxLength(100).IsRequired();
             e.Property(a => a.EngineMode).HasColumnName("engine_mode").HasMaxLength(100).IsRequired();
+            e.Property(a => a.EngineVersion).HasColumnName("engine_version").HasMaxLength(100).IsRequired();
+            e.Property(a => a.TenantId).HasColumnName("tenant_id").HasMaxLength(64);
             e.Property(a => a.UserId).HasColumnName("user_id").HasMaxLength(256);
             e.Property(a => a.ApiClientId).HasColumnName("api_client_id").HasMaxLength(256);
             e.Property(a => a.CorrelationId).HasColumnName("correlation_id").HasMaxLength(128);
+            e.Property(a => a.ResultId).HasColumnName("result_id").HasMaxLength(64);
             e.Property(a => a.RequestJson).HasColumnName("request_json").HasColumnType("jsonb").IsRequired();
             e.Property(a => a.ResponseJson).HasColumnName("response_json").HasColumnType("jsonb").IsRequired();
             e.Property(a => a.TraceJson).HasColumnName("trace_json").HasColumnType("jsonb").IsRequired();
             e.HasIndex(a => a.CalculatedAt).HasDatabaseName("ix_clinical_audit_logs_calculated_at");
             e.HasIndex(a => a.GuidelineCode).HasDatabaseName("ix_clinical_audit_logs_guideline_code");
+            e.HasIndex(a => new { a.TenantId, a.ResultId }).HasDatabaseName("ix_clinical_audit_logs_tenant_result");
         });
 
         modelBuilder.Entity<AdminAuditLog>(e =>
@@ -190,5 +213,155 @@ public class BiliToolDbContext : DbContext
             e.HasIndex(a => new { a.ActorId, a.OccurredAt }).HasDatabaseName("ix_admin_audit_logs_actor_occurred_at");
             e.HasIndex(a => new { a.Action, a.OccurredAt }).HasDatabaseName("ix_admin_audit_logs_action_occurred_at");
         });
+
+        modelBuilder.Entity<ClinicalAuditLegalHold>(e =>
+        {
+            e.ToTable("clinical_audit_legal_holds");
+            e.HasKey(item => item.Id);
+            e.Property(item => item.Id).HasColumnName("id");
+            e.Property(item => item.TenantId).HasColumnName("tenant_id").HasMaxLength(64).IsRequired();
+            e.Property(item => item.ResultId).HasColumnName("result_id").HasMaxLength(64);
+            e.Property(item => item.Reason).HasColumnName("reason").HasMaxLength(1000).IsRequired();
+            e.Property(item => item.PlacedBy).HasColumnName("placed_by").HasMaxLength(256).IsRequired();
+            e.Property(item => item.PlacedAt).HasColumnName("placed_at").IsRequired();
+            e.Property(item => item.ReleasedBy).HasColumnName("released_by").HasMaxLength(256);
+            e.Property(item => item.ReleasedAt).HasColumnName("released_at");
+            e.HasIndex(item => new { item.TenantId, item.ResultId, item.ReleasedAt })
+                .HasDatabaseName("ix_clinical_audit_legal_holds_scope");
+        });
+
+        modelBuilder.Entity<ClinicalAuditPurgeReport>(e =>
+        {
+            e.ToTable("clinical_audit_purge_reports");
+            e.HasKey(item => item.Id);
+            e.Property(item => item.Id).HasColumnName("id");
+            e.Property(item => item.ExecutedAt).HasColumnName("executed_at").IsRequired();
+            e.Property(item => item.CutoffAt).HasColumnName("cutoff_at").IsRequired();
+            e.Property(item => item.DryRun).HasColumnName("dry_run").IsRequired();
+            e.Property(item => item.EligibleCount).HasColumnName("eligible_count").IsRequired();
+            e.Property(item => item.ProtectedByLegalHoldCount).HasColumnName("protected_by_legal_hold_count").IsRequired();
+            e.Property(item => item.DeletedCount).HasColumnName("deleted_count").IsRequired();
+            e.HasIndex(item => item.ExecutedAt).HasDatabaseName("ix_clinical_audit_purge_reports_executed_at");
+        });
+
+        modelBuilder.Entity<HisTenant>(e =>
+        {
+            e.ToTable("his_tenants");
+            e.HasKey(tenant => tenant.Id);
+            e.Property(tenant => tenant.Id).HasColumnName("id");
+            e.Property(tenant => tenant.Code).HasColumnName("code").HasMaxLength(64).IsRequired();
+            e.Property(tenant => tenant.Name).HasColumnName("name").HasMaxLength(256).IsRequired();
+            e.Property(tenant => tenant.IsActive).HasColumnName("is_active").IsRequired();
+            e.Property(tenant => tenant.CreatedAt).HasColumnName("created_at").IsRequired();
+            e.HasIndex(tenant => tenant.Code).IsUnique().HasDatabaseName("ux_his_tenants_code");
+        });
+
+        modelBuilder.Entity<HisApiClient>(e =>
+        {
+            e.ToTable("his_api_clients");
+            e.HasKey(client => client.Id);
+            e.Property(client => client.Id).HasColumnName("id");
+            e.Property(client => client.TenantId).HasColumnName("tenant_id").IsRequired();
+            e.Property(client => client.ClientCode).HasColumnName("client_code").HasMaxLength(64).IsRequired();
+            e.Property(client => client.DisplayName).HasColumnName("display_name").HasMaxLength(256).IsRequired();
+            e.Property(client => client.KeyFingerprint).HasColumnName("key_fingerprint").HasMaxLength(16).IsRequired();
+            e.Property(client => client.ApiKeyHash).HasColumnName("api_key_hash").IsRequired();
+            e.Property(client => client.PreviousKeyFingerprint).HasColumnName("previous_key_fingerprint").HasMaxLength(16);
+            e.Property(client => client.PreviousApiKeyHash).HasColumnName("previous_api_key_hash");
+            e.Property(client => client.PreviousKeyExpiresAt).HasColumnName("previous_key_expires_at");
+            e.Property(client => client.RequireMutualTls).HasColumnName("require_mutual_tls").IsRequired();
+            e.Property(client => client.CertificateFingerprint).HasColumnName("certificate_fingerprint").HasMaxLength(64);
+            e.Property(client => client.PreviousCertificateFingerprint).HasColumnName("previous_certificate_fingerprint").HasMaxLength(64);
+            e.Property(client => client.PreviousCertificateExpiresAt).HasColumnName("previous_certificate_expires_at");
+            e.Property(client => client.Scopes).HasColumnName("scopes").HasMaxLength(512).IsRequired();
+            e.Property(client => client.IsActive).HasColumnName("is_active").IsRequired();
+            e.Property(client => client.ExpiresAt).HasColumnName("expires_at");
+            e.Property(client => client.CreatedAt).HasColumnName("created_at").IsRequired();
+            e.Property(client => client.LastUsedAt).HasColumnName("last_used_at");
+            e.HasIndex(client => client.KeyFingerprint).HasDatabaseName("ix_his_api_clients_key_fingerprint");
+            e.HasIndex(client => client.PreviousKeyFingerprint).HasDatabaseName("ix_his_api_clients_previous_key_fingerprint");
+            e.HasIndex(client => new { client.TenantId, client.ClientCode })
+                .IsUnique().HasDatabaseName("ux_his_api_clients_tenant_client_code");
+            e.HasOne(client => client.Tenant)
+                .WithMany(tenant => tenant.ApiClients)
+                .HasForeignKey(client => client.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<HisIdempotencyRecord>(e =>
+        {
+            e.ToTable("his_idempotency_records");
+            e.HasKey(record => record.Id);
+            e.Property(record => record.Id).HasColumnName("id");
+            e.Property(record => record.TenantId).HasColumnName("tenant_id").HasMaxLength(64).IsRequired();
+            e.Property(record => record.ApiClientId).HasColumnName("api_client_id").HasMaxLength(64).IsRequired();
+            e.Property(record => record.IdempotencyKey).HasColumnName("idempotency_key").HasMaxLength(128).IsRequired();
+            e.Property(record => record.RequestHash).HasColumnName("request_hash").HasMaxLength(64).IsRequired();
+            e.Property(record => record.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
+            e.Property(record => record.ResultId).HasColumnName("result_id").HasMaxLength(64);
+            e.Property(record => record.ResponseStatusCode).HasColumnName("response_status_code");
+            e.Property(record => record.ResponseJson).HasColumnName("response_json").HasColumnType("jsonb");
+            e.Property(record => record.ResponseContentType).HasColumnName("response_content_type").HasMaxLength(128);
+            e.Property(record => record.CreatedAt).HasColumnName("created_at").IsRequired();
+            e.Property(record => record.CompletedAt).HasColumnName("completed_at");
+            e.Property(record => record.ExpiresAt).HasColumnName("expires_at").IsRequired();
+            e.HasIndex(record => new { record.TenantId, record.ApiClientId, record.IdempotencyKey })
+                .IsUnique().HasDatabaseName("ux_his_idempotency_client_key");
+            e.HasIndex(record => record.ExpiresAt).HasDatabaseName("ix_his_idempotency_expires_at");
+        });
+
+        modelBuilder.Entity<HisWebhookSubscription>(e =>
+        {
+            e.ToTable("his_webhook_subscriptions");
+            e.HasKey(item => item.Id);
+            e.Property(item => item.Id).HasColumnName("id");
+            e.Property(item => item.TenantId).HasColumnName("tenant_id").HasMaxLength(64).IsRequired();
+            e.Property(item => item.ApiClientId).HasColumnName("api_client_id").HasMaxLength(64).IsRequired();
+            e.Property(item => item.EndpointUrl).HasColumnName("endpoint_url").HasMaxLength(2048).IsRequired();
+            e.Property(item => item.SecretProtected).HasColumnName("secret_protected").IsRequired();
+            e.Property(item => item.EventTypes).HasColumnName("event_types").HasMaxLength(512).IsRequired();
+            e.Property(item => item.IsActive).HasColumnName("is_active").IsRequired();
+            e.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
+            e.HasIndex(item => new { item.TenantId, item.ApiClientId, item.EndpointUrl })
+                .IsUnique().HasDatabaseName("ux_his_webhook_subscription_endpoint");
+        });
+
+        modelBuilder.Entity<HisOutboxEvent>(e =>
+        {
+            e.ToTable("his_outbox_events");
+            e.HasKey(item => item.Id);
+            e.Property(item => item.Id).HasColumnName("id");
+            e.Property(item => item.WebhookSubscriptionId).HasColumnName("webhook_subscription_id").IsRequired();
+            e.Property(item => item.TenantId).HasColumnName("tenant_id").HasMaxLength(64).IsRequired();
+            e.Property(item => item.ApiClientId).HasColumnName("api_client_id").HasMaxLength(64).IsRequired();
+            e.Property(item => item.EventType).HasColumnName("event_type").HasMaxLength(128).IsRequired();
+            e.Property(item => item.ResultId).HasColumnName("result_id").HasMaxLength(64).IsRequired();
+            e.Property(item => item.CorrelationId).HasColumnName("correlation_id").HasMaxLength(128);
+            e.Property(item => item.PayloadJson).HasColumnName("payload_json").HasColumnType("jsonb").IsRequired();
+            e.Property(item => item.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(32).IsRequired();
+            e.Property(item => item.AttemptCount).HasColumnName("attempt_count").IsRequired();
+            e.Property(item => item.NextAttemptAt).HasColumnName("next_attempt_at").IsRequired();
+            e.Property(item => item.CreatedAt).HasColumnName("created_at").IsRequired();
+            e.Property(item => item.DeliveredAt).HasColumnName("delivered_at");
+            e.Property(item => item.LastError).HasColumnName("last_error").HasMaxLength(2000);
+            e.Property(item => item.LockId).HasColumnName("lock_id").HasMaxLength(64);
+            e.Property(item => item.LockedUntil).HasColumnName("locked_until");
+            e.HasIndex(item => new { item.Status, item.NextAttemptAt }).HasDatabaseName("ix_his_outbox_delivery_queue");
+            e.HasIndex(item => item.ResultId).HasDatabaseName("ix_his_outbox_result_id");
+            e.HasOne(item => item.WebhookSubscription)
+                .WithMany(item => item.OutboxEvents)
+                .HasForeignKey(item => item.WebhookSubscriptionId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+    }
+
+    private void RejectAuditMutation()
+    {
+        var mutation = ChangeTracker.Entries()
+            .FirstOrDefault(entry =>
+                entry.Entity is ClinicalAuditLog or AdminAuditLog or ClinicalAuditPurgeReport &&
+                entry.State is EntityState.Modified or EntityState.Deleted);
+        if (mutation is not null)
+            throw new InvalidOperationException($"Audit entity {mutation.Metadata.ClrType.Name} là immutable.");
     }
 }

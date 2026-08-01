@@ -12,6 +12,24 @@ namespace BiliTool.Vn.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ho_so_nguoi_dung",
+                columns: table => new
+                {
+                    google_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    ho_ten = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ngay_sinh = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    so_dien_thoai = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    don_vi_cong_tac = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    chuc_danh = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    chuyen_khoa = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    ngay_cap_nhat = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("ho_so_nguoi_dung_pkey", x => x.google_id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ho_so_benh_nhan",
                 columns: table => new
                 {
@@ -73,6 +91,9 @@ namespace BiliTool.Vn.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ho_so_benh_nhan");
+
+            migrationBuilder.DropTable(
+                name: "ho_so_nguoi_dung");
         }
     }
 }

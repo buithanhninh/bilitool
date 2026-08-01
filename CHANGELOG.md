@@ -1,5 +1,42 @@
 # BiliTool.Vn - Changelog
 
+## [1.4.0] - 2026-08-01
+
+### Added
+- Phát hành nền tảng tích hợp HIS/EMR production với REST API v3, FHIR R4, HL7 v2.5.1 và webhook outbox.
+- Bổ sung tenant/client identity, scoped API credentials, dual-key rotation, optional mTLS binding và per-client rate limiting.
+- Bổ sung idempotency PostgreSQL xuyên REST/FHIR/HL7, correlation, provenance, immutable clinical audit, legal hold và retention governance.
+- Bổ sung sandbox Docker, Postman collection, generated OpenAPI TypeScript client, conformance runner và tài liệu onboarding.
+
+### Security
+- Thêm strict request limits, stable problem responses, trusted-proxy policy, SSRF protection, HMAC webhook signatures và secret protection.
+- Thêm OWASP ZAP API DAST; release evidence đạt 0 High finding và 0 HTTP server error.
+
+### Reliability
+- Thêm SLO metrics, readiness dependency checks, alert simulation, timeout, bulkhead, circuit breaker, load/soak profiles và PostgreSQL DR/PITR drill.
+- Production rehearsal đạt conformance, generated-client runtime, load smoke, emergency kill switch, rollback và DB continuity.
+
+### Release
+- Release build đạt 0 warning, 0 error; 115/115 tests PASS; dependency vulnerability scan không có finding.
+- Phát hành SBOM CycloneDX, release manifest, SHA-256 checksums và reproducible acceptance evidence bundle.
+- Release owner chấp nhận các external validation gates chưa thực hiện dưới dạng waiver có ghi nhận; không xem waiver là bằng chứng clinical review, hospital pilot hoặc independent pentest.
+
+## [1.3.30] - 2026-07-28
+
+### Fixed
+- Rà soát responsive đầy đủ 29 tuyến trên mobile 320, 360, 390 và 430 px.
+- Chuẩn hóa font, touch target, bố cục và tương phản cho toàn bộ dashboard quản trị.
+- Bổ sung focus bàn phím cho bảng cuộn ngang và nhãn truy cập cho bộ chọn đơn vị bilirubin.
+- Tối ưu trang đăng ký, quên mật khẩu, đặt lại mật khẩu và xác thực OTP trên mobile.
+- Sửa touch target footer, trang không tìm thấy và hành động quản trị.
+
+## [1.3.29] - 2026-07-28
+
+### Improved
+- Refined mobile spacing, typography, footer readability, and 44px minimum touch targets across public pages and authentication.
+- Fixed the mobile bilirubin chart viewport so horizontal scrolling starts at the Y axis instead of clipping its labels.
+- Tightened calculator padding for 320-360px screens while preserving readable cards and controls.
+
 ## [1.3.28] - 2026-07-24
 
 ### Fixed
@@ -311,6 +348,19 @@
 - NuGet vulnerability scan: no vulnerable packages.
 
 Tất cả các thay đổi đáng chú ý của dự án sẽ được ghi nhận tại tệp này.
+
+## [Unreleased - HIS/EMR Production Readiness] - 2026-08-01
+
+### Fixed
+- Trả đúng `413 request_too_large` trước model binding cho REST/FHIR/HL7 oversized payload.
+- Lưu idempotency response dưới dạng opaque JSON-encoded payload và media type, tránh PostgreSQL `22P02` khi lưu raw HL7 ACK và replay đúng `application/hl7-v2`.
+
+### Verified
+- 115/115 automated tests PASS; PostgreSQL HL7 opaque replay, FHIR replay media type và malformed FHIR non-object có regression tests.
+- OWASP ZAP 2.17.0 active API DAST đạt 0 High và 0 server-error finding; CSP/SRI login findings đã xử lý.
+- Clean sandbox REST/FHIR/HL7 conformance và generated OpenAPI TypeScript client runtime PASS.
+- Production rehearsal đạt kill switch `503`, rollback `200`, load smoke 0% lỗi và DB continuity.
+- PostgreSQL restore/PITR/migration rehearsal đạt RTO 3 giây, RPO gap 0 giây.
 
 ## [v1.2.0 - Dual-Protocol Clinical Engine] - 2026-05-03
 

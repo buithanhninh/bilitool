@@ -1,0 +1,18 @@
+{
+  "resourceType": "ImplementationGuide",
+  "id": "vn.bilitool.fhir.r4",
+  "url": "https://bilitool.vn/fhir/ImplementationGuide/vn.bilitool.fhir.r4",
+  "version": "1.0.0",
+  "name": "BiliToolVnFhirR4",
+  "status": "active",
+  "packageId": "vn.bilitool.fhir.r4",
+  "fhirVersion": ["4.0.1"],
+  "definition": {
+    "resource": [
+      { "reference": { "reference": "StructureDefinition/bilitool-bilirubin-bundle" } },
+      { "reference": { "reference": "StructureDefinition/age-hours" } },
+      { "reference": { "reference": "StructureDefinition/gestational-age-weeks" } },
+      { "reference": { "reference": "StructureDefinition/phototherapy-status" } }
+    ]
+  }
+}

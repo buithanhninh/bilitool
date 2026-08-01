@@ -15,10 +15,18 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="6.12.2" />
     <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.28" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.11" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\contracts\his-emr\contract-baseline.json" Link="contracts\his-emr\contract-baseline.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BiliTool.Vn.Domain\BiliTool.Vn.Domain.csproj" />
     <ProjectReference Include="..\..\src\BiliTool.Vn.Application\BiliTool.Vn.Application.csproj" />
+    <ProjectReference Include="..\..\src\BiliTool.Vn.Web\BiliTool.Vn.Web.csproj" />
   </ItemGroup>
 </Project>
