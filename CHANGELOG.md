@@ -1,5 +1,12 @@
 # BiliTool.Vn - Changelog
 
+## [1.4.1] - 2026-08-01
+
+### Fixed
+- Khôi phục `scripts/release/` vào source control sau khi generic `Release/` ignore pattern vô tình loại thư mục automation.
+- Sửa workflow production deployment để GitHub Actions parse hợp lệ và skip có kiểm soát khi SSH secrets chưa được cấu hình.
+- Giữ nguyên toàn bộ runtime HIS/EMR của `1.4.0`; release-owner waivers và acceptance decision tiếp tục áp dụng cho patch này.
+
 ## [1.4.0] - 2026-08-01
 
 ### Added
