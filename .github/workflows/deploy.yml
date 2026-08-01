@@ -62,20 +62,41 @@ jobs:
 
   accessibility:
     needs: deploy
-    if: ${{ secrets.ADMIN_USERNAME != '' && secrets.ADMIN_PASSWORD != '' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Check accessibility test credentials
+        id: credentials
+        env:
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          if [[ -n "$ADMIN_USERNAME" && -n "$ADMIN_PASSWORD" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Admin accessibility smoke skipped because credentials are not configured."
+          fi
+
       - name: Checkout code
+        if: steps.credentials.outputs.available == 'true'
         uses: actions/checkout@v4
+
       - name: Setup Node
+        if: steps.credentials.outputs.available == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Install browser test dependency
+        if: steps.credentials.outputs.available == 'true'
         run: npm install --no-save playwright@1.61.1
+
       - name: Install Chromium
+        if: steps.credentials.outputs.available == 'true'
         run: npx playwright install --with-deps chromium
+
       - name: Run admin accessibility smoke test
+        if: steps.credentials.outputs.available == 'true'
         env:
           BASE_URL: https://bilitool.vn
           ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
