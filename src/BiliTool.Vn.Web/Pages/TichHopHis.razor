@@ -2,364 +2,274 @@
 @using System.Globalization
 
 @{
-    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLowerInvariant();
+    var pageTitle = L(
+        "Tích hợp HIS / EMR Production — REST v3, FHIR R4, HL7 v2.5.1 | BiliTool.Vn",
+        "Production HIS / EMR Integration — REST v3, FHIR R4, HL7 v2.5.1 | BiliTool.Vn",
+        "Intégration HIS / EMR Production — REST v3, FHIR R4, HL7 v2.5.1 | BiliTool.Vn");
+    var pageDescription = L(
+        "Tài liệu tích hợp HIS/EMR production của BiliTool.Vn: REST API v3, FHIR R4, HL7 v2.5.1, Deep Link, webhook, tenant credential, idempotency, mTLS, lỗi chuẩn và sandbox.",
+        "Production HIS/EMR integration guide for BiliTool.Vn: REST API v3, FHIR R4, HL7 v2.5.1, Deep Link, webhooks, tenant credentials, idempotency, mTLS, standard errors, and sandbox onboarding.",
+        "Guide d’intégration HIS/EMR production de BiliTool.Vn : REST API v3, FHIR R4, HL7 v2.5.1, lien profond, webhooks, identifiants tenant, idempotence, mTLS, erreurs standard et sandbox.");
 }
 
-@if (lang == "en")
-{
-    <PageTitle>HIS / EMR Integration — BiliTool.Vn API & Deep Link</PageTitle>
-    <HeadContent>
-        <meta name="description" content="Technical integration guide for connecting BiliTool.Vn to HIS/EMR systems: Deep Link, REST API, API key, input parameters, enums, response fields, and error handling." />
-        <meta name="keywords" content="BiliTool.Vn HIS EMR API, electronic medical record integration, bilirubin deep link, neonatal bilirubin API" />
-        <SeoLanguageLinks Path="/tich-hop-his" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Integrate BiliTool.Vn with HIS / EMR" />
-        <meta property="og:description" content="Deep Link and REST API integration for neonatal bilirubin threshold calculation in hospital software." />
-        <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-    </HeadContent>
-
-    <div class="his-doc-shell">
-        <section class="his-hero-panel">
-            <div class="his-kicker"><i class="fas fa-hospital-alt"></i> HIS / EMR Integration</div>
-            <h1>HIS / EMR system integration</h1>
-            <p>BiliTool.Vn supports two integration modes: open the calculator UI through a Deep Link for clinician review, or call a secure REST API with <code>X-API-Key</code> so the HIS receives structured JSON results.</p>
-            <div class="his-status-grid" aria-label="Integration overview">
-                <div><strong>Integration modes</strong><span>Deep Link and REST API</span></div>
-                <div><strong>Secured API</strong><span><code>X-API-Key</code> + rate limit</span></div>
-                <div><strong>Scope</strong><span>Infants ≥35 weeks, age 1–336 hours</span></div>
-            </div>
-        </section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Method 1</span><h2>Deep Link to open the calculator UI</h2></div>
-            <p>Best when the HIS opens BiliTool.Vn in a new tab or window, pre-fills basic data, and lets the clinician review before calculating. Deep Link does not require an API key because it does not call the JSON endpoint.</p>
-            <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
-            <div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Parameter</th><th>Required</th><th>Valid format</th><th>Notes</th></tr></thead><tbody>
-                <tr><td><code>ngaysinh</code></td><td>Yes for auto calculation</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, or <code>ddMMyyyy</code></td><td>Birth date.</td></tr>
-                <tr><td><code>giosinh</code></td><td>Recommended</td><td><code>HH:mm</code> or <code>HHmm</code></td><td>If omitted, the UI uses its default time.</td></tr>
-                <tr><td><code>ngaymau</code></td><td>Yes for auto calculation</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, or <code>ddMMyyyy</code></td><td>Bilirubin sample date.</td></tr>
-                <tr><td><code>giomau</code></td><td>Recommended</td><td><code>HH:mm</code> or <code>HHmm</code></td><td>If omitted, the UI uses its default time.</td></tr>
-                <tr><td><code>bili</code></td><td>Yes for auto calculation</td><td>Decimal number with dot, for example <code>12.5</code></td><td>Total bilirubin.</td></tr>
-                <tr><td><code>donvi</code></td><td>No</td><td><code>MgDl</code> or <code>UmolL</code></td><td>The UI default is <code>UmolL</code>.</td></tr>
-                <tr><td><code>tuoithai</code></td><td>Yes for auto calculation</td><td>Integer <code>35–45</code></td><td>Gestational age in completed weeks.</td></tr>
-                <tr><td><code>autocalc</code></td><td>No</td><td><code>true</code> or <code>false</code></td><td><code>true</code> runs calculation after page load.</td></tr>
-            </tbody></table></div>
-            <p class="his-note"><i class="fas fa-info-circle"></i> Deep Link currently does not pass risk factors, ETCOc, or phototherapy status. Clinicians must select those in the UI, or the HIS must call the REST API.</p>
-            <h3>JavaScript example inside an EMR</h3>
-            <pre class="his-code" tabindex="0"><code>// Open BiliTool.Vn from an EMR using Deep Link
-const url = new URL("https://bilitool.vn/may-tinh");
-url.searchParams.append("ngaysinh", "15/03/2026");
-url.searchParams.append("giosinh", "08:30");
-url.searchParams.append("ngaymau", "16/03/2026");
-url.searchParams.append("giomau", "10:00");
-url.searchParams.append("bili", "12.5");
-url.searchParams.append("donvi", "MgDl");
-url.searchParams.append("tuoithai", "38");
-url.searchParams.append("autocalc", "true");
-window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
-        </section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Method 2</span><h2>REST API for headless calculation</h2></div>
-            <p>Use this mode when the HIS needs JSON results for storage in the electronic record, display inside an internal screen, or automated workflow. The API requires <code>X-API-Key</code> and currently applies a 30 requests per minute rate limit window.</p>
-            <p class="his-note"><i class="fas fa-lock"></i> Production API keys are issued only to integration partners. An unavailable integration service returns 503; missing or invalid keys return 401.</p>
-            <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
-            <h3>Required header</h3><pre class="his-code" tabindex="0"><code>X-API-Key: {your_api_key}
-Content-Type: application/json</code></pre>
-            <h3>Main input fields</h3>
-            <div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>JSON field</th><th>Required</th><th>Type</th><th>Limits / meaning</th></tr></thead><tbody>
-                <tr><td><code>tuoiTheoGio</code></td><td>Yes if date/time omitted</td><td>number</td><td>Age at sampling, valid <code>1–336</code> hours.</td></tr>
-                <tr><td><code>ngaySinh</code></td><td>Yes if age omitted</td><td>ISO datetime</td><td>May include time, for example <code>2026-03-15T08:30:00+07:00</code>.</td></tr>
-                <tr><td><code>gioSinh</code></td><td>No</td><td><code>HH:mm:ss</code></td><td>If sent separately, system combines it with <code>ngaySinh</code>.</td></tr>
-                <tr><td><code>ngayLayMau</code></td><td>Yes if age omitted</td><td>ISO datetime</td><td>Must be after birth; computed age must be <code>1–336</code> hours.</td></tr>
-                <tr><td><code>gioLayMau</code></td><td>No</td><td><code>HH:mm:ss</code></td><td>If sent separately, system combines it with <code>ngayLayMau</code>.</td></tr>
-                <tr><td><code>tongBilirubin</code></td><td>Yes</td><td>number</td><td>Greater than 0; maximum 60 for mg/dL, 1026 for µmol/L.</td></tr>
-                <tr><td><code>donViDo</code></td><td>No</td><td>number enum</td><td><code>0 = MgDl</code>, <code>1 = UmolL</code>. Default is 1.</td></tr>
-                <tr><td><code>tuoiThaiTuan</code></td><td>Yes</td><td>integer</td><td>Valid <code>35–45</code> completed weeks.</td></tr>
-                <tr><td><code>yeuToNguyCo</code></td><td>No</td><td>object</td><td>If omitted, all risk factors default to false or null.</td></tr>
-                <tr><td><code>trangThaiChieuDen</code></td><td>No</td><td>number enum</td><td>0 no phototherapy, 1 ongoing, 2 intensive, 3 stopped.</td></tr>
-            </tbody></table></div>
-            <h3>Supported risk factor groups</h3>
-            <div class="his-risk-grid"><div><strong>AAP 2022 - neurotoxicity risk</strong><span>Isoimmune hemolysis or G6PD deficiency, sepsis or suspected sepsis, albumin &lt;3 g/dL, clinical instability, ETCOc if available.</span></div><div><strong>NICE CG98 - clinical and extended risk</strong><span>Sibling previously treated with phototherapy, exclusive breastfeeding intent, jaundice in first 24 hours, Rh/ABO hemolysis, acute bilirubin encephalopathy signs.</span></div></div>
-            <h3>JSON request example</h3>
-            <pre class="his-code" tabindex="0"><code>{
-  "ngaySinh": "2026-03-15T08:30:00+07:00",
-  "ngayLayMau": "2026-03-16T10:00:00+07:00",
-  "tongBilirubin": 12.5,
-  "donViDo": 0,
-  "tuoiThaiTuan": 38,
-  "yeuToNguyCo": {
-    "benhTanHuyetMienDichHoacThieuG6PD": false,
-    "nhiemKhuanHuyetHoacNghiNgo": false,
-    "albuminThapDuoi3gDl": false,
-    "tinhTrangLamSangKhongOnDinh": false,
-    "etCOcPpm": null,
-    "anhChiBiVangDaCanChieuDen": false,
-    "meBuMeHoanToan": false,
-    "vangDaTrong24hDau": false,
-    "tanHuyetRh": false,
-    "tanHuyetABO": false,
-    "dauHieuBenhNaoBilirubinCap": false
-  },
-  "trangThaiChieuDen": 0
-}</code></pre>
-            <h3>Important response fields</h3>
-            <div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Response field</th><th>Meaning</th></tr></thead><tbody>
-                <tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Patient context after system calculation and normalization.</td></tr>
-                <tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Bilirubin value converted in both units.</td></tr>
-                <tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>AAP 2022 thresholds in mg/dL.</td></tr>
-                <tr><td><code>nguongChieuDen_NICE_UmolL</code>, <code>nguongThayCuuMau_NICE_UmolL</code></td><td>NICE CG98 thresholds in µmol/L.</td></tr>
-                <tr><td><code>canChieuDenNgay</code>, <code>canChieuDenTichCuc</code>, <code>canXemXetThayCuuMau</code></td><td>Decision flags for HIS alerts.</td></tr>
-                <tr><td><code>gioDoLapTiepTheo</code>, <code>lichDoLapNICE</code></td><td>Suggested repeat-measurement timing when returned by the guideline engine.</td></tr>
-                <tr><td><code>phacDoQuyetDinh</code>, <code>chuThichThamChieu</code></td><td>Deciding guideline and source note.</td></tr>
-                <tr><td><code>chartData</code></td><td>Nomogram data for HIS-side chart rendering if needed.</td></tr>
-            </tbody></table></div>
-        </section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Advanced reference</span><h2>Clinical wrapper endpoint</h2></div><p>Endpoint <code>POST /api/v2/clinical/bilirubin/calculate</code> uses the same input as API v1, but wraps the result as <code>guideline</code>, <code>patientContext</code>, <code>thresholds</code>, <code>recommendation</code>, and <code>legacyResult</code>. This endpoint also requires <code>X-API-Key</code>.</p></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Operations</span><h2>Error codes the HIS should handle</h2></div><div class="his-error-grid"><div><strong>400</strong><span>Invalid data: missing age or sample date, age outside 1–336 hours, gestation outside 35–45 weeks, or bilirubin above limit.</span></div><div><strong>401</strong><span>Missing or invalid <code>X-API-Key</code>.</span></div><div><strong>429</strong><span>API rate limit exceeded.</span></div><div><strong>503</strong><span>The integration service is temporarily unavailable. Contact BiliTool.Vn support if the issue persists.</span></div><div><strong>500</strong><span>System error; response includes <code>traceId</code> for log correlation.</span></div></div></section>
-    </div>
-}
-else if (lang == "fr")
-{
-    <PageTitle>Intégration HIS / EMR — API et lien profond BiliTool.Vn</PageTitle>
-    <HeadContent>
-        <meta name="description" content="Guide technique pour intégrer BiliTool.Vn aux systèmes HIS/EMR : lien profond, API REST, clé API, paramètres d’entrée, énumérations, réponse et gestion des erreurs." />
-        <meta name="keywords" content="BiliTool.Vn HIS EMR API, intégration dossier médical électronique, lien profond bilirubine, API bilirubine néonatale" />
-        <SeoLanguageLinks Path="/tich-hop-his" />
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content="Intégrer BiliTool.Vn au HIS / EMR" />
-        <meta property="og:description" content="Lien profond et API REST pour intégrer le calcul des seuils de bilirubine néonatale dans les logiciels hospitaliers." />
-        <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
-        <meta property="og:site_name" content="BiliTool.Vn" />
-        <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-    </HeadContent>
-
-    <div class="his-doc-shell">
-        <section class="his-hero-panel"><div class="his-kicker"><i class="fas fa-hospital-alt"></i> Intégration HIS / EMR</div><h1>Intégration aux systèmes HIS / EMR</h1><p>BiliTool.Vn prend en charge deux modes : ouvrir l’interface du calculateur par lien profond pour revue médicale, ou appeler une API REST sécurisée avec <code>X-API-Key</code> afin que le HIS reçoive des résultats JSON structurés.</p><div class="his-status-grid" aria-label="Aperçu de l’intégration"><div><strong>Modes d’intégration</strong><span>Lien profond et API REST</span></div><div><strong>API sécurisée</strong><span><code>X-API-Key</code> + limite de débit</span></div><div><strong>Champ</strong><span>Nouveau-nés ≥35 semaines, âge 1–336 heures</span></div></div></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Méthode 1</span><h2>Lien profond vers l’interface du calculateur</h2></div><p>Approprié lorsque le HIS ouvre BiliTool.Vn dans un nouvel onglet ou une nouvelle fenêtre, préremplit les données de base et laisse le clinicien vérifier avant le calcul. Le lien profond ne nécessite pas de clé API car il n’appelle pas l’endpoint JSON.</p><div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div><div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Paramètre</th><th>Obligatoire</th><th>Format valide</th><th>Notes</th></tr></thead><tbody><tr><td><code>ngaysinh</code></td><td>Oui pour calcul automatique</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code> ou <code>ddMMyyyy</code></td><td>Date de naissance.</td></tr><tr><td><code>giosinh</code></td><td>Recommandé</td><td><code>HH:mm</code> ou <code>HHmm</code></td><td>Si absent, l’interface utilise l’heure par défaut.</td></tr><tr><td><code>ngaymau</code></td><td>Oui pour calcul automatique</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code> ou <code>ddMMyyyy</code></td><td>Date du prélèvement de bilirubine.</td></tr><tr><td><code>giomau</code></td><td>Recommandé</td><td><code>HH:mm</code> ou <code>HHmm</code></td><td>Si absent, l’interface utilise l’heure par défaut.</td></tr><tr><td><code>bili</code></td><td>Oui pour calcul automatique</td><td>Nombre décimal avec point, par exemple <code>12.5</code></td><td>Bilirubine totale.</td></tr><tr><td><code>donvi</code></td><td>Non</td><td><code>MgDl</code> ou <code>UmolL</code></td><td>Unité par défaut de l’interface : <code>UmolL</code>.</td></tr><tr><td><code>tuoithai</code></td><td>Oui pour calcul automatique</td><td>Entier <code>35–45</code></td><td>Âge gestationnel en semaines révolues.</td></tr><tr><td><code>autocalc</code></td><td>Non</td><td><code>true</code> ou <code>false</code></td><td><code>true</code> lance le calcul au chargement.</td></tr></tbody></table></div><p class="his-note"><i class="fas fa-info-circle"></i> Le lien profond ne transmet pas encore les facteurs de risque, l’ETCOc ou l’état de photothérapie. Le clinicien doit les sélectionner dans l’interface, ou le HIS doit appeler l’API REST.</p><h3>Exemple JavaScript dans un EMR</h3><pre class="his-code" tabindex="0"><code>// Ouvrir BiliTool.Vn depuis un EMR avec un lien profond
-const url = new URL("https://bilitool.vn/may-tinh");
-url.searchParams.append("ngaysinh", "15/03/2026");
-url.searchParams.append("giosinh", "08:30");
-url.searchParams.append("ngaymau", "16/03/2026");
-url.searchParams.append("giomau", "10:00");
-url.searchParams.append("bili", "12.5");
-url.searchParams.append("donvi", "MgDl");
-url.searchParams.append("tuoithai", "38");
-url.searchParams.append("autocalc", "true");
-window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Méthode 2</span><h2>API REST pour calcul sans interface</h2></div><p>Utiliser ce mode lorsque le HIS doit recevoir des résultats JSON pour les enregistrer dans le dossier électronique, les afficher dans un écran interne ou intégrer un flux automatisé. L’API exige <code>X-API-Key</code> et applique actuellement une limite de 30 requêtes par minute.</p><p class="his-note"><i class="fas fa-lock"></i> Les clés API de production sont attribuées uniquement aux partenaires d’intégration. Un service d’intégration indisponible retourne 503; une clé absente ou invalide retourne 401.</p><div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div><h3>En-tête obligatoire</h3><pre class="his-code" tabindex="0"><code>X-API-Key: {your_api_key}
-Content-Type: application/json</code></pre><h3>Champs d’entrée principaux</h3><div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Champ JSON</th><th>Obligatoire</th><th>Type</th><th>Limites / signification</th></tr></thead><tbody><tr><td><code>tuoiTheoGio</code></td><td>Oui si date/heure absentes</td><td>number</td><td>Âge au prélèvement, valide <code>1–336</code> heures.</td></tr><tr><td><code>ngaySinh</code></td><td>Oui si âge absent</td><td>Date ISO</td><td>Peut inclure l’heure, par exemple <code>2026-03-15T08:30:00+07:00</code>.</td></tr><tr><td><code>gioSinh</code></td><td>Non</td><td><code>HH:mm:ss</code></td><td>Si envoyé séparément, le système le combine avec <code>ngaySinh</code>.</td></tr><tr><td><code>ngayLayMau</code></td><td>Oui si âge absent</td><td>Date ISO</td><td>Doit être après la naissance; l’âge calculé doit être <code>1–336</code> heures.</td></tr><tr><td><code>gioLayMau</code></td><td>Non</td><td><code>HH:mm:ss</code></td><td>Si envoyé séparément, le système le combine avec <code>ngayLayMau</code>.</td></tr><tr><td><code>tongBilirubin</code></td><td>Oui</td><td>number</td><td>Supérieur à 0; maximum 60 pour mg/dL, 1026 pour µmol/L.</td></tr><tr><td><code>donViDo</code></td><td>Non</td><td>enum numérique</td><td><code>0 = MgDl</code>, <code>1 = UmolL</code>. Valeur par défaut : 1.</td></tr><tr><td><code>tuoiThaiTuan</code></td><td>Oui</td><td>integer</td><td>Valide <code>35–45</code> semaines révolues.</td></tr><tr><td><code>yeuToNguyCo</code></td><td>Non</td><td>object</td><td>Si absent, tous les facteurs de risque valent false ou null.</td></tr><tr><td><code>trangThaiChieuDen</code></td><td>Non</td><td>enum numérique</td><td>0 sans photothérapie, 1 en cours, 2 intensive, 3 arrêtée.</td></tr></tbody></table></div><h3>Groupes de facteurs de risque pris en charge</h3><div class="his-risk-grid"><div><strong>AAP 2022 - risque de neurotoxicité</strong><span>Hémolyse iso-immune ou déficit G6PD, sepsis ou suspicion, albumine &lt;3 g/dL, instabilité clinique, ETCOc si disponible.</span></div><div><strong>NICE CG98 - risque clinique et étendu</strong><span>Fratrie ayant reçu une photothérapie, allaitement maternel exclusif prévu, ictère dans les 24 premières heures, hémolyse Rh/ABO, signes d’encéphalopathie bilirubinique aiguë.</span></div></div><h3>Exemple de requête JSON</h3><pre class="his-code" tabindex="0"><code>{
-  "ngaySinh": "2026-03-15T08:30:00+07:00",
-  "ngayLayMau": "2026-03-16T10:00:00+07:00",
-  "tongBilirubin": 12.5,
-  "donViDo": 0,
-  "tuoiThaiTuan": 38,
-  "yeuToNguyCo": {
-    "benhTanHuyetMienDichHoacThieuG6PD": false,
-    "nhiemKhuanHuyetHoacNghiNgo": false,
-    "albuminThapDuoi3gDl": false,
-    "tinhTrangLamSangKhongOnDinh": false,
-    "etCOcPpm": null,
-    "anhChiBiVangDaCanChieuDen": false,
-    "meBuMeHoanToan": false,
-    "vangDaTrong24hDau": false,
-    "tanHuyetRh": false,
-    "tanHuyetABO": false,
-    "dauHieuBenhNaoBilirubinCap": false
-  },
-  "trangThaiChieuDen": 0
-}</code></pre><h3>Champs de réponse importants</h3><div class="table-responsive" tabindex="0"><table class="his-table"><thead><tr><th>Champ de réponse</th><th>Signification</th></tr></thead><tbody><tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Contexte patient après calcul et normalisation.</td></tr><tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Bilirubine convertie dans les deux unités.</td></tr><tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>Seuils AAP 2022 en mg/dL.</td></tr><tr><td><code>nguongChieuDen_NICE_UmolL</code>, <code>nguongThayCuuMau_NICE_UmolL</code></td><td>Seuils NICE CG98 en µmol/L.</td></tr><tr><td><code>canChieuDenNgay</code>, <code>canChieuDenTichCuc</code>, <code>canXemXetThayCuuMau</code></td><td>Indicateurs décisionnels pour alertes HIS.</td></tr><tr><td><code>gioDoLapTiepTheo</code>, <code>lichDoLapNICE</code></td><td>Suggestion de contrôle répété si retournée par le moteur.</td></tr><tr><td><code>phacDoQuyetDinh</code>, <code>chuThichThamChieu</code></td><td>Recommandation déterminante et note de source.</td></tr><tr><td><code>chartData</code></td><td>Données nomogramme pour un graphique côté HIS si nécessaire.</td></tr></tbody></table></div></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Référence avancée</span><h2>Endpoint avec enveloppe clinique</h2></div><p>L’endpoint <code>POST /api/v2/clinical/bilirubin/calculate</code> utilise la même entrée que l’API v1, mais enveloppe le résultat dans <code>guideline</code>, <code>patientContext</code>, <code>thresholds</code>, <code>recommendation</code> et <code>legacyResult</code>. Il exige aussi <code>X-API-Key</code>.</p></section>
-        <section class="his-method-card"><div class="his-method-heading"><span>Exploitation</span><h2>Codes d’erreur à gérer côté HIS</h2></div><div class="his-error-grid"><div><strong>400</strong><span>Données invalides : âge ou date de prélèvement manquants, âge hors 1–336 heures, gestation hors 35–45 semaines ou bilirubine au-dessus de la limite.</span></div><div><strong>401</strong><span><code>X-API-Key</code> absent ou invalide.</span></div><div><strong>429</strong><span>Limite de débit API dépassée.</span></div><div><strong>503</strong><span>Le service d’intégration est temporairement indisponible. Contactez le support BiliTool.Vn si le problème persiste.</span></div><div><strong>500</strong><span>Erreur système; la réponse inclut <code>traceId</code> pour corrélation des journaux.</span></div></div></section>
-    </div>
-}
-else
-{
-    <PageTitle>Tích Hợp HIS / EMR — API và Deep Link BiliTool.Vn</PageTitle>
-    <HeadContent>
-        <meta name="description" content="Hướng dẫn kỹ thuật tích hợp BiliTool.Vn với hệ thống HIS/EMR qua Deep Link và REST API bảo mật." />
-        <SeoLanguageLinks Path="/tich-hop-his" />
-    </HeadContent>
+<PageTitle>@pageTitle</PageTitle>
+<HeadContent>
+    <meta name="description" content="@pageDescription" />
+    <meta name="keywords" content="BiliTool.Vn HIS EMR API, REST v3, FHIR R4, HL7 v2.5.1, neonatal bilirubin integration, hospital interoperability" />
+    <SeoLanguageLinks Path="/tich-hop-his" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="@pageTitle" />
+    <meta property="og:description" content="@pageDescription" />
+    <meta property="og:url" content="https://bilitool.vn/tich-hop-his" />
+    <meta property="og:site_name" content="BiliTool.Vn" />
+    <meta property="og:image" content="https://bilitool.vn/images/og-bilitool-1200x630.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+</HeadContent>
 
 <div class="his-doc-shell">
     <section class="his-hero-panel">
-        <div class="his-kicker"><i class="fas fa-hospital-alt"></i> HIS / EMR Integration</div>
-        <h1>Tích hợp hệ thống HIS / EMR</h1>
-        <p>BiliTool.Vn hỗ trợ 2 cách tích hợp: mở giao diện bằng Deep Link để bác sĩ kiểm tra trực tiếp, hoặc gọi REST API bảo mật bằng <code>X-API-Key</code> để HIS nhận kết quả JSON.</p>
-        <div class="his-status-grid" aria-label="Tổng quan tích hợp">
-            <div><strong>Hình thức tích hợp</strong><span>Deep Link và REST API</span></div>
-            <div><strong>API bảo mật</strong><span><code>X-API-Key</code> + rate limit</span></div>
-            <div><strong>Phạm vi</strong><span>Trẻ ≥35 tuần, tuổi 1–336 giờ</span></div>
+        <div class="his-kicker"><i class="fas fa-hospital-alt"></i> HIS / EMR Production Integration · v1.4.2</div>
+        <h1>@L("Tích hợp bệnh viện theo contract production", "Hospital integration built on a production contract", "Intégration hospitalière fondée sur un contrat production")</h1>
+        <p>
+            @L(
+                "BiliTool.Vn cung cấp một bề mặt tích hợp thống nhất cho HIS, EMR và LIS: REST API v3 là contract JSON canonical; FHIR R4 và HL7 v2.5.1 dùng cùng clinical engine; Deep Link dành cho quy trình có bác sĩ kiểm tra; webhook phát sự kiện bất đồng bộ.",
+                "BiliTool.Vn exposes one consistent integration surface for HIS, EMR, and LIS systems: REST API v3 is the canonical JSON contract; FHIR R4 and HL7 v2.5.1 use the same clinical engine; Deep Link supports clinician-reviewed workflows; webhooks publish asynchronous events.",
+                "BiliTool.Vn expose une surface d’intégration cohérente pour les systèmes HIS, EMR et LIS : REST API v3 constitue le contrat JSON canonique ; FHIR R4 et HL7 v2.5.1 utilisent le même moteur clinique ; le lien profond convient aux flux revus par un clinicien ; les webhooks publient les événements asynchrones.")
+        </p>
+        <div class="his-status-grid" aria-label="Integration overview">
+            <div><strong>@L("Protocols", "Protocols", "Protocoles")</strong><span>REST v3 · FHIR R4 · HL7 v2.5.1 · Deep Link</span></div>
+            <div><strong>@L("Định danh", "Identity", "Identité")</strong><span>Tenant/client <code>X-API-Key</code> · optional mTLS</span></div>
+            <div><strong>@L("Tin cậy", "Reliability", "Fiabilité")</strong><span>Idempotency · correlation · timeout · rate limit</span></div>
+            <div><strong>@L("Phạm vi runtime", "Runtime scope", "Périmètre runtime")</strong><span>35–45 @L("tuần", "weeks", "semaines") · 1–336 @L("giờ", "hours", "heures")</span></div>
         </div>
+        <nav class="his-nav-grid" aria-label="Integration guide sections">
+            <a href="#rest-v3">REST v3</a>
+            <a href="#fhir-r4">FHIR R4</a>
+            <a href="#hl7-v251">HL7 v2.5.1</a>
+            <a href="#security">@L("Bảo mật", "Security", "Sécurité")</a>
+            <a href="#webhooks">Webhooks</a>
+            <a href="#sandbox">Sandbox</a>
+            <a href="#legacy">Legacy v1/v2</a>
+        </nav>
     </section>
 
-    <section class="his-method-card">
-        <div class="his-method-heading">
-            <span>Phương pháp 1</span>
-            <h2>Deep Link mở giao diện máy tính</h2>
-        </div>
-        <p>Phù hợp khi HIS muốn mở BiliTool.Vn trong tab/cửa sổ mới, tự điền dữ liệu cơ bản, để bác sĩ kiểm tra lại trước khi tính. Deep Link không yêu cầu API key vì không gọi endpoint JSON.</p>
-        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=15/03/2026&amp;giosinh=08:30&amp;ngaymau=16/03/2026&amp;giomau=10:00&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
-
+    <section class="his-audit-card">
+        <h2>@L("Chọn phương thức tích hợp", "Choose an integration method", "Choisir une méthode d’intégration")</h2>
         <div class="table-responsive" tabindex="0">
             <table class="his-table">
                 <thead>
-                    <tr><th>Tham số</th><th>Bắt buộc</th><th>Định dạng hợp lệ</th><th>Ghi chú</th></tr>
+                    <tr>
+                        <th>@L("Phương thức", "Method", "Méthode")</th>
+                        <th>@L("Dùng khi", "Use when", "Utilisation")</th>
+                        <th>@L("Contract", "Contract", "Contrat")</th>
+                        <th>@L("Trạng thái", "Status", "Statut")</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td><code>ngaysinh</code></td><td>Có nếu auto tính</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, hoặc <code>ddMMyyyy</code></td><td>Ngày sinh.</td></tr>
-                    <tr><td><code>giosinh</code></td><td>Khuyến nghị</td><td><code>HH:mm</code> hoặc <code>HHmm</code></td><td>Nếu bỏ trống, UI dùng giờ mặc định.</td></tr>
-                    <tr><td><code>ngaymau</code></td><td>Có nếu auto tính</td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, hoặc <code>ddMMyyyy</code></td><td>Ngày lấy mẫu bilirubin.</td></tr>
-                    <tr><td><code>giomau</code></td><td>Khuyến nghị</td><td><code>HH:mm</code> hoặc <code>HHmm</code></td><td>Nếu bỏ trống, UI dùng giờ mặc định.</td></tr>
-                    <tr><td><code>bili</code></td><td>Có nếu auto tính</td><td>Số thập phân dùng dấu chấm, ví dụ <code>12.5</code></td><td>Bilirubin toàn phần.</td></tr>
-                    <tr><td><code>donvi</code></td><td>Không</td><td><code>MgDl</code> hoặc <code>UmolL</code></td><td>Mặc định giao diện là <code>UmolL</code>.</td></tr>
-                    <tr><td><code>tuoithai</code></td><td>Có nếu auto tính</td><td>Số nguyên <code>35–45</code></td><td>Tuổi thai khi sinh theo tuần.</td></tr>
-                    <tr><td><code>autocalc</code></td><td>Không</td><td><code>true</code> hoặc <code>false</code></td><td><code>true</code> tự chạy tính toán sau khi mở trang.</td></tr>
+                    <tr><td><strong>REST API v3</strong></td><td>@L("HIS cần JSON ổn định, machine-readable và lưu kết quả có provenance.", "The HIS needs stable machine-readable JSON and provenance-aware results.", "Le HIS nécessite un JSON stable, lisible par machine, avec provenance.")</td><td><code>POST /api/v3/clinical/bilirubin/calculate</code></td><td><span class="his-badge canonical">Canonical</span></td></tr>
+                    <tr><td><strong>FHIR R4</strong></td><td>@L("Hệ thống dùng Patient, Encounter, ServiceRequest, Specimen và Observation.", "The system exchanges Patient, Encounter, ServiceRequest, Specimen, and Observation resources.", "Le système échange les ressources Patient, Encounter, ServiceRequest, Specimen et Observation.")</td><td><code>Bundle</code> / <code>OperationOutcome</code></td><td><span class="his-badge production">Production</span></td></tr>
+                    <tr><td><strong>HL7 v2.5.1</strong></td><td>@L("LIS/HIS gửi ORU^R01 và cần ACK đồng bộ.", "The LIS/HIS sends ORU^R01 and requires a synchronous ACK.", "Le LIS/HIS envoie ORU^R01 et exige un ACK synchrone.")</td><td><code>ORU^R01</code> / <code>ACK</code></td><td><span class="his-badge production">Production</span></td></tr>
+                    <tr><td><strong>Deep Link</strong></td><td>@L("Bác sĩ cần mở giao diện, kiểm tra dữ liệu rồi mới tính.", "A clinician must open the UI, review inputs, and calculate.", "Un clinicien doit ouvrir l’interface, vérifier les données puis calculer.")</td><td><code>GET /may-tinh?... </code></td><td><span class="his-badge ui">UI workflow</span></td></tr>
+                    <tr><td><strong>Webhook</strong></td><td>@L("Đối tác nhận sự kiện calculation completed bất đồng bộ.", "A partner receives calculation-completed events asynchronously.", "Un partenaire reçoit les événements de calcul terminé de façon asynchrone.")</td><td>HMAC-SHA256 over HTTPS</td><td><span class="his-badge production">Production</span></td></tr>
                 </tbody>
             </table>
         </div>
-
-        <div class="his-note warning"><i class="fas fa-circle-info"></i><span>Deep Link hiện chưa hỗ trợ truyền yếu tố nguy cơ, ETCOc hoặc trạng thái chiếu đèn. Dữ liệu này cần bác sĩ chọn trên giao diện hoặc HIS gọi REST API.</span></div>
-
-        <h3>Ví dụ JavaScript trong HIS</h3>
-        <pre tabindex="0"><code>// Mở BiliTool.Vn từ EMR bằng Deep Link
-const url = new URL("https://bilitool.vn/may-tinh");
-url.searchParams.set("ngaysinh", "15/03/2026");
-url.searchParams.set("giosinh", "08:30");
-url.searchParams.set("ngaymau", "16/03/2026");
-url.searchParams.set("giomau", "10:00");
-url.searchParams.set("bili", "12.5");
-url.searchParams.set("donvi", "MgDl");
-url.searchParams.set("tuoithai", "38");
-url.searchParams.set("autocalc", "true");
-
-window.open(url.toString(), "_blank", "width=1200,height=800");</code></pre>
     </section>
 
-    <section class="his-method-card">
-        <div class="his-method-heading">
-            <span>Phương pháp 2</span>
-            <h2>REST API cho HIS/EMR</h2>
-        </div>
-        <p>Phù hợp khi HIS cần nhận kết quả JSON để lưu vào bệnh án điện tử, hiển thị trong màn hình nội bộ hoặc tích hợp workflow tự động. API yêu cầu header <code>X-API-Key</code> và đang áp dụng rate limit <code>30 request/phút</code> cho mỗi cửa sổ giới hạn.</p>
-        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
+    <section class="his-method-card" id="rest-v3">
+        <div class="his-method-heading"><span>@L("Khuyến nghị cho tích hợp mới", "Recommended for new integrations", "Recommandé pour les nouvelles intégrations")</span><h2>REST API v3 canonical</h2></div>
+        <p>@L("Mọi tích hợp JSON mới phải dùng v3. Contract từ chối field không công bố, dùng timestamp có timezone, UCUM units và trả provenance đầy đủ.", "All new JSON integrations must use v3. The contract rejects undocumented fields, uses timezone-aware timestamps and UCUM units, and returns complete provenance.", "Toute nouvelle intégration JSON doit utiliser v3. Le contrat rejette les champs non documentés, utilise des horodatages avec fuseau et des unités UCUM, puis renvoie une provenance complète.")</p>
+        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v3/clinical/bilirubin/calculate</span></div>
 
-        <div class="his-note"><i class="fas fa-lock"></i><span>Production chỉ cấp API key cho đơn vị tích hợp. Khi dịch vụ tích hợp chưa khả dụng, API trả <code>503</code>; nếu thiếu hoặc sai khóa, API trả <code>401</code>.</span></div>
-
-        <h3>Header bắt buộc</h3>
+        <h3>@L("Headers bắt buộc", "Required headers", "En-têtes requis")</h3>
         <pre tabindex="0"><code>Content-Type: application/json
-X-API-Key: {integration_api_key}</code></pre>
+X-API-Key: &lt;tenant-client-credential&gt;
+Idempotency-Key: &lt;unique-request-key&gt;
+X-Correlation-ID: &lt;optional-correlation-id&gt;</code></pre>
+        <p class="his-note"><i class="fas fa-code"></i><span>@L("OpenAPI 3.1.1:", "OpenAPI 3.1.1:", "OpenAPI 3.1.1 :") <a href="/openapi/v3.json" target="_blank" rel="noopener">/openapi/v3.json</a> · <a href="/openapi" target="_blank" rel="noopener">@L("Giao diện tương tác", "Interactive UI", "Interface interactive")</a>.</span></p>
 
-        <h3>Trường đầu vào chính</h3>
-        <div class="table-responsive" tabindex="0">
-            <table class="his-table">
-                <thead>
-                    <tr><th>Trường JSON</th><th>Bắt buộc</th><th>Kiểu</th><th>Giới hạn / ý nghĩa</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td><code>tuoiTheoGio</code></td><td>Có nếu không gửi ngày giờ</td><td>number</td><td>Tuổi lúc lấy mẫu, hợp lệ <code>1–336</code> giờ.</td></tr>
-                    <tr><td><code>ngaySinh</code></td><td>Có nếu không gửi <code>tuoiTheoGio</code></td><td>ISO datetime</td><td>Có thể gửi kèm giờ, ví dụ <code>2026-03-15T08:30:00+07:00</code>.</td></tr>
-                    <tr><td><code>gioSinh</code></td><td>Không</td><td><code>HH:mm:ss</code></td><td>Nếu gửi riêng, hệ thống dùng ngày của <code>ngaySinh</code> cộng giờ này.</td></tr>
-                    <tr><td><code>ngayLayMau</code></td><td>Có nếu không gửi <code>tuoiTheoGio</code></td><td>ISO datetime</td><td>Phải sau thời điểm sinh, tuổi tính được <code>1–336</code> giờ.</td></tr>
-                    <tr><td><code>gioLayMau</code></td><td>Không</td><td><code>HH:mm:ss</code></td><td>Nếu gửi riêng, hệ thống dùng ngày của <code>ngayLayMau</code> cộng giờ này.</td></tr>
-                    <tr><td><code>tongBilirubin</code></td><td>Có</td><td>number</td><td>&gt;0; tối đa <code>60</code> nếu mg/dL, <code>1026</code> nếu µmol/L.</td></tr>
-                    <tr><td><code>donViDo</code></td><td>Không</td><td>number enum</td><td><code>0</code> = MgDl, <code>1</code> = UmolL. Mặc định <code>1</code>.</td></tr>
-                    <tr><td><code>tuoiThaiTuan</code></td><td>Có</td><td>integer</td><td>Hợp lệ <code>35–45</code> tuần.</td></tr>
-                    <tr><td><code>yeuToNguyCo</code></td><td>Không</td><td>object</td><td>Không gửi thì mặc định tất cả yếu tố là <code>false/null</code>.</td></tr>
-                    <tr><td><code>trangThaiChieuDen</code></td><td>Không</td><td>number enum</td><td><code>0</code> không chiếu đèn, <code>1</code> đang chiếu, <code>2</code> chiếu đèn tích cực, <code>3</code> đã dừng.</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <h3>Yếu tố nguy cơ hỗ trợ trong API</h3>
-        <div class="his-risk-grid">
-            <div>
-                <h4>AAP 2022 - nguy cơ độc thần kinh</h4>
-                <code>benhTanHuyetMienDichHoacThieuG6PD</code>
-                <code>nhiemKhuanHuyetHoacNghiNgo</code>
-                <code>albuminThapDuoi3gDl</code>
-                <code>tinhTrangLamSangKhongOnDinh</code>
-                <code>etCOcPpm</code>
-            </div>
-            <div>
-                <h4>NICE CG98 - nguy cơ lâm sàng / mở rộng</h4>
-                <code>anhChiBiVangDaCanChieuDen</code>
-                <code>meBuMeHoanToan</code>
-                <code>vangDaTrong24hDau</code>
-                <code>benhTanHuyetRh</code>
-                <code>benhTanHuyetABO</code>
-                <code>dauHieuBenhNaoBilirubinCap</code>
-            </div>
-        </div>
-
-        <h3>Ví dụ request JSON</h3>
+        <h3>@L("Canonical request", "Canonical request", "Requête canonique")</h3>
         <pre tabindex="0"><code>{
-  "tuoiTheoGio": null,
-  "ngaySinh": "2026-03-15T08:30:00+07:00",
-  "ngayLayMau": "2026-03-16T10:00:00+07:00",
-  "tongBilirubin": 12.5,
-  "donViDo": 0,
-  "tuoiThaiTuan": 38,
-  "trangThaiChieuDen": 0,
-  "yeuToNguyCo": {
-    "benhTanHuyetMienDichHoacThieuG6PD": false,
-    "nhiemKhuanHuyetHoacNghiNgo": false,
-    "albuminThapDuoi3gDl": false,
-    "tinhTrangLamSangKhongOnDinh": false,
-    "etCOcPpm": null,
-    "anhChiBiVangDaCanChieuDen": false,
-    "meBuMeHoanToan": false,
-    "vangDaTrong24hDau": false,
-    "benhTanHuyetRh": false,
-    "benhTanHuyetABO": false,
-    "dauHieuBenhNaoBilirubinCap": false
-  }
+  "source": {
+    "system": "HIS-A",
+    "facility": "FAC-A",
+    "messageId": "msg-001"
+  },
+  "patient": {
+    "identifier": "patient-001",
+    "assigningAuthority": "FAC-A",
+    "birthTime": null,
+    "ageHours": 48,
+    "gestationalAgeWeeks": 38,
+    "phototherapyStatus": "none"
+  },
+  "encounter": { "identifier": "enc-001" },
+  "order": { "identifier": "order-001" },
+  "specimen": {
+    "identifier": "spec-001",
+    "collectedAt": "2026-08-03T08:00:00+07:00"
+  },
+  "observation": {
+    "identifier": "obs-001",
+    "effectiveAt": "2026-08-03T08:00:00+07:00",
+    "value": 12.5,
+    "unit": "mg/dL"
+  },
+  "riskFactors": {}
 }</code></pre>
+        <p>@L("Đơn vị chỉ nhận", "Accepted units are", "Les unités acceptées sont") <code>mg/dL</code> @L("hoặc", "or", "ou") <code>umol/L</code>. <code>phototherapyStatus</code>: <code>none</code>, <code>phototherapy</code>, <code>intensive-phototherapy</code>, <code>stopped</code>.</p>
 
-        <h3>Nhóm trường kết quả quan trọng</h3>
+        <h3>@L("Response ổn định", "Stable response groups", "Groupes de réponse stables")</h3>
         <div class="table-responsive" tabindex="0">
             <table class="his-table">
-                <thead><tr><th>Trường trả về</th><th>Ý nghĩa</th></tr></thead>
+                <thead><tr><th>@L("Nhóm", "Group", "Groupe")</th><th>@L("Nội dung", "Content", "Contenu")</th></tr></thead>
                 <tbody>
-                    <tr><td><code>tuoiGio</code>, <code>tuoiThaiTuan</code></td><td>Ngữ cảnh bệnh nhi sau khi hệ thống tính/chuẩn hóa.</td></tr>
-                    <tr><td><code>bilirubinMgDl</code>, <code>bilirubinUmolL</code></td><td>Giá trị bilirubin quy đổi song song 2 đơn vị.</td></tr>
-                    <tr><td><code>nguongChieuDen</code>, <code>nguongChieuDenTichCuc</code>, <code>nguongThayCuuMau</code></td><td>Ngưỡng AAP 2022 theo mg/dL.</td></tr>
-                    <tr><td><code>nguongChieuDen_NICE_UmolL</code>, <code>nguongThayCuuMau_NICE_UmolL</code></td><td>Ngưỡng NICE CG98 theo µmol/L.</td></tr>
-                    <tr><td><code>canChieuDenNgay</code>, <code>canChieuDenTichCuc</code>, <code>canXemXetThayCuuMau</code></td><td>Cờ quyết định để HIS hiển thị cảnh báo.</td></tr>
-                    <tr><td><code>gioDoLapTiepTheo</code>, <code>lichDoLapNICE</code></td><td>Gợi ý thời điểm đo lại khi phác đồ trả về.</td></tr>
-                    <tr><td><code>phacDoQuyetDinh</code>, <code>chuThichThamChieu</code></td><td>Phác đồ quyết định và ghi chú nguồn tham chiếu.</td></tr>
-                    <tr><td><code>chartData</code></td><td>Dữ liệu nomogram để HIS tự vẽ biểu đồ nếu cần.</td></tr>
+                    <tr><td><code>resultId</code>, <code>correlationId</code></td><td>@L("Định danh kết quả và truy vết request.", "Result identity and request traceability.", "Identité du résultat et traçabilité de la requête.")</td></tr>
+                    <tr><td><code>references</code></td><td>@L("Message, patient, encounter, order, specimen và observation IDs.", "Message, patient, encounter, order, specimen, and observation IDs.", "Identifiants message, patient, encounter, order, specimen et observation.")</td></tr>
+                    <tr><td><code>provenance</code></td><td>@L("Guideline revision/effective date, engine version, dataset revision và decision protocol.", "Guideline revision/effective date, engine version, dataset revision, and decision protocol.", "Révision/date d’effet du guide, version du moteur, révision du dataset et protocole de décision.")</td></tr>
+                    <tr><td><code>observation</code>, <code>thresholds</code></td><td>@L("Dữ liệu đã chuẩn hóa và ngưỡng có đơn vị rõ ràng.", "Normalized values and explicitly unit-labeled thresholds.", "Valeurs normalisées et seuils avec unités explicites.")</td></tr>
+                    <tr><td><code>recommendation</code></td><td>@L("Mức cảnh báo, can thiệp và thời điểm đo lại.", "Alert level, intervention flags, and repeat-measurement timing.", "Niveau d’alerte, interventions et délai de nouveau dosage.")</td></tr>
                 </tbody>
             </table>
         </div>
+    </section>
+
+    <section class="his-method-card" id="fhir-r4">
+        <div class="his-method-heading"><span>FHIR R4</span><h2>@L("FHIR operation và Implementation Guide", "FHIR operation and Implementation Guide", "Opération FHIR et guide d’implémentation")</h2></div>
+        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/api/v3/fhir/R4/metadata</span></div>
+        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v3/fhir/R4/$bilirubin-calculate</span></div>
+        <ul class="his-check-list">
+            <li><i class="fas fa-check"></i><span>@L("Input là", "Input is a", "L’entrée est un") <code>Bundle.type=transaction</code> @L("gồm đúng một", "with exactly one", "contenant exactement une ressource de chaque type") <code>Patient</code>, <code>Encounter</code>, <code>ServiceRequest</code>, <code>Specimen</code>, <code>Observation</code>.</span></li>
+            <li><i class="fas fa-check"></i><span><code>Observation.code</code> @L("dùng LOINC", "uses LOINC", "utilise LOINC") <code>1975-2</code> @L("hoặc", "or", "ou") <code>14631-6</code>; <code>valueQuantity</code> @L("dùng UCUM", "uses UCUM", "utilise UCUM").</span></li>
+            <li><i class="fas fa-check"></i><span>@L("Response là Bundle collection chứa derived Observation và DiagnosticReport.", "The response is a collection Bundle containing a derived Observation and DiagnosticReport.", "La réponse est un Bundle collection contenant une Observation dérivée et un DiagnosticReport.")</span></li>
+            <li><i class="fas fa-check"></i><span>@L("Lỗi validation trả", "Validation errors return", "Les erreurs de validation renvoient") <code>OperationOutcome</code> @L("với", "with", "avec") <code>application/fhir+json</code>.</span></li>
+        </ul>
+        <p class="his-note"><i class="fas fa-link"></i><span>@L("Chi tiết profile và extensions:", "Profiles and extension details:", "Détails des profils et extensions :") <a href="https://github.com/buithanhninh/bilitool/blob/main/docs/integration/fhir-r4.md" target="_blank" rel="noopener">FHIR R4 Implementation Guide</a>.</span></p>
+    </section>
+
+    <section class="his-method-card" id="hl7-v251">
+        <div class="his-method-heading"><span>HL7 v2.5.1</span><h2>ORU^R01 → ACK AA/AE</h2></div>
+        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v3/hl7/v251/oru-r01</span></div>
+        <pre tabindex="0"><code>Content-Type: application/hl7-v2
+X-API-Key: &lt;tenant-client-credential&gt;
+Idempotency-Key: &lt;MSH-10&gt;</code></pre>
+        <div class="table-responsive" tabindex="0">
+            <table class="his-table">
+                <thead><tr><th>@L("Segment", "Segment", "Segment")</th><th>@L("Mapping bắt buộc", "Required mapping", "Mapping requis")</th></tr></thead>
+                <tbody>
+                    <tr><td><code>MSH</code></td><td><code>MSH-9=ORU^R01^ORU_R01</code>, <code>MSH-10</code> unique, <code>MSH-12=2.5.1</code>.</td></tr>
+                    <tr><td><code>PID / PV1</code></td><td><code>PID-3</code> patient + assigning authority; <code>PV1-19</code> encounter.</td></tr>
+                    <tr><td><code>ORC / OBR</code></td><td><code>ORC-2</code> order; <code>OBR-3</code> specimen/accession; <code>OBR-7</code> collection time.</td></tr>
+                    <tr><td><code>OBX</code></td><td>LOINC bilirubin, numeric value, UCUM unit, observation time; local <code>99BILITOOL</code> OBX codes for age, gestation, phototherapy and risk factors.</td></tr>
+                    <tr><td><code>ACK</code></td><td><code>MSA-1=AA</code> @L("khi thành công;", "on success;", "en cas de succès ;") <code>AE</code> @L("khi lỗi validation/application; ACK thành công có", "for validation/application errors; successful ACK includes", "pour les erreurs de validation/application ; un ACK réussi contient") <code>ZBR</code>.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="his-note warning"><i class="fas fa-triangle-exclamation"></i><span><code>Idempotency-Key</code> @L("phải bằng", "must equal", "doit être égal à") <code>MSH-10</code>. @L("Cùng key nhưng khác message bị từ chối.", "Reusing the key with a different message is rejected.", "La réutilisation de la clé avec un message différent est rejetée.")</span></p>
+    </section>
+
+    <section class="his-method-card" id="security">
+        <div class="his-method-heading"><span>@L("Security & reliability", "Security & reliability", "Sécurité et fiabilité")</span><h2>@L("Yêu cầu bắt buộc cho production client", "Mandatory production client requirements", "Exigences obligatoires pour les clients production")</h2></div>
+        <ul class="his-check-list">
+            <li><i class="fas fa-key"></i><span><strong>Tenant/client credential.</strong> <code>X-API-Key</code> @L("được hash khi lưu, có scope, expiry, revoke và dual-key rotation.", "is stored as a hash and supports scopes, expiry, revocation, and dual-key rotation.", "est stockée sous forme de hash et prend en charge scopes, expiration, révocation et rotation à deux clés.")</span></li>
+            <li><i class="fas fa-certificate"></i><span><strong>Optional mTLS.</strong> @L("Client bật", "Clients configured with", "Les clients configurés avec") <code>RequireMutualTls=true</code> @L("phải gửi certificate có SHA-256 fingerprint khớp registry.", "must present a certificate whose SHA-256 fingerprint matches the registry.", "doivent présenter un certificat dont l’empreinte SHA-256 correspond au registre.")</span></li>
+            <li><i class="fas fa-copy"></i><span><strong>Idempotency.</strong> <code>Idempotency-Key</code> 8–128 @L("ký tự", "characters", "caractères") <code>A-Z a-z 0-9 - _ .</code>; @L("retry cùng payload trả lại cùng response và media type.", "retrying the same payload replays the same response and media type.", "la répétition du même payload rejoue la même réponse et le même type média.")</span></li>
+            <li><i class="fas fa-link"></i><span><strong>Correlation.</strong> <code>X-Correlation-ID</code> @L("tối đa 64 ký tự; response luôn trả correlation ID để đối soát log/audit.", "is limited to 64 characters; responses always expose a correlation ID for log and audit reconciliation.", "est limité à 64 caractères ; les réponses exposent toujours un identifiant de corrélation pour les logs et audits.")</span></li>
+            <li><i class="fas fa-gauge-high"></i><span><strong>Rate limit.</strong> @L("Mặc định", "Default", "Valeur par défaut") <code>30 request / 60 seconds</code> @L("theo client fingerprint; response 429 có Retry-After.", "per client fingerprint; 429 responses include Retry-After.", "par empreinte client ; les réponses 429 incluent Retry-After.")</span></li>
+            <li><i class="fas fa-file-shield"></i><span><strong>Payload limits.</strong> REST v3: <code>64 KiB</code>; FHIR/HL7: <code>128 KiB</code>. @L("Vượt giới hạn trả", "Oversized requests return", "Les requêtes trop volumineuses renvoient") <code>413 request_too_large</code>.</span></li>
+        </ul>
+    </section>
+
+    <section class="his-method-card his-error-card" id="errors">
+        <div class="his-method-heading"><span>@L("Machine-readable errors", "Machine-readable errors", "Erreurs lisibles par machine")</span><h2>RFC 9457 <code>application/problem+json</code></h2></div>
+        <p>@L("REST v3 errors luôn có", "REST v3 errors always include", "Les erreurs REST v3 contiennent toujours") <code>errorCode</code>, <code>correlationId</code>, <code>retryable</code> @L("và", "and", "et") <code>errors</code> @L("khi có lỗi theo field.", "for field-level validation failures.", "pour les erreurs de validation par champ.")</p>
+        <div class="his-error-grid">
+            <div><strong>400</strong><span><code>invalid_json</code>, <code>invalid_request</code>, <code>clinical_validation_failed</code>.</span></div>
+            <div><strong>401</strong><span><code>missing_api_key</code>, <code>invalid_api_key</code>.</span></div>
+            <div><strong>403</strong><span><code>insufficient_scope</code> @L("hoặc mTLS policy không đạt.", "or an unmet mTLS policy.", "ou politique mTLS non satisfaite.")</span></div>
+            <div><strong>409</strong><span><code>idempotency_payload_conflict</code>, <code>idempotency_request_in_progress</code>.</span></div>
+            <div><strong>413</strong><span><code>request_too_large</code>.</span></div>
+            <div><strong>429</strong><span><code>rate_limit_exceeded</code>; @L("retry theo", "retry according to", "réessayer selon") <code>Retry-After</code>.</span></div>
+            <div><strong>500</strong><span><code>clinical_calculation_failed</code>; @L("đối soát bằng correlation ID.", "reconcile using the correlation ID.", "corréler avec l’identifiant de corrélation.")</span></div>
+            <div><strong>503</strong><span><code>tenant_rollout_disabled</code> @L("hoặc emergency kill switch.", "or the emergency kill switch.", "ou arrêt d’urgence.")</span></div>
+        </div>
+    </section>
+
+    <section class="his-method-card" id="webhooks">
+        <div class="his-method-heading"><span>Webhook outbox</span><h2><code>clinical.calculation.completed</code></h2></div>
+        <p>@L("Clinical audit và outbox event được lưu cùng transaction; request không chờ webhook delivery. Endpoint đối tác phải dùng HTTPS và xác minh HMAC-SHA256 trên exact body.", "Clinical audit and outbox events are persisted in the same transaction; requests do not wait for webhook delivery. Partner endpoints must use HTTPS and verify HMAC-SHA256 over the exact body.", "L’audit clinique et l’événement outbox sont persistés dans la même transaction ; la requête n’attend pas la livraison du webhook. Le endpoint partenaire doit utiliser HTTPS et vérifier HMAC-SHA256 sur le corps exact.")</p>
+        <pre tabindex="0"><code>X-BiliTool-Event-Id: &lt;outbox-event-guid&gt;
+X-BiliTool-Event-Type: clinical.calculation.completed
+X-BiliTool-Timestamp: &lt;unix-seconds&gt;
+X-BiliTool-Signature: v1=&lt;hmac-sha256-hex&gt;</code></pre>
+        <ul class="his-check-list">
+            <li><i class="fas fa-clock"></i><span>@L("Delivery timeout 10 giây, connect timeout 5 giây, exponential backoff và tối đa 8 lần thử.", "Delivery timeout is 10 seconds, connect timeout is 5 seconds, with exponential backoff and up to 8 attempts.", "Timeout de livraison de 10 secondes, connexion de 5 secondes, backoff exponentiel et jusqu’à 8 tentatives.")</span></li>
+            <li><i class="fas fa-triangle-exclamation"></i><span>@L("Sau retry budget, event chuyển DeadLetter; admin replay được audit.", "After the retry budget, events move to DeadLetter; administrative replay is audited.", "Après épuisement des tentatives, l’événement passe en DeadLetter ; le replay administratif est audité.")</span></li>
+            <li><i class="fas fa-shield-alt"></i><span>@L("Production chặn loopback, link-local, private IP/DNS và redirect để giảm SSRF.", "Production blocks loopback, link-local, private IP/DNS targets, and redirects to reduce SSRF risk.", "La production bloque loopback, link-local, IP/DNS privés et redirections pour réduire le risque SSRF.")</span></li>
+        </ul>
+    </section>
+
+    <section class="his-method-card" id="sandbox">
+        <div class="his-method-heading"><span>@L("Onboarding", "Onboarding", "Onboarding")</span><h2>@L("Kiểm thử trước khi kết nối bệnh viện", "Test before connecting a hospital", "Tester avant la connexion à l’hôpital")</h2></div>
+        <div class="his-risk-grid">
+            <div><h4>Docker sandbox</h4><p>@L("Dựng PostgreSQL và API cô lập với synthetic fixtures; không dùng production PHI.", "Starts isolated PostgreSQL and API services with synthetic fixtures; never use production PHI.", "Démarre PostgreSQL et l’API isolés avec données synthétiques ; ne jamais utiliser de PHI production.")</p><pre tabindex="0"><code>cd sandbox
+docker compose up --build</code></pre></div>
+            <div><h4>Automated conformance</h4><p>@L("Kiểm tra REST/FHIR/HL7, auth, idempotency, malformed/unknown/oversized payload và generated client.", "Tests REST/FHIR/HL7, authentication, idempotency, malformed/unknown/oversized payloads, and the generated client.", "Teste REST/FHIR/HL7, authentification, idempotence, payloads invalides/inconnus/trop volumineux et client généré.")</p><pre tabindex="0"><code>scripts/sandbox/run-conformance.sh
+scripts/sandbox/run-generated-client.sh</code></pre></div>
+        </div>
+        <ul class="his-check-list">
+            <li><i class="fas fa-file-code"></i><span>Postman: <code>sandbox/postman/BiliTool-HIS-EMR.postman_collection.json</code>.</span></li>
+            <li><i class="fas fa-rotate"></i><span>@L("Production rehearsal kiểm tra clean deploy, conformance, load smoke, kill switch 503, rollback 200 và DB continuity.", "Production rehearsal verifies clean deployment, conformance, load smoke, kill switch 503, rollback 200, and database continuity.", "La répétition production vérifie déploiement propre, conformité, charge smoke, kill switch 503, rollback 200 et continuité DB.")</span></li>
+            <li><i class="fas fa-book"></i><span><a href="https://github.com/buithanhninh/bilitool/tree/main/docs/integration" target="_blank" rel="noopener">@L("Tài liệu integration đầy đủ trên GitHub", "Complete integration documentation on GitHub", "Documentation d’intégration complète sur GitHub")</a>.</span></li>
+        </ul>
+    </section>
+
+    <section class="his-method-card" id="deep-link">
+        <div class="his-method-heading"><span>Deep Link</span><h2>@L("Mở giao diện với dữ liệu điền sẵn", "Open the UI with prefilled data", "Ouvrir l’interface avec données préremplies")</h2></div>
+        <p>@L("Deep Link không gọi JSON API và không cần API key. Dùng khi bác sĩ phải kiểm tra dữ liệu trên giao diện trước khi tính.", "Deep Link does not call the JSON API and does not require an API key. Use it when a clinician must review data in the UI before calculation.", "Le lien profond n’appelle pas l’API JSON et ne nécessite pas de clé API. Utilisez-le lorsqu’un clinicien doit vérifier les données avant le calcul.")</p>
+        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/may-tinh?ngaysinh=03/08/2026&amp;giosinh=08:30&amp;ngaymau=05/08/2026&amp;giomau=08:30&amp;bili=12.5&amp;donvi=MgDl&amp;tuoithai=38&amp;autocalc=true</span></div>
+        <div class="table-responsive" tabindex="0">
+            <table class="his-table">
+                <thead><tr><th>@L("Tham số", "Parameter", "Paramètre")</th><th>@L("Giá trị", "Value", "Valeur")</th><th>@L("Ghi chú", "Notes", "Notes")</th></tr></thead>
+                <tbody>
+                    <tr><td><code>ngaysinh</code>, <code>ngaymau</code></td><td><code>dd/MM/yyyy</code>, <code>d/M/yyyy</code>, <code>ddMMyyyy</code></td><td>@L("Bắt buộc khi auto calculate.", "Required for automatic calculation.", "Requis pour le calcul automatique.")</td></tr>
+                    <tr><td><code>giosinh</code>, <code>giomau</code></td><td><code>HH:mm</code> @L("hoặc", "or", "ou") <code>HHmm</code></td><td>@L("Khuyến nghị truyền đầy đủ.", "Providing both is recommended.", "Il est recommandé de fournir les deux.")</td></tr>
+                    <tr><td><code>bili</code>, <code>donvi</code></td><td><code>MgDl</code> / <code>UmolL</code></td><td>@L("Số thập phân dùng dấu chấm.", "Decimal values use a dot.", "Les décimales utilisent un point.")</td></tr>
+                    <tr><td><code>tuoithai</code></td><td><code>35–45</code></td><td>@L("Tuổi thai tuần theo validator runtime.", "Gestational age in completed weeks per runtime validation.", "Âge gestationnel en semaines selon le validateur runtime.")</td></tr>
+                    <tr><td><code>autocalc</code></td><td><code>true</code> / <code>false</code></td><td>@L("Tự chạy sau khi trang tải.", "Runs calculation after page load.", "Lance le calcul après chargement.")</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="his-note warning"><i class="fas fa-triangle-exclamation"></i><span>@L("Deep Link không truyền đầy đủ identifiers, risk factors, ETCOc hoặc phototherapy status. Dùng REST/FHIR/HL7 cho integration machine-to-machine.", "Deep Link does not carry complete identifiers, risk factors, ETCOc, or phototherapy status. Use REST/FHIR/HL7 for machine-to-machine integration.", "Le lien profond ne transmet pas tous les identifiants, facteurs de risque, ETCOc ou statut de photothérapie. Utilisez REST/FHIR/HL7 pour l’intégration machine-à-machine.")</span></p>
+    </section>
+
+    <section class="his-method-card" id="legacy">
+        <div class="his-method-heading"><span>@L("Backward compatibility", "Backward compatibility", "Compatibilité ascendante")</span><h2>Legacy REST API v1/v2</h2></div>
+        <p>@L("v1/v2 vẫn được giữ cho client hiện hữu nhưng không phải contract cho tích hợp mới. Migration target là REST API v3.", "v1/v2 remain available for existing clients but are not the contract for new integrations. The migration target is REST API v3.", "v1/v2 restent disponibles pour les clients existants mais ne constituent pas le contrat des nouvelles intégrations. La cible de migration est REST API v3.")</p>
+        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v1/bilirubin/calculate</span></div>
+        <div class="his-endpoint" tabindex="0"><code>POST</code><span>https://bilitool.vn/api/v2/clinical/bilirubin/calculate</span></div>
+        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/api/v2/clinical/bilirubin/guidelines/active</span></div>
+        <p class="his-note"><i class="fas fa-route"></i><span>@L("Không sunset v1/v2 trước khi có telemetry production, thông báo đối tác và migration window. Client mới không nên phụ thuộc legacy DTO.", "v1/v2 will not be sunset before production telemetry, partner notice, and a migration window exist. New clients should not depend on legacy DTOs.", "v1/v2 ne seront pas retirées avant télémétrie production, notification partenaires et fenêtre de migration. Les nouveaux clients ne doivent pas dépendre des DTO legacy.")</span></p>
     </section>
 
     <section class="his-method-card">
-        <div class="his-method-heading">
-            <span>Tham khảo nâng cao</span>
-            <h2>API v2 clinical wrapper</h2>
-        </div>
-        <p>Endpoint <code>POST /api/v2/clinical/bilirubin/calculate</code> dùng cùng input như API v1 nhưng bọc kết quả theo cấu trúc clinical wrapper: <code>guideline</code>, <code>patientContext</code>, <code>thresholds</code>, <code>recommendation</code>, <code>legacyResult</code>. Endpoint này cũng yêu cầu <code>X-API-Key</code>.</p>
-        <div class="his-endpoint" tabindex="0"><code>GET</code><span>https://bilitool.vn/api/v2/clinical/bilirubin/guidelines/active</span></div>
+        <div class="his-method-heading"><span>@L("Clinical safety", "Clinical safety", "Sécurité clinique")</span><h2>@L("Giới hạn sử dụng", "Use limitations", "Limites d’utilisation")</h2></div>
+        <ul class="his-check-list">
+            <li><i class="fas fa-user-md"></i><span>@L("BiliTool.Vn là công cụ hỗ trợ quyết định. Bác sĩ phải kiểm tra dữ liệu đầu vào, bối cảnh lâm sàng và quyết định điều trị.", "BiliTool.Vn is a decision-support tool. A clinician must verify inputs, clinical context, and treatment decisions.", "BiliTool.Vn est un outil d’aide à la décision. Un clinicien doit vérifier les données, le contexte clinique et la décision thérapeutique.")</span></li>
+            <li><i class="fas fa-check"></i><span>@L("Runtime hiện nhận tuổi thai 35–45 tuần và tuổi sau sinh 1–336 giờ; ngoài phạm vi phải dùng phác đồ khác.", "The current runtime accepts gestational age 35–45 weeks and postnatal age 1–336 hours; cases outside this range require another protocol.", "Le runtime actuel accepte 35–45 semaines et 1–336 heures de vie ; les cas hors plage nécessitent un autre protocole.")</span></li>
+            <li><i class="fas fa-database"></i><span>@L("Không gửi production PHI vào sandbox, log hoặc ticket hỗ trợ. Dùng identifiers đã được quản trị theo thỏa thuận tích hợp.", "Never send production PHI to sandbox, logs, or support tickets. Use identifiers governed by the integration agreement.", "Ne jamais envoyer de PHI production vers le sandbox, les logs ou les tickets support. Utiliser des identifiants gouvernés par l’accord d’intégration.")</span></li>
+        </ul>
     </section>
 
-    <section class="his-method-card his-error-card">
-        <div class="his-method-heading">
-            <span>Vận hành</span>
-            <h2>Mã lỗi cần HIS xử lý</h2>
+    <section class="his-release-card">
+        <div>
+            <span class="his-release-label">@L("Tài liệu hiện hành", "Current documentation", "Documentation actuelle")</span>
+            <strong>BiliTool.Vn v1.4.2 · 2026-08-03</strong>
+            <p>@L("REST v3, FHIR R4 và HL7 v2.5.1 dùng cùng clinical engine và release metadata.", "REST v3, FHIR R4, and HL7 v2.5.1 use the same clinical engine and release metadata.", "REST v3, FHIR R4 et HL7 v2.5.1 utilisent le même moteur clinique et les mêmes métadonnées de release.")</p>
         </div>
-        <div class="his-error-grid">
-            <div><strong>400</strong><span>Dữ liệu không hợp lệ: thiếu tuổi/ngày mẫu, tuổi ngoài 1–336 giờ, tuổi thai ngoài 35–45 tuần, bilirubin vượt giới hạn.</span></div>
-            <div><strong>401</strong><span>Thiếu hoặc sai <code>X-API-Key</code>.</span></div>
-            <div><strong>429</strong><span>Vượt rate limit API.</span></div>
-            <div><strong>503</strong><span>Dịch vụ tích hợp tạm thời chưa khả dụng. Liên hệ hỗ trợ BiliTool.Vn nếu lỗi kéo dài.</span></div>
-            <div><strong>500</strong><span>Lỗi hệ thống; response có <code>traceId</code> để đối soát log.</span></div>
-        </div>
+        <a href="https://github.com/buithanhninh/bilitool/releases/tag/v1.4.2" target="_blank" rel="noopener">@L("Release và checksums", "Release and checksums", "Release et checksums")</a>
     </section>
 </div>
-
-
-}
 
 <style>
     .his-doc-shell {
@@ -379,7 +289,8 @@ X-API-Key: {integration_api_key}</code></pre>
 
     .his-hero-panel,
     .his-audit-card,
-    .his-method-card {
+    .his-method-card,
+    .his-release-card {
         border: 1px solid rgba(255,255,255,0.72);
         background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(247,252,255,0.86));
         box-shadow: 0 24px 70px rgba(8, 34, 55, 0.11), inset 0 1px 0 rgba(255,255,255,0.9);
@@ -388,6 +299,7 @@ X-API-Key: {integration_api_key}</code></pre>
         margin-bottom: 22px;
         overflow: hidden;
         min-width: 0;
+        scroll-margin-top: 24px;
     }
 
     .his-hero-panel {
@@ -399,7 +311,8 @@ X-API-Key: {integration_api_key}</code></pre>
     }
 
     .his-kicker,
-    .his-method-heading span {
+    .his-method-heading span,
+    .his-release-label {
         display: inline-flex;
         align-items: center;
         gap: 9px;
@@ -420,7 +333,7 @@ X-API-Key: {integration_api_key}</code></pre>
     }
 
     .his-hero-panel h1 {
-        max-width: 820px;
+        max-width: 900px;
         font-size: clamp(2.1rem, 5vw, 4.4rem);
         outline: none !important;
         border: 0 !important;
@@ -429,10 +342,17 @@ X-API-Key: {integration_api_key}</code></pre>
     .his-hero-panel p,
     .his-method-card p,
     .his-audit-card li,
-    .his-note {
+    .his-note,
+    .his-release-card p {
         color: var(--his-muted);
         line-height: 1.72;
         font-weight: 560;
+    }
+
+    .his-doc-shell a {
+        color: #075985;
+        font-weight: 800;
+        text-underline-offset: 3px;
     }
 
     .his-hero-panel code,
@@ -450,7 +370,7 @@ X-API-Key: {integration_api_key}</code></pre>
     .his-status-grid,
     .his-error-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 12px;
         margin-top: 26px;
     }
@@ -478,6 +398,21 @@ X-API-Key: {integration_api_key}</code></pre>
         margin-top: 7px;
         line-height: 1.45;
         font-weight: 650;
+    }
+
+    .his-nav-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    .his-nav-grid a {
+        border: 1px solid rgba(15,95,143,0.18);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.78);
+        padding: 9px 14px;
+        text-decoration: none;
     }
 
     .his-audit-card h2 {
@@ -517,19 +452,14 @@ X-API-Key: {integration_api_key}</code></pre>
         background: rgba(245,158,11,0.14);
     }
 
-    .his-method-heading {
-        margin-bottom: 16px;
-    }
-
-    .his-method-heading h2 {
-        font-size: clamp(1.55rem, 3vw, 2.3rem);
-    }
+    .his-method-heading { margin-bottom: 16px; }
+    .his-method-heading h2 { font-size: clamp(1.55rem, 3vw, 2.3rem); }
 
     .his-endpoint {
         display: flex;
         gap: 14px;
         align-items: center;
-        margin: 22px 0;
+        margin: 18px 0;
         padding: 16px;
         border: 1px solid var(--his-line);
         border-radius: 18px;
@@ -583,9 +513,21 @@ X-API-Key: {integration_api_key}</code></pre>
         font-weight: 900;
     }
 
-    .his-table tr:last-child td {
-        border-bottom: 0;
+    .his-table tr:last-child td { border-bottom: 0; }
+
+    .his-badge {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 5px 9px;
+        font-size: .76rem;
+        font-weight: 900;
+        background: rgba(15,118,110,.1);
+        color: #0f766e;
+        white-space: nowrap;
     }
+
+    .his-badge.canonical { background: rgba(14,165,233,.12); color: #0369a1; }
+    .his-badge.ui { background: rgba(245,158,11,.14); color: #92400e; }
 
     .his-note {
         display: grid;
@@ -604,22 +546,12 @@ X-API-Key: {integration_api_key}</code></pre>
         background: rgba(255,251,235,0.78);
     }
 
-    .his-note i {
-        color: var(--his-teal);
-        font-size: 1.05rem;
-        margin-top: 4px;
-    }
-
-    .his-method-card h3 {
-        margin: 28px 0 12px;
-        color: var(--his-ink);
-        font-size: 1.2rem;
-        font-weight: 900;
-    }
+    .his-note i { color: var(--his-teal); font-size: 1.05rem; margin-top: 4px; }
+    .his-method-card h3 { margin: 28px 0 12px; color: var(--his-ink); font-size: 1.2rem; font-weight: 900; }
 
     .his-risk-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
     }
 
@@ -628,25 +560,10 @@ X-API-Key: {integration_api_key}</code></pre>
         border-radius: 20px;
         padding: 18px;
         background: rgba(255,255,255,0.72);
+        min-width: 0;
     }
 
-    .his-risk-grid h4 {
-        color: var(--his-ink);
-        font-weight: 900;
-        font-size: 1rem;
-        margin-bottom: 12px;
-    }
-
-    .his-risk-grid code {
-        display: inline-block;
-        margin: 4px 4px 4px 0;
-        color: #0b5f8a;
-        background: rgba(14,165,233,0.08);
-        border: 1px solid rgba(14,165,233,0.13);
-        border-radius: 999px;
-        padding: 5px 9px;
-        font-size: 0.82rem;
-    }
+    .his-risk-grid h4 { color: var(--his-ink); font-weight: 900; font-size: 1rem; margin-bottom: 12px; }
 
     pre {
         border: 1px solid rgba(15,23,42,0.12);
@@ -670,24 +587,43 @@ X-API-Key: {integration_api_key}</code></pre>
         line-height: 1.62;
     }
 
-    @@media (max-width: 900px) {
+    .his-release-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        background: linear-gradient(135deg, #07111f, #0f5f8f);
+    }
+
+    .his-release-card strong { display: block; color: #fff; font-size: 1.35rem; margin-top: 8px; }
+    .his-release-card p { color: rgba(255,255,255,.78); margin: 8px 0 0; }
+    .his-release-card .his-release-label { color: #a7f3d0; }
+    .his-release-card > a { flex: 0 0 auto; color: #07111f; background: #fff; border-radius: 999px; padding: 11px 16px; text-decoration: none; }
+
+    @@media (max-width: 1000px) {
         .his-status-grid,
-        .his-error-grid,
-        .his-risk-grid {
-            grid-template-columns: 1fr;
-        }
+        .his-error-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @@media (max-width: 900px) {
+        .his-risk-grid { grid-template-columns: 1fr; }
         .his-doc-shell { padding: 8px 0 24px; }
+    }
+
+    @@media (max-width: 640px) {
+        .his-status-grid,
+        .his-error-grid { grid-template-columns: 1fr; }
+        .his-release-card { align-items: flex-start; flex-direction: column; }
     }
 
     @@media (max-width: 560px) {
         .his-method-heading span { font-size: .8rem; }
-        .his-doc-shell {
-            padding: 6px 0 20px;
-        }
+        .his-doc-shell { padding: 6px 0 20px; }
 
         .his-hero-panel,
         .his-audit-card,
-        .his-method-card {
+        .his-method-card,
+        .his-release-card {
             border-radius: 24px;
             padding: 20px 16px;
         }
@@ -698,8 +634,19 @@ X-API-Key: {integration_api_key}</code></pre>
         pre { border-radius: 16px; padding: 14px; }
 
         .his-check-list li,
-        .his-note {
-            grid-template-columns: 1fr;
-        }
+        .his-note { grid-template-columns: 1fr; }
     }
 </style>
+
+@code {
+    private static string L(string vi, string en, string fr)
+    {
+        var language = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToLowerInvariant();
+        return language switch
+        {
+            "en" => en,
+            "fr" => fr,
+            _ => vi
+        };
+    }
+}

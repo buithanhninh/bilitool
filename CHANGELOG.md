@@ -1,5 +1,17 @@
 # BiliTool.Vn - Changelog
 
+## [1.4.2] - 2026-08-03
+
+### Changed
+- Viết lại trang `/tich-hop-his` thành tài liệu integration production canonical dùng chung cho tiếng Việt, Anh và Pháp.
+- Đưa REST API v3 lên làm contract chính; phân loại rõ Deep Link và REST v1/v2 là UI/legacy compatibility surfaces.
+- Bổ sung đầy đủ FHIR R4, HL7 v2.5.1, webhook outbox, tenant/client credentials, optional mTLS, idempotency, correlation, payload limits, stable error codes và retry semantics.
+- Bổ sung OpenAPI, sandbox, Postman, generated-client, conformance, production rehearsal, clinical-safety limits và release metadata trực tiếp trên trang public.
+
+### Fixed
+- Loại bỏ documentation drift khiến trang live `1.3.30` chỉ mô tả Deep Link và REST v1/v2 dù code đã phát hành nền tảng HIS/EMR production.
+- Dùng một markup đa ngôn ngữ thống nhất thay cho ba bản nội dung tách biệt, giảm nguy cơ lệch endpoint và policy giữa các ngôn ngữ.
+
 ## [1.4.1] - 2026-08-01
 
 ### Fixed

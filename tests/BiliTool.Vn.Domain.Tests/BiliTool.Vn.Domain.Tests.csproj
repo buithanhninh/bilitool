@@ -22,6 +22,12 @@
 
   <ItemGroup>
     <None Include="..\..\contracts\his-emr\contract-baseline.json" Link="contracts\his-emr\contract-baseline.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\CHANGELOG.md" Link="release-metadata\CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\BiliTool.Vn.Web\Pages\TichHopHis.razor" Link="documentation\TichHopHis.razor" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\BiliTool.Vn.Web\Pages\_Host.cshtml" Link="release-metadata\_Host.cshtml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\BiliTool.Vn.Web\Shared\MainLayout.razor" Link="release-metadata\MainLayout.razor" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\BiliTool.Vn.Web\appsettings.json" Link="release-metadata\appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\BiliTool.Vn.Web\wwwroot\service-worker.js" Link="release-metadata\service-worker.js" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
